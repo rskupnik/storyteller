@@ -13,8 +13,8 @@ public final class Storyteller {
         this.engine = engine;
     }
 
-    public static Storyteller newEngine(Rectangle area, BitmapFont font) {
-        return new Storyteller(new TextEngineImpl(area, font));
+    public static Storyteller newEngine(String areaId, Rectangle area, BitmapFont font) {
+        return new Storyteller(new TextEngineImpl(areaId, area, font));
     }
 
     public Storyteller withClickListener(ClickListener clickListener) {

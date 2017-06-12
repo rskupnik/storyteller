@@ -4,6 +4,8 @@ import aurelienribon.tweenengine.TweenManager;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 
+import java.util.List;
+
 final class EngineState {
 
     EngineState() {
@@ -19,6 +21,7 @@ final class EngineState {
     Listeners listeners;
     Effects effects;
 
+    //List<Scene> scenes;
     Scene currentScene;
     boolean firstSceneDraw;
     TweenManager tweenManager;

@@ -14,6 +14,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.HashMap;
+import java.util.Map;
+
 final class Renderer {
 
     private EngineState state;
@@ -22,15 +25,15 @@ final class Renderer {
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    private Rectangle area;
+    private Map<String, Rectangle> areas = new HashMap<>();
     private BitmapFont font;
     private Vector2 areaTopLeft;
     private int areaWidth;
 
-    Renderer(EngineState state, Rectangle area, BitmapFont font) {
+    Renderer(EngineState state, String areaId, Rectangle area, BitmapFont font) {
         this.state = state;
         state.renderer = this;
-        this.area = area;
+        this.areas.put(areaId, area);
         this.font = font;
 
         // Calculate helper variables for the area

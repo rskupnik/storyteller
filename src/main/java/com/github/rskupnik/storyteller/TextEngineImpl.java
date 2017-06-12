@@ -10,11 +10,11 @@ public class TextEngineImpl implements TextEngine {
 
     private final EngineState state;
 
-    public TextEngineImpl(Rectangle area, BitmapFont font) {
+    public TextEngineImpl(String areaId, Rectangle area, BitmapFont font) {
         this.state = new EngineState();
         this.state.engine = this;
 
-        new Renderer(state, area, font);
+        new Renderer(state, areaId, area, font);
         new InputHandler(state, state.renderer.getCamera());
 
         Tween.registerAccessor(InternalActor.class, new ActorAccessor());
