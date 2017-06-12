@@ -1,12 +1,14 @@
 package com.github.rskupnik.storyteller;
 
 import com.badlogic.gdx.graphics.Color;
+import com.github.rskupnik.storyteller.effects.TextEffect;
 
 public class Actor {
 
     private String text;
     private Color color;
     private boolean clickable;
+    private TextEffect clickEffect;
 
     private InternalActor internalActor = new InternalActor();
 
@@ -26,16 +28,24 @@ public class Actor {
         return color;
     }
 
+    public boolean isClickable() {
+        return clickable;
+    }
+
+    public TextEffect getClickEffect() {
+        return clickEffect;
+    }
+
     private void setColor(Color color) {
         this.color = color;
     }
 
-    boolean isClickable() {
-        return clickable;
-    }
-
     private void setClickable(boolean clickable) {
         this.clickable = clickable;
+    }
+
+    private void setClickEffect(TextEffect clickEffect) {
+        this.clickEffect = clickEffect;
     }
 
     public static ActorBuilder newActor(String text) {
@@ -57,6 +67,11 @@ public class Actor {
 
         public ActorBuilder clickable() {
             actor.setClickable(true);
+            return this;
+        }
+
+        public ActorBuilder withClickEffect(TextEffect clickEffect) {
+            actor.setClickEffect(clickEffect);
             return this;
         }
 

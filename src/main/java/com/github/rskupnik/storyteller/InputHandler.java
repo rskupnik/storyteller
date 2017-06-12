@@ -58,7 +58,9 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
                     listener.onActorClicked(entry.getValue(), new Vector2(touched.x, touched.y), button);
                 }
 
-                if (state.effects.textClickEffect != null) {
+                if (entry.getValue().getClickEffect() != null) {
+                    entry.getValue().getClickEffect().produceTween(entry.getValue().getInternalActor()).start(state.tweenManager);
+                } else if (state.effects.textClickEffect != null) {
                     state.effects.textClickEffect.produceTween(entry.getValue().getInternalActor()).start(state.tweenManager);
                 }
             }
