@@ -5,14 +5,20 @@ import com.badlogic.gdx.math.Vector2;
 
 final class Area {
 
+    private String id;
     private Rectangle rectangle;
     private Vector2 topLeft;
     private int width;
 
-    Area(Rectangle rectangle) {
+    Area(String id, Rectangle rectangle) {
+        this.id = id;
         this.rectangle = rectangle;
         this.topLeft = new Vector2(rectangle.x, rectangle.y + rectangle.height);
         this.width = (int) rectangle.width;
+    }
+
+    String getId() {
+        return id;
     }
 
     Rectangle getRectangle() {
