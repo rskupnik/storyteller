@@ -25,6 +25,14 @@ final class Area {
         return rectangle;
     }
 
+    Vector2 getTopLeft() {
+        return topLeft;
+    }
+
+    int getWidth() {
+        return width;
+    }
+
     @Override
     public int hashCode() {
         return rectangle.hashCode();
