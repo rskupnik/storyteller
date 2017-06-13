@@ -46,3 +46,20 @@ final class Area {
         return rectangle.equals(((Area)obj).getRectangle());
     }
 }
+
+final class AreaUtils {
+
+    /**
+     * Calculates the remaining width available to fill with text in the current text row.
+     */
+    static int calcRemainingWidth(Area area, int currentX) {
+        return area.getWidth() - (currentX - (int) area.getTopLeft().x);
+    }
+
+    /**
+     * Checks whether x points to the beginning of a new text line or somewhere in an existing one.
+     */
+    static boolean notStartOfLine(Area area, int x) {
+        return x != (int) area.getTopLeft().x;
+    }
+}
