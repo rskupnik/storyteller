@@ -4,6 +4,9 @@ import aurelienribon.tweenengine.TweenManager;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 final class EngineState {
 
     EngineState() {
@@ -19,8 +22,7 @@ final class EngineState {
     Listeners listeners;
     Effects effects;
 
-    Scene currentScene;
-    boolean firstSceneDraw;
+    Map<String, Scene> scenes = new HashMap<>();
     TweenManager tweenManager;
 
     final class Listeners {

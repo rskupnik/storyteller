@@ -11,7 +11,9 @@ public interface TextEngine {
     void setClickListener(ClickListener clickListener);
     void setTextClickEffect(TextEffect effect);
 
-    void setScene(Scene scene);
+    void addScene(Scene scene);
+    void removeScene(String id);
+    void removeScene(Scene scene);
 
     InputProcessor getInputProcessor();
 }

@@ -5,10 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Scene {
+
+    private String id, areaId;
     private final List<Actor> actors = new LinkedList<Actor>();
 
-    private Scene() {
+    private final InternalScene internalScene = new InternalScene();
 
+    private Scene(String id, String areaId) {
+        this.id = id;
+        this.areaId = areaId;
     }
 
     private void addActor(Actor actor) {
@@ -19,16 +24,43 @@ public class Scene {
         return Collections.unmodifiableList(actors);
     }
 
-    public static SceneBuilder newScene() {
-        return new SceneBuilder();
+    String getAreaId() {
+        return areaId;
+    }
+
+    InternalScene getInternalScene() {
+        return internalScene;
+    }
+
+    String getId() {
+        return id;
+    }
+
+    public static SceneBuilder newScene(String id, String areaId) {
+        return new SceneBuilder(id, areaId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Scene scene = (Scene) o;
+
+        return ((Scene) o).id.equals(id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     public static final class SceneBuilder {
 
         private final Scene scene;  // TODO: Use Private Data Class design pattern?
 
-        private SceneBuilder() {
-            scene = new Scene();
+        private SceneBuilder(String id, String areaId) {
+            scene = new Scene(id, areaId);
         }
 
         public Scene build() {
