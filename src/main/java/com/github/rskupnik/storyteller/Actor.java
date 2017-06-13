@@ -10,7 +10,7 @@ public class Actor {
     private boolean clickable;
     private TextEffect clickEffect;
 
-    private InternalActor internalActor = new InternalActor();
+    private final InternalActor internalActor = new InternalActor();
 
     Actor(String text) {
         this.text = text;
@@ -78,5 +78,27 @@ public class Actor {
         public Actor build() {
             return actor;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Actor actor = (Actor) o;
+
+        if (clickable != actor.clickable) return false;
+        if (!text.equals(actor.text)) return false;
+        if (color != null ? !color.equals(actor.color) : actor.color != null) return false;
+        return clickEffect != null ? clickEffect.equals(actor.clickEffect) : actor.clickEffect == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = text.hashCode();
+        result = 31 * result + (color != null ? color.hashCode() : 0);
+        result = 31 * result + (clickable ? 1 : 0);
+        result = 31 * result + (clickEffect != null ? clickEffect.hashCode() : 0);
+        return result;
     }
 }

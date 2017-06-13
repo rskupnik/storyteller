@@ -25,20 +25,14 @@ final class Renderer {
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    private Map<String, Rectangle> areas = new HashMap<>();
+    private Map<String, Area> areas = new HashMap<>();
     private BitmapFont font;
-    private Vector2 areaTopLeft;
-    private int areaWidth;
 
-    Renderer(EngineState state, String areaId, Rectangle area, BitmapFont font) {
+    Renderer(EngineState state, String areaId, Rectangle rectangle, BitmapFont font) {
         this.state = state;
         state.renderer = this;
-        this.areas.put(areaId, area);
+        this.areas.put(areaId, new Area(areaId, rectangle));
         this.font = font;
-
-        // Calculate helper variables for the area
-        this.areaTopLeft = new Vector2(area.x, area.y + area.height);
-        this.areaWidth = (int) area.width;
 
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
@@ -52,17 +46,23 @@ final class Renderer {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        drawScene(delta);
+        drawScenes(delta);
         batch.end();
     }
 
-    private void drawScene(float delta) {
-        Scene scene = state.currentScene;
-        if (scene == null || font == null)
+    private void drawScenes(float delta) {
+        for (Scene scene : state.scenes.values()) {
+            drawScene(delta, areas.get(scene.getAreaId()), scene);
+            scene.getInternalScene().wasDrawn();
+        }
+    }
+
+    private void drawScene(float delta, Area area, Scene scene) {
+        if (scene == null || font == null || area == null)
             return;
 
-        int x = (int) areaTopLeft.x;
-        int y = (int) areaTopLeft.y;
+        int x = (int) area.getTopLeft().x;
+        int y = (int) area.getTopLeft().y;
         boolean firstLine = true;
         for (Actor actor : scene.getActors()) {
             // We need to produce the whole text first to see how LibGDX plans to structure it and do some adjusting if needed
@@ -70,7 +70,7 @@ final class Renderer {
                     font,
                     actor.getText(),
                     actor.getColor() != null ? actor.getColor() : Color.WHITE,
-                    calcRemainingWidth(x),
+                    AreaUtils.calcRemainingWidth(area, x),
                     Align.left,
                     true
             );
@@ -81,7 +81,7 @@ final class Renderer {
             /* If we don't start rendering from a new line and the produced GL spans multiple lines we need to
                handle the first, fragmented line individually and then the rest of the text body. If we didn't, we'd get
                a text that only uses the remaining width even for new lines. */
-            if (notStartOfLine(x) && multilineGL(GL_wholeText)) {
+            if (AreaUtils.notStartOfLine(area, x) && multilineGL(GL_wholeText)) {
                 // Need to deal individually with the first, fragmented line and then continue with the rest of the body as usual
                 GlyphLayout.GlyphRun GR_fragLine = GL_wholeText.runs.get(0);
                 String lineEndText = glyphsToText(new StringBuilder(GR_fragLine.glyphs.size), GR_fragLine).toString();
@@ -89,20 +89,20 @@ final class Renderer {
                         font,
                         lineEndText,
                         actor.getColor() != null ? actor.getColor() : Color.WHITE,
-                        calcRemainingWidth(x),
+                        AreaUtils.calcRemainingWidth(area, x),
                         Align.left,
                         true
                 );
                 font.draw(batch, GL_fragLine, x, y + actor.getInternalActor().getYOffset());    // Offsets used for tween animation
 
                 // If it's clickable, produce a Rectangle
-                if (state.firstSceneDraw && actor.isClickable()) {
+                if (scene.getInternalScene().isFirstDraw() && actor.isClickable()) {
                     Rectangle rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
-                    state.inputHandler.addClickable(rect, actor);
+                    state.inputHandler.addClickable(scene, rect, actor);
                 }
 
                 // Adjust x and y after the fragmented line to continue with the rest of the text
-                x = (int) areaTopLeft.x;
+                x = (int) area.getTopLeft().x;
                 y -= (int) GL_fragLine.height + GR_fragLine.glyphs.get(0).height;
 
                 // Combine the rest of the GlyphLayout to a String
@@ -118,7 +118,7 @@ final class Renderer {
                         font,
                         restText,
                         actor.getColor() != null ? actor.getColor() : Color.WHITE,
-                        areaWidth,
+                        area.getWidth(),
                         Align.left,
                         true
                 );
@@ -132,18 +132,18 @@ final class Renderer {
             GlyphLayout.GlyphRun GR_last = GL_body.runs.get(GL_body.runs.size-1);
 
             // If it's clickable, produce a Rectangle
-            if (state.firstSceneDraw && actor.isClickable()) {
+            if (scene.getInternalScene().isFirstDraw() && actor.isClickable()) {
                 // If the text body spans multiple lines, we need to handle the last line as it might end in the middle of a line
                 GlyphLayout.GlyphRun GR_tail = GR_last;
                 int heightAdjust = 0;
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
-                    Rectangle rect = new Rectangle(areaTopLeft.x, areaTopLeft.y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
-                    state.inputHandler.addClickable(rect, actor);
+                    Rectangle rect = new Rectangle(area.getTopLeft().x, area.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
+                    state.inputHandler.addClickable(scene, rect, actor);
                     heightAdjust = GR_tail.glyphs.get(0).height;
                 }
                 Rectangle rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height - heightAdjust);
-                state.inputHandler.addClickable(rect, actor);
+                state.inputHandler.addClickable(scene, rect, actor);
             }
 
             // Extract new position
@@ -156,7 +156,6 @@ final class Renderer {
                 }
             }
         }   // end: for
-        state.firstSceneDraw = false;
     }
 
     private StringBuilder glyphsToText(StringBuilder sb, GlyphLayout.GlyphRun input) {
@@ -168,20 +167,6 @@ final class Renderer {
             buffer.append((char)g.id);
         }
         return buffer;
-    }
-
-    /**
-     * Calculates the remaining width available to fill with text in the current text row.
-     */
-    private int calcRemainingWidth(int currentX) {
-        return areaWidth - (currentX - (int) areaTopLeft.x);
-    }
-
-    /**
-     * Checks whether x points to the beginning of a new text line or somewhere in an existing one.
-     */
-    private boolean notStartOfLine(int x) {
-        return x != (int) areaTopLeft.x;
     }
 
     /**

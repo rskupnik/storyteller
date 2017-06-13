@@ -14,7 +14,7 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
     private EngineState state;
 
     private Camera camera;
-    private Map<Rectangle, Actor> clickablesMap = new HashMap<>();
+    private Map<Scene, Map<Rectangle, Actor>> clickablesMap = new HashMap<>();
 
     InputHandler(EngineState state, Camera camera) {
         this.camera = camera;
@@ -22,12 +22,25 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
         state.inputHandler = this;
     }
 
-    void addClickable(Rectangle rectangle, Actor actor) {
-        clickablesMap.put(rectangle, actor);
+    void addClickable(Scene scene, Rectangle rectangle, Actor actor) {
+        Map<Rectangle, Actor> innerMap = clickablesMap.get(scene);
+        if (innerMap == null)
+            innerMap = new HashMap<>();
+        innerMap.put(rectangle, actor);
+        clickablesMap.put(scene, innerMap);
     }
 
     void clearClickables() {
         clickablesMap.clear();
+    }
+
+    void clearClickables(Scene scene) {
+        clickablesMap.get(scene).clear();
+    }
+
+    void removeScene(Scene scene) {
+        clearClickables(scene);
+        clickablesMap.remove(scene);
     }
 
     @Override
@@ -49,19 +62,21 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 touched = camera.unproject(new Vector3(screenX, screenY, 0));
-        for (Map.Entry<Rectangle, Actor> entry : clickablesMap.entrySet()) {
-            Rectangle rect = entry.getKey();
-            if (touched.x >= rect.getX() && touched.x <= rect.getX() + rect.getWidth() &&
-                    touched.y <= rect.getY() && touched.y >= rect.getY() - rect.getHeight()) {
-                ClickListener listener = state.listeners.clickListener;
-                if (listener != null) {
-                    listener.onActorClicked(entry.getValue(), new Vector2(touched.x, touched.y), button);
-                }
+        for (Map.Entry<Scene, Map<Rectangle, Actor>> sceneToInnerEntry : clickablesMap.entrySet()) {
+            for (Map.Entry<Rectangle, Actor> entry : sceneToInnerEntry.getValue().entrySet()) {
+                Rectangle rect = entry.getKey();
+                if (touched.x >= rect.getX() && touched.x <= rect.getX() + rect.getWidth() &&
+                        touched.y <= rect.getY() && touched.y >= rect.getY() - rect.getHeight()) {
+                    ClickListener listener = state.listeners.clickListener;
+                    if (listener != null) {
+                        listener.onActorClicked(entry.getValue(), new Vector2(touched.x, touched.y), button);
+                    }
 
-                if (entry.getValue().getClickEffect() != null) {
-                    entry.getValue().getClickEffect().produceTween(entry.getValue().getInternalActor()).start(state.tweenManager);
-                } else if (state.effects.textClickEffect != null) {
-                    state.effects.textClickEffect.produceTween(entry.getValue().getInternalActor()).start(state.tweenManager);
+                    if (entry.getValue().getClickEffect() != null) {
+                        entry.getValue().getClickEffect().produceTween(entry.getValue().getInternalActor()).start(state.tweenManager);
+                    } else if (state.effects.textClickEffect != null) {
+                        state.effects.textClickEffect.produceTween(entry.getValue().getInternalActor()).start(state.tweenManager);
+                    }
                 }
             }
         }

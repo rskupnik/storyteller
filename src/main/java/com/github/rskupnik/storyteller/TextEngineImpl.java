@@ -42,10 +42,22 @@ public class TextEngineImpl implements TextEngine {
     }
 
     @Override
-    public void setScene(Scene scene) {
-        state.currentScene = scene;
-        state.firstSceneDraw = true;
-        state.inputHandler.clearClickables();
+    public void addScene(Scene scene) {
+        state.scenes.put(scene.getId(), scene);
+    }
+
+    @Override
+    public void removeScene(Scene scene) {
+        removeScene(scene.getId());
+    }
+
+    @Override
+    public void removeScene(String id) {
+        Scene scene = state.scenes.get(id);
+        if (scene != null) {
+            state.inputHandler.removeScene(scene);
+            state.scenes.remove(id);
+        }
     }
 
     @Override
