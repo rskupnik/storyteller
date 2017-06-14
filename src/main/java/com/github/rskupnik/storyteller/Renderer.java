@@ -13,12 +13,14 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.google.inject.Inject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public final class Renderer {
 
+    @Inject
     private EngineState state;
 
     private SpriteBatch batch;
@@ -32,9 +34,7 @@ public final class Renderer {
 
     }
 
-    Renderer(EngineState state, String areaId, Rectangle rectangle, BitmapFont font) {
-        this.state = state;
-        state.renderer = this;
+    public void init(String areaId, Rectangle rectangle, BitmapFont font) {
         this.areas.put(areaId, new Area(areaId, rectangle));
         this.font = font;
 

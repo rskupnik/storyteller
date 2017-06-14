@@ -16,13 +16,16 @@ public class TextEngineImpl implements TextEngine {
     @Inject
     private EngineState state;
 
+    @Inject
+    private Renderer renderer;
+
     void init(Injector injector, String areaId, Rectangle area, BitmapFont font) {
         this.injector = injector;
 
         this.state.engine = this;
 
-        new Renderer(state, areaId, area, font);
-        new InputHandler(state, state.renderer.getCamera());
+        renderer.init(areaId, area, font);
+        new InputHandler(state, renderer.getCamera());
 
         Tween.registerAccessor(InternalActor.class, new ActorAccessor());
     }
@@ -30,12 +33,12 @@ public class TextEngineImpl implements TextEngine {
     @Override
     public void render(float delta) {
         state.tweenManager.update(delta);
-        state.renderer.render(delta);
+        renderer.render(delta);
     }
 
     @Override
     public void resize(int width, int height) {
-        state.renderer.resize(width, height);
+        renderer.resize(width, height);
     }
 
     @Override

@@ -17,7 +17,6 @@ public final class EngineState {
 
     TextEngine engine;
     InputHandler inputHandler;
-    Renderer renderer;
 
     Listeners listeners;
     Effects effects;
