@@ -3,6 +3,7 @@ package com.github.rskupnik.storyteller;
 import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
+import com.github.rskupnik.storyteller.aggregates.Listeners;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.google.inject.Inject;
@@ -18,6 +19,9 @@ public class TextEngineImpl implements TextEngine {
 
     @Inject
     private Renderer renderer;
+
+    @Inject
+    private Listeners listeners;
 
     void init(Injector injector, String areaId, Rectangle area, BitmapFont font) {
         this.injector = injector;
@@ -43,7 +47,7 @@ public class TextEngineImpl implements TextEngine {
 
     @Override
     public void setClickListener(ClickListener clickListener) {
-        state.listeners.clickListener = clickListener;
+        listeners.clickListener = clickListener;
     }
 
     @Override
