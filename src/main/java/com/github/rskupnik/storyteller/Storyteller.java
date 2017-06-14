@@ -3,7 +3,10 @@ package com.github.rskupnik.storyteller;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.github.rskupnik.storyteller.effects.TextEffect;
+import com.github.rskupnik.storyteller.injection.EngineModule;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public final class Storyteller {
 
@@ -14,7 +17,10 @@ public final class Storyteller {
     }
 
     public static Storyteller newEngine(String areaId, Rectangle area, BitmapFont font) {
-        return new Storyteller(new TextEngineImpl(areaId, area, font));
+        Injector injector = Guice.createInjector(new EngineModule());
+        TextEngine engine = injector.getInstance(TextEngine.class);
+        ((TextEngineImpl) engine).init(injector, areaId, area, font);
+        return new Storyteller(engine);
     }
 
     public Storyteller withClickListener(ClickListener clickListener) {
