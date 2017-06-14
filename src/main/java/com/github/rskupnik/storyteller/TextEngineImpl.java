@@ -6,12 +6,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 
+
 public class TextEngineImpl implements TextEngine {
 
-    private final EngineState state;
+
+    EngineState state;
 
     public TextEngineImpl(String areaId, Rectangle area, BitmapFont font) {
-        this.state = new EngineState();
         this.state.engine = this;
 
         new Renderer(state, areaId, area, font);
