@@ -14,7 +14,7 @@ public class TextEngineImpl implements TextEngine {
     private Injector injector;
 
     @Inject
-    EngineState state;
+    private EngineState state;
 
     void init(Injector injector, String areaId, Rectangle area, BitmapFont font) {
         this.injector = injector;
