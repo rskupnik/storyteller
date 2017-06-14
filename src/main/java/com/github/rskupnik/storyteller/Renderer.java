@@ -30,10 +30,6 @@ public final class Renderer {
     private Map<String, Area> areas = new HashMap<>();
     private BitmapFont font;
 
-    public Renderer() {
-
-    }
-
     public void init(String areaId, Rectangle rectangle, BitmapFont font) {
         this.areas.put(areaId, new Area(areaId, rectangle));
         this.font = font;
