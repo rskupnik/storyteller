@@ -10,18 +10,11 @@ import java.util.Map;
 public final class EngineState {
 
     public EngineState() {
-        effects = new Effects();
         tweenManager = new TweenManager();
     }
 
     TextEngine engine;
 
-    Effects effects;
-
     Map<String, Scene> scenes = new HashMap<>();
     TweenManager tweenManager;
-
-    final class Effects {
-        TextEffect textClickEffect;
-    }
 }
