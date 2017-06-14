@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.HashMap;
 import java.util.Map;
 
-final class Renderer {
+public final class Renderer {
 
     private EngineState state;
 
@@ -27,6 +27,10 @@ final class Renderer {
 
     private Map<String, Area> areas = new HashMap<>();
     private BitmapFont font;
+
+    public Renderer() {
+
+    }
 
     Renderer(EngineState state, String areaId, Rectangle rectangle, BitmapFont font) {
         this.state = state;

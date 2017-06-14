@@ -7,9 +7,9 @@ import com.github.rskupnik.storyteller.listeners.ClickListener;
 import java.util.HashMap;
 import java.util.Map;
 
-final class EngineState {
+public final class EngineState {
 
-    EngineState() {
+    public EngineState() {
         listeners = new Listeners();
         effects = new Effects();
         tweenManager = new TweenManager();

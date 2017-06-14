@@ -5,13 +5,20 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+
 
 public class TextEngineImpl implements TextEngine {
 
-    private final EngineState state;
+    private Injector injector;
 
-    public TextEngineImpl(String areaId, Rectangle area, BitmapFont font) {
-        this.state = new EngineState();
+    @Inject
+    private EngineState state;
+
+    void init(Injector injector, String areaId, Rectangle area, BitmapFont font) {
+        this.injector = injector;
+
         this.state.engine = this;
 
         new Renderer(state, areaId, area, font);
