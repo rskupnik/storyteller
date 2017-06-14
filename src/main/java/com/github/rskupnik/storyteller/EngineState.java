@@ -9,12 +9,5 @@ import java.util.Map;
 
 public final class EngineState {
 
-    public EngineState() {
-        tweenManager = new TweenManager();
-    }
-
-    TextEngine engine;
-
     Map<String, Scene> scenes = new HashMap<>();
-    TweenManager tweenManager;
 }

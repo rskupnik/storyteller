@@ -1,6 +1,7 @@
 package com.github.rskupnik.storyteller;
 
 import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
@@ -20,11 +21,10 @@ public class TextEngineImpl implements TextEngine {
     @Inject private InputHandler inputHandler;
     @Inject private Listeners listeners;
     @Inject private TextEffects textEffects;
+    @Inject private TweenManager tweenManager;
 
     void init(Injector injector, String areaId, Rectangle area, BitmapFont font) {
         this.injector = injector;
-
-        this.state.engine = this;
 
         renderer.init(areaId, area, font);
         inputHandler.init(renderer.getCamera());
@@ -34,7 +34,7 @@ public class TextEngineImpl implements TextEngine {
 
     @Override
     public void render(float delta) {
-        state.tweenManager.update(delta);
+        tweenManager.update(delta);
         renderer.render(delta);
     }
 

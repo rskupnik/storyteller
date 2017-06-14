@@ -1,6 +1,7 @@
 package com.github.rskupnik.storyteller;
 
 import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Quad;
 import com.badlogic.gdx.graphics.Camera;
@@ -17,6 +18,7 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
     @Inject private EngineState state;
     @Inject private Listeners listeners;
     @Inject private TextEffects textEffects;
+    @Inject private TweenManager tweenManager;
 
     private Camera camera;
     private Map<Scene, Map<Rectangle, Actor>> clickablesMap = new HashMap<>();
@@ -76,9 +78,9 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
                     }
 
                     if (entry.getValue().getClickEffect() != null) {
-                        entry.getValue().getClickEffect().produceTween(entry.getValue().getInternalActor()).start(state.tweenManager);
+                        entry.getValue().getClickEffect().produceTween(entry.getValue().getInternalActor()).start(tweenManager);
                     } else if (textEffects.clickEffect != null) {
-                        textEffects.clickEffect.produceTween(entry.getValue().getInternalActor()).start(state.tweenManager);
+                        textEffects.clickEffect.produceTween(entry.getValue().getInternalActor()).start(tweenManager);
                     }
                 }
             }
