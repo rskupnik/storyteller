@@ -14,14 +14,10 @@ public class TextEngineImpl implements TextEngine {
 
     private Injector injector;
 
-    @Inject
-    private EngineState state;
-
-    @Inject
-    private Renderer renderer;
-
-    @Inject
-    private Listeners listeners;
+    @Inject private EngineState state;
+    @Inject private Renderer renderer;
+    @Inject private InputHandler inputHandler;
+    @Inject private Listeners listeners;
 
     void init(Injector injector, String areaId, Rectangle area, BitmapFont font) {
         this.injector = injector;
@@ -29,7 +25,7 @@ public class TextEngineImpl implements TextEngine {
         this.state.engine = this;
 
         renderer.init(areaId, area, font);
-        new InputHandler(state, renderer.getCamera());
+        inputHandler.init(renderer.getCamera());
 
         Tween.registerAccessor(InternalActor.class, new ActorAccessor());
     }
@@ -69,14 +65,14 @@ public class TextEngineImpl implements TextEngine {
     public void removeScene(String id) {
         Scene scene = state.scenes.get(id);
         if (scene != null) {
-            state.inputHandler.removeScene(scene);
+            inputHandler.removeScene(scene);
             state.scenes.remove(id);
         }
     }
 
     @Override
     public com.badlogic.gdx.InputProcessor getInputProcessor() {
-        return state.inputHandler;
+        return inputHandler;
     }
 
 }

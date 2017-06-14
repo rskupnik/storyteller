@@ -20,8 +20,8 @@ import java.util.Map;
 
 public final class Renderer {
 
-    @Inject
-    private EngineState state;
+    @Inject private EngineState state;
+    @Inject private InputHandler inputHandler;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -102,7 +102,7 @@ public final class Renderer {
                 // If it's clickable, produce a Rectangle
                 if (scene.getInternalScene().isFirstDraw() && actor.isClickable()) {
                     Rectangle rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
-                    state.inputHandler.addClickable(scene, rect, actor);
+                    inputHandler.addClickable(scene, rect, actor);
                 }
 
                 // Adjust x and y after the fragmented line to continue with the rest of the text
@@ -143,11 +143,11 @@ public final class Renderer {
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
                     Rectangle rect = new Rectangle(area.getTopLeft().x, area.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
-                    state.inputHandler.addClickable(scene, rect, actor);
+                    inputHandler.addClickable(scene, rect, actor);
                     heightAdjust = GR_tail.glyphs.get(0).height;
                 }
                 Rectangle rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height - heightAdjust);
-                state.inputHandler.addClickable(scene, rect, actor);
+                inputHandler.addClickable(scene, rect, actor);
             }
 
             // Extract new position

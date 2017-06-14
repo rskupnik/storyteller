@@ -5,21 +5,22 @@ import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Quad;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.*;
+import com.github.rskupnik.storyteller.aggregates.Listeners;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.google.inject.Inject;
 
 import java.util.*;
 
 public class InputHandler implements com.badlogic.gdx.InputProcessor {
 
-    private EngineState state;
+    @Inject private EngineState state;
+    @Inject private Listeners listeners;
 
     private Camera camera;
     private Map<Scene, Map<Rectangle, Actor>> clickablesMap = new HashMap<>();
 
-    InputHandler(EngineState state, Camera camera) {
+    public void init(Camera camera) {
         this.camera = camera;
-        this.state = state;
-        state.inputHandler = this;
     }
 
     void addClickable(Scene scene, Rectangle rectangle, Actor actor) {
@@ -67,7 +68,7 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
                 Rectangle rect = entry.getKey();
                 if (touched.x >= rect.getX() && touched.x <= rect.getX() + rect.getWidth() &&
                         touched.y <= rect.getY() && touched.y >= rect.getY() - rect.getHeight()) {
-                    ClickListener listener = state.listeners.clickListener;
+                    ClickListener listener = listeners.clickListener;
                     if (listener != null) {
                         listener.onActorClicked(entry.getValue(), new Vector2(touched.x, touched.y), button);
                     }
