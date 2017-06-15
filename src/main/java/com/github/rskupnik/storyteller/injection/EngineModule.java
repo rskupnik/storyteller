@@ -3,6 +3,7 @@ package com.github.rskupnik.storyteller.injection;
 import aurelienribon.tweenengine.TweenManager;
 import com.github.rskupnik.storyteller.*;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
+import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
@@ -21,6 +22,7 @@ public class EngineModule extends AbstractModule {
         bind(InputHandler.class).in(Scopes.SINGLETON);
         bind(Listeners.class).in(Scopes.SINGLETON);
         bind(TextEffects.class).in(Scopes.SINGLETON);
+        bind(Scenes.class).in(Scopes.SINGLETON);
     }
 
     @Provides
