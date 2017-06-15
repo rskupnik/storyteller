@@ -2,20 +2,21 @@ package com.github.rskupnik.storyteller.core;
 
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.*;
-import com.github.rskupnik.storyteller.peripheral.Actor;
-import com.github.rskupnik.storyteller.EngineState;
-import com.github.rskupnik.storyteller.peripheral.Scene;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.google.inject.Inject;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InputHandler implements com.badlogic.gdx.InputProcessor {
 
-    @Inject private EngineState state;
     @Inject private Listeners listeners;
     @Inject private TextEffects textEffects;
     @Inject private TweenManager tweenManager;

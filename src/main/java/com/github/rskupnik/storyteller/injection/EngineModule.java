@@ -16,7 +16,6 @@ public class EngineModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(EngineState.class).in(Scopes.SINGLETON);
         bind(TextEngine.class).to(TextEngineImpl.class).in(Scopes.SINGLETON);
         bind(Renderer.class).in(Scopes.SINGLETON);
         bind(InputHandler.class).in(Scopes.SINGLETON);

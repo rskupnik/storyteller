@@ -3,7 +3,6 @@ package com.github.rskupnik.storyteller;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Rectangle;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
@@ -11,10 +10,10 @@ import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
 import com.github.rskupnik.storyteller.effects.TextEffect;
+import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.InternalActor;
 import com.github.rskupnik.storyteller.peripheral.InternalScene;
 import com.github.rskupnik.storyteller.peripheral.Scene;
-import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.google.inject.Inject;
@@ -25,7 +24,6 @@ public class TextEngineImpl implements TextEngine {
 
     private Injector injector;
 
-    @Inject private EngineState state;
     @Inject private Renderer renderer;
     @Inject private InputHandler inputHandler;
     @Inject private Listeners listeners;

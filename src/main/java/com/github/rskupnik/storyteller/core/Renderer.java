@@ -12,11 +12,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.rskupnik.storyteller.EngineState;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.peripheral.Stage;
-import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.google.inject.Inject;
@@ -26,7 +24,6 @@ import java.util.Map;
 
 public final class Renderer {
 
-    @Inject private EngineState state;
     @Inject private InputHandler inputHandler;
     @Inject private Scenes scenes;
 
