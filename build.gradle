@@ -19,6 +19,7 @@ dependencies {
     compile group: 'com.github.arcnor', name: 'universal-tween-engine', version:'6.3.4'
     compileOnly group: 'com.badlogicgames.gdx', name: 'gdx', version:'1.9.6'
     compile group: 'com.google.inject', name: 'guice', version: '3.0'
+    compile 'org.javatuples:javatuples:1.2'
 }
 
 publishing {
