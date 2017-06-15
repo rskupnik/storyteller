@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.injection.EngineModule;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -16,10 +17,10 @@ public final class Storyteller {
         this.engine = engine;
     }
 
-    public static Storyteller newEngine(String areaId, Rectangle area, BitmapFont font) {
+    public static Storyteller newEngine(Stage stage, BitmapFont font) {
         Injector injector = Guice.createInjector(new EngineModule());
         TextEngine engine = injector.getInstance(TextEngine.class);
-        ((TextEngineImpl) engine).init(injector, areaId, area, font);
+        ((TextEngineImpl) engine).init(injector, stage, font);
         return new Storyteller(engine);
     }
 

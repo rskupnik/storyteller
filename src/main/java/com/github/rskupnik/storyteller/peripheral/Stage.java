@@ -1,16 +1,17 @@
-package com.github.rskupnik.storyteller.core;
+package com.github.rskupnik.storyteller.peripheral;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public final class Area {
+public final class Stage {
 
     private String id;
     private Rectangle rectangle;
+
     private Vector2 topLeft;
     private int width;
 
-    public Area(String id, Rectangle rectangle) {
+    private Stage(String id, Rectangle rectangle) {
         this.id = id;
         this.rectangle = rectangle;
         this.topLeft = new Vector2(rectangle.x, rectangle.y + rectangle.height);
@@ -35,31 +36,31 @@ public final class Area {
 
     @Override
     public int hashCode() {
-        return rectangle.hashCode();
+        return id.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Area))
+        if (!(obj instanceof Stage))
             return false;
 
-        return rectangle.equals(((Area)obj).getRectangle());
-    }
-}
-
-final class AreaUtils {
-
-    /**
-     * Calculates the remaining width available to fill with text in the current text row.
-     */
-    static int calcRemainingWidth(Area area, int currentX) {
-        return area.getWidth() - (currentX - (int) area.getTopLeft().x);
+        return id.equals(((Stage)obj).getId());
     }
 
-    /**
-     * Checks whether x points to the beginning of a new text line or somewhere in an existing one.
-     */
-    static boolean notStartOfLine(Area area, int x) {
-        return x != (int) area.getTopLeft().x;
+    public static StageBuilder newStage(String id, Vector2 bottomLeft, Vector2 dimensions) {
+        return new StageBuilder(id, bottomLeft, dimensions);
+    }
+
+    public static final class StageBuilder {
+
+        private Stage stage;
+
+        public StageBuilder(String id, Vector2 bottomLeft, Vector2 dimensions) {
+            this.stage = new Stage(id, new Rectangle(bottomLeft.x, bottomLeft.y, dimensions.x, dimensions.y));
+        }
+
+        public Stage build() {
+            return stage;
+        }
     }
 }

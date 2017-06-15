@@ -12,9 +12,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.rskupnik.storyteller.*;
+import com.github.rskupnik.storyteller.EngineState;
 import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.peripheral.Scene;
+import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.google.inject.Inject;
 
 import java.util.HashMap;
@@ -29,11 +31,11 @@ public final class Renderer {
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    private Map<String, Area> areas = new HashMap<>();
+    private Map<String, Stage> stages = new HashMap<>();
     private BitmapFont font;
 
-    public void init(String areaId, Rectangle rectangle, BitmapFont font) {
-        this.areas.put(areaId, new Area(areaId, rectangle));
+    public void init(Stage stage, BitmapFont font) {
+        this.stages.put(stage.getId(), stage);
         this.font = font;
 
         batch = new SpriteBatch();
@@ -54,17 +56,17 @@ public final class Renderer {
 
     private void drawScenes(float delta) {
         for (Scene scene : state.scenes.values()) {
-            drawScene(delta, areas.get(scene.getAreaId()), scene);
+            drawScene(delta, stages.get(scene.getAreaId()), scene);
             scene.getInternalScene().wasDrawn();
         }
     }
 
-    private void drawScene(float delta, Area area, Scene scene) {
-        if (scene == null || font == null || area == null)
+    private void drawScene(float delta, Stage stage, Scene scene) {
+        if (scene == null || font == null || stage == null)
             return;
 
-        int x = (int) area.getTopLeft().x;
-        int y = (int) area.getTopLeft().y;
+        int x = (int) stage.getTopLeft().x;
+        int y = (int) stage.getTopLeft().y;
         boolean firstLine = true;
         for (Actor actor : scene.getActors()) {
             // We need to produce the whole text first to see how LibGDX plans to structure it and do some adjusting if needed
@@ -72,7 +74,7 @@ public final class Renderer {
                     font,
                     actor.getText(),
                     actor.getColor() != null ? actor.getColor() : Color.WHITE,
-                    AreaUtils.calcRemainingWidth(area, x),
+                    StageUtils.calcRemainingWidth(stage, x),
                     Align.left,
                     true
             );
@@ -83,7 +85,7 @@ public final class Renderer {
             /* If we don't start rendering from a new line and the produced GL spans multiple lines we need to
                handle the first, fragmented line individually and then the rest of the text body. If we didn't, we'd get
                a text that only uses the remaining width even for new lines. */
-            if (AreaUtils.notStartOfLine(area, x) && multilineGL(GL_wholeText)) {
+            if (StageUtils.notStartOfLine(stage, x) && multilineGL(GL_wholeText)) {
                 // Need to deal individually with the first, fragmented line and then continue with the rest of the body as usual
                 GlyphLayout.GlyphRun GR_fragLine = GL_wholeText.runs.get(0);
                 String lineEndText = glyphsToText(new StringBuilder(GR_fragLine.glyphs.size), GR_fragLine).toString();
@@ -91,7 +93,7 @@ public final class Renderer {
                         font,
                         lineEndText,
                         actor.getColor() != null ? actor.getColor() : Color.WHITE,
-                        AreaUtils.calcRemainingWidth(area, x),
+                        StageUtils.calcRemainingWidth(stage, x),
                         Align.left,
                         true
                 );
@@ -104,7 +106,7 @@ public final class Renderer {
                 }
 
                 // Adjust x and y after the fragmented line to continue with the rest of the text
-                x = (int) area.getTopLeft().x;
+                x = (int) stage.getTopLeft().x;
                 y -= (int) GL_fragLine.height + GR_fragLine.glyphs.get(0).height;
 
                 // Combine the rest of the GlyphLayout to a String
@@ -120,7 +122,7 @@ public final class Renderer {
                         font,
                         restText,
                         actor.getColor() != null ? actor.getColor() : Color.WHITE,
-                        area.getWidth(),
+                        stage.getWidth(),
                         Align.left,
                         true
                 );
@@ -140,7 +142,7 @@ public final class Renderer {
                 int heightAdjust = 0;
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
-                    Rectangle rect = new Rectangle(area.getTopLeft().x, area.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
+                    Rectangle rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
                     inputHandler.addClickable(scene, rect, actor);
                     heightAdjust = GR_tail.glyphs.get(0).height;
                 }

@@ -13,6 +13,7 @@ import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.peripheral.InternalActor;
 import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -28,10 +29,10 @@ public class TextEngineImpl implements TextEngine {
     @Inject private TextEffects textEffects;
     @Inject private TweenManager tweenManager;
 
-    void init(Injector injector, String areaId, Rectangle area, BitmapFont font) {
+    void init(Injector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
 
-        renderer.init(areaId, area, font);
+        renderer.init(stage, font);
         inputHandler.init(renderer.getCamera());
 
         Tween.registerAccessor(InternalActor.class, new ActorAccessor());
