@@ -6,14 +6,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
+import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.peripheral.InternalActor;
+import com.github.rskupnik.storyteller.peripheral.InternalScene;
 import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.Stage;
+import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -28,6 +31,7 @@ public class TextEngineImpl implements TextEngine {
     @Inject private Listeners listeners;
     @Inject private TextEffects textEffects;
     @Inject private TweenManager tweenManager;
+    @Inject private Scenes scenes;
 
     void init(Injector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
@@ -61,7 +65,7 @@ public class TextEngineImpl implements TextEngine {
 
     @Override
     public void addScene(Scene scene) {
-        state.scenes.put(scene.getId(), scene);
+        scenes.add(new ScenePair(scene, new InternalScene()));
     }
 
     @Override
@@ -71,10 +75,17 @@ public class TextEngineImpl implements TextEngine {
 
     @Override
     public void removeScene(String id) {
-        Scene scene = state.scenes.get(id);
-        if (scene != null) {
-            inputHandler.removeScene(scene);
-            state.scenes.remove(id);
+        ScenePair scenePair = null;
+        for (ScenePair sp : scenes) {
+            if (sp.scene().getId().equals(id)) {
+                scenePair = sp;
+                break;
+            }
+        }
+
+        if (scenePair != null) {
+            inputHandler.removeScene(scenePair.scene());
+            scenes.remove(scenePair);
         }
     }
 

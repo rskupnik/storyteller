@@ -7,5 +7,4 @@ import java.util.Map;
 
 public final class EngineState {
 
-    public Map<String, Scene> scenes = new HashMap<>();
 }

@@ -8,4 +8,12 @@ public final class ScenePair extends PairWrapper<Scene, InternalScene> {
     public ScenePair(Scene left, InternalScene right) {
         super(left, right);
     }
+
+    public Scene scene() {
+        return super.left();
+    }
+
+    public InternalScene internal() {
+        return super.right();
+    }
 }

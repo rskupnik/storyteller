@@ -9,8 +9,6 @@ public class Scene {
     private String id, areaId;
     private final List<Actor> actors = new LinkedList<Actor>();
 
-    private final InternalScene internalScene = new InternalScene();
-
     private Scene(String id, String areaId) {
         this.id = id;
         this.areaId = areaId;
@@ -28,10 +26,6 @@ public class Scene {
         return areaId;
     }
 
-    public InternalScene getInternalScene() {
-        return internalScene;
-    }
-
     public String getId() {
         return id;
     }
@@ -44,8 +38,6 @@ public class Scene {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Scene scene = (Scene) o;
 
         return ((Scene) o).id.equals(id);
     }

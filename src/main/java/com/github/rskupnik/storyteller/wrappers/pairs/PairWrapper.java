@@ -21,4 +21,8 @@ public abstract class PairWrapper<L, R> {
     public R right() {
         return object.getValue1();
     }
+
+    public boolean notNull() {
+        return left() != null && right() != null;
+    }
 }

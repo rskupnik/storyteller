@@ -13,10 +13,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.EngineState;
+import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.utils.StageUtils;
+import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.google.inject.Inject;
 
 import java.util.HashMap;
@@ -26,6 +28,7 @@ public final class Renderer {
 
     @Inject private EngineState state;
     @Inject private InputHandler inputHandler;
+    @Inject private Scenes scenes;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -55,20 +58,20 @@ public final class Renderer {
     }
 
     private void drawScenes(float delta) {
-        for (Scene scene : state.scenes.values()) {
-            drawScene(delta, stages.get(scene.getAreaId()), scene);
-            scene.getInternalScene().wasDrawn();
+        for (ScenePair scenePair : scenes) {
+            drawScene(delta, stages.get(scenePair.scene().getAreaId()), scenePair);
+            scenePair.internal().wasDrawn();
         }
     }
 
-    private void drawScene(float delta, Stage stage, Scene scene) {
-        if (scene == null || font == null || stage == null)
+    private void drawScene(float delta, Stage stage, ScenePair scenePair) {
+        if (!scenePair.notNull() || font == null || stage == null)
             return;
 
         int x = (int) stage.getTopLeft().x;
         int y = (int) stage.getTopLeft().y;
         boolean firstLine = true;
-        for (Actor actor : scene.getActors()) {
+        for (Actor actor : scenePair.scene().getActors()) {
             // We need to produce the whole text first to see how LibGDX plans to structure it and do some adjusting if needed
             GlyphLayout GL_wholeText = new GlyphLayout(
                     font,
@@ -100,9 +103,9 @@ public final class Renderer {
                 font.draw(batch, GL_fragLine, x, y + actor.getInternalActor().getYOffset());    // Offsets used for tween animation
 
                 // If it's clickable, produce a Rectangle
-                if (scene.getInternalScene().isFirstDraw() && actor.isClickable()) {
+                if (scenePair.internal().isFirstDraw() && actor.isClickable()) {
                     Rectangle rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
-                    inputHandler.addClickable(scene, rect, actor);
+                    inputHandler.addClickable(scenePair.scene(), rect, actor);
                 }
 
                 // Adjust x and y after the fragmented line to continue with the rest of the text
@@ -136,18 +139,18 @@ public final class Renderer {
             GlyphLayout.GlyphRun GR_last = GL_body.runs.get(GL_body.runs.size-1);
 
             // If it's clickable, produce a Rectangle
-            if (scene.getInternalScene().isFirstDraw() && actor.isClickable()) {
+            if (scenePair.internal().isFirstDraw() && actor.isClickable()) {
                 // If the text body spans multiple lines, we need to handle the last line as it might end in the middle of a line
                 GlyphLayout.GlyphRun GR_tail = GR_last;
                 int heightAdjust = 0;
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
                     Rectangle rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
-                    inputHandler.addClickable(scene, rect, actor);
+                    inputHandler.addClickable(scenePair.scene(), rect, actor);
                     heightAdjust = GR_tail.glyphs.get(0).height;
                 }
                 Rectangle rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height - heightAdjust);
-                inputHandler.addClickable(scene, rect, actor);
+                inputHandler.addClickable(scenePair.scene(), rect, actor);
             }
 
             // Extract new position
