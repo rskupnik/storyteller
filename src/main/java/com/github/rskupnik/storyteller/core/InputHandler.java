@@ -1,11 +1,11 @@
-package com.github.rskupnik.storyteller;
+package com.github.rskupnik.storyteller.core;
 
-import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-import aurelienribon.tweenengine.equations.Bounce;
-import aurelienribon.tweenengine.equations.Quad;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.*;
+import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.EngineState;
+import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
@@ -27,7 +27,7 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
         this.camera = camera;
     }
 
-    void addClickable(Scene scene, Rectangle rectangle, Actor actor) {
+    public void addClickable(Scene scene, Rectangle rectangle, Actor actor) {
         Map<Rectangle, Actor> innerMap = clickablesMap.get(scene);
         if (innerMap == null)
             innerMap = new HashMap<>();
@@ -35,15 +35,15 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
         clickablesMap.put(scene, innerMap);
     }
 
-    void clearClickables() {
+    public void clearClickables() {
         clickablesMap.clear();
     }
 
-    void clearClickables(Scene scene) {
+    public void clearClickables(Scene scene) {
         clickablesMap.get(scene).clear();
     }
 
-    void removeScene(Scene scene) {
+    public void removeScene(Scene scene) {
         clearClickables(scene);
         clickablesMap.remove(scene);
     }

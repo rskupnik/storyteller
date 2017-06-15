@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller;
+package com.github.rskupnik.storyteller.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -8,11 +8,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.rskupnik.storyteller.*;
+import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.google.inject.Inject;
 
 import java.util.HashMap;
@@ -41,7 +43,7 @@ public final class Renderer {
         viewport.apply(true);
     }
 
-    void render(float delta) {
+    public void render(float delta) {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
@@ -176,11 +178,11 @@ public final class Renderer {
         return GL.runs.size > 1;
     }
 
-    void resize(int width, int height) {
+    public void resize(int width, int height) {
         viewport.update(width, height);
     }
 
-    Camera getCamera() {
+    public Camera getCamera() {
         return camera;
     }
 }

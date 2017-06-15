@@ -1,6 +1,7 @@
-package com.github.rskupnik.storyteller;
+package com.github.rskupnik.storyteller.accessors;
 
 import aurelienribon.tweenengine.TweenAccessor;
+import com.github.rskupnik.storyteller.peripheral.InternalActor;
 
 public class ActorAccessor implements TweenAccessor<InternalActor> {
 
@@ -17,7 +18,7 @@ public class ActorAccessor implements TweenAccessor<InternalActor> {
     @Override
     public void setValues(InternalActor target, int tweenType, float[] floats) {
         switch (tweenType) {
-            case POSITION_Y: target.setyOffset(floats[0]); break;
+            case POSITION_Y: target.setYOffset(floats[0]); break;
             default: assert false; break;
         }
     }

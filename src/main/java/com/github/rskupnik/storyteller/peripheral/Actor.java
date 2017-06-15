@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller;
+package com.github.rskupnik.storyteller.peripheral;
 
 import com.badlogic.gdx.graphics.Color;
 import com.github.rskupnik.storyteller.effects.TextEffect;
@@ -12,11 +12,11 @@ public class Actor {
 
     private final InternalActor internalActor = new InternalActor();
 
-    Actor(String text) {
+    public Actor(String text) {
         this.text = text;
     }
 
-    InternalActor getInternalActor() {
+    public InternalActor getInternalActor() {
         return internalActor;
     }
 

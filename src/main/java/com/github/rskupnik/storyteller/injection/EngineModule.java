@@ -4,6 +4,8 @@ import aurelienribon.tweenengine.TweenManager;
 import com.github.rskupnik.storyteller.*;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
+import com.github.rskupnik.storyteller.core.InputHandler;
+import com.github.rskupnik.storyteller.core.Renderer;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;

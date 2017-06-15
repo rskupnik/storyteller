@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller;
+package com.github.rskupnik.storyteller.peripheral;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -20,19 +20,19 @@ public class Scene {
         actors.add(actor);
     }
 
-    List<Actor> getActors() {
+    public List<Actor> getActors() {
         return Collections.unmodifiableList(actors);
     }
 
-    String getAreaId() {
+    public String getAreaId() {
         return areaId;
     }
 
-    InternalScene getInternalScene() {
+    public InternalScene getInternalScene() {
         return internalScene;
     }
 
-    String getId() {
+    public String getId() {
         return id;
     }
 

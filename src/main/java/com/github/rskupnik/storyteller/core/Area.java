@@ -1,35 +1,35 @@
-package com.github.rskupnik.storyteller;
+package com.github.rskupnik.storyteller.core;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-final class Area {
+public final class Area {
 
     private String id;
     private Rectangle rectangle;
     private Vector2 topLeft;
     private int width;
 
-    Area(String id, Rectangle rectangle) {
+    public Area(String id, Rectangle rectangle) {
         this.id = id;
         this.rectangle = rectangle;
         this.topLeft = new Vector2(rectangle.x, rectangle.y + rectangle.height);
         this.width = (int) rectangle.width;
     }
 
-    String getId() {
+    public String getId() {
         return id;
     }
 
-    Rectangle getRectangle() {
+    public Rectangle getRectangle() {
         return rectangle;
     }
 
-    Vector2 getTopLeft() {
+    public Vector2 getTopLeft() {
         return topLeft;
     }
 
-    int getWidth() {
+    public int getWidth() {
         return width;
     }
 

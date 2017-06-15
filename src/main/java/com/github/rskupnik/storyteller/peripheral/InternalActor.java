@@ -1,14 +1,14 @@
-package com.github.rskupnik.storyteller;
+package com.github.rskupnik.storyteller.peripheral;
 
 public final class InternalActor {
 
     private float yOffset;
 
-    float getYOffset() {
+    public float getYOffset() {
         return yOffset;
     }
 
-    void setyOffset(float yOffset) {
+    public void setYOffset(float yOffset) {
         this.yOffset = yOffset;
     }
 }

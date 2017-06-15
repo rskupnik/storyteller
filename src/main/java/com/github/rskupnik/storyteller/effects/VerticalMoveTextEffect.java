@@ -3,9 +3,8 @@ package com.github.rskupnik.storyteller.effects;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.equations.Quad;
-import com.github.rskupnik.storyteller.Actor;
-import com.github.rskupnik.storyteller.ActorAccessor;
-import com.github.rskupnik.storyteller.InternalActor;
+import com.github.rskupnik.storyteller.accessors.ActorAccessor;
+import com.github.rskupnik.storyteller.peripheral.InternalActor;
 
 public class VerticalMoveTextEffect extends TextEffect {
 

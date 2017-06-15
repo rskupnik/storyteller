@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller;
+package com.github.rskupnik.storyteller.peripheral;
 
 public final class InternalScene {
 
