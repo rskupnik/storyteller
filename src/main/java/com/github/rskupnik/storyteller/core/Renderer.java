@@ -12,13 +12,13 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.rskupnik.storyteller.aggregates.Linkers;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.aggregates.Stages;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
 
 public final class Renderer {
@@ -26,7 +26,6 @@ public final class Renderer {
     @Inject private InputHandler inputHandler;
     @Inject private Scenes scenes;
     @Inject private Stages stages;
-    @Inject private Linkers linkers;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -54,8 +53,8 @@ public final class Renderer {
 
     private void drawScenes(float delta) {
         for (ScenePair scenePair : scenes) {
-            Stage stage = linkers.sceneToStage.get(scenePair.scene());  // Retrieve the Stage this Scene is attached to
-            drawScene(delta, stage, scenePair);
+            StagePair stagePair = scenePair.internal().getAttachedStage();  // Retrieve the Stage this Scene is attached to
+            drawScene(delta, stagePair.stage(), scenePair);
             scenePair.internal().wasDrawn();
         }
     }

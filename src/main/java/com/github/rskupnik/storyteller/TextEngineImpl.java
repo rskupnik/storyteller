@@ -4,19 +4,17 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
-import com.github.rskupnik.storyteller.aggregates.Listeners;
-import com.github.rskupnik.storyteller.aggregates.Scenes;
-import com.github.rskupnik.storyteller.aggregates.Stages;
-import com.github.rskupnik.storyteller.aggregates.TextEffects;
+import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
-import com.github.rskupnik.storyteller.peripheral.InternalActor;
-import com.github.rskupnik.storyteller.peripheral.InternalScene;
-import com.github.rskupnik.storyteller.peripheral.Scene;
-import com.github.rskupnik.storyteller.peripheral.Stage;
+import com.github.rskupnik.storyteller.peripheral.*;
+import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
+import com.github.rskupnik.storyteller.peripheral.internals.InternalScene;
+import com.github.rskupnik.storyteller.peripheral.internals.InternalStage;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -36,7 +34,7 @@ public class TextEngineImpl implements TextEngine {
     void init(Injector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
 
-        stages.add(stage);
+        stages.add(new StagePair(stage, new InternalStage()));
 
         renderer.init(font);
         inputHandler.init(renderer.getCamera());
@@ -66,8 +64,16 @@ public class TextEngineImpl implements TextEngine {
     }
 
     @Override
-    public void addScene(Scene scene) {
-        scenes.add(new ScenePair(scene, new InternalScene()));
+    public void attachScene(String stageId, Scene scene) {
+        ScenePair scenePair = new ScenePair(scene, new InternalScene());
+        scenes.add(scenePair);
+
+        StagePair stagePair = stages.find(stageId);
+        if (stagePair == null)
+            throw new IllegalStateException("Cannot attach to stage "+stageId+" as it doesn't exist");
+
+        stagePair.internal().attachScene(scenePair);
+        scenePair.internal().attachStage(stagePair);
     }
 
     @Override
@@ -77,17 +83,15 @@ public class TextEngineImpl implements TextEngine {
 
     @Override
     public void removeScene(String id) {
-        ScenePair scenePair = null;
-        for (ScenePair sp : scenes) {
-            if (sp.scene().getId().equals(id)) {
-                scenePair = sp;
-                break;
-            }
-        }
+        ScenePair scenePair = scenes.find(id);
 
         if (scenePair != null) {
             inputHandler.removeScene(scenePair.scene());
             scenes.remove(scenePair);
+
+            StagePair stagePair = scenePair.internal().getAttachedStage();
+            stagePair.internal().attachScene(null);
+            scenePair.internal().attachStage(null);
         }
     }
 

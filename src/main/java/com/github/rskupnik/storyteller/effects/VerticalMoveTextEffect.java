@@ -4,7 +4,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.equations.Quad;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
-import com.github.rskupnik.storyteller.peripheral.InternalActor;
+import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 
 public class VerticalMoveTextEffect extends TextEffect {
 

@@ -12,7 +12,7 @@ public interface TextEngine {
     void setClickListener(ClickListener clickListener);
     void setTextClickEffect(TextEffect effect);
 
-    void addScene(Scene scene);
+    void attachScene(String stageId, Scene scene);
     void removeScene(String id);
     void removeScene(Scene scene);
 

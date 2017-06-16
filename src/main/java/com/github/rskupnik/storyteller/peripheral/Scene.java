@@ -6,12 +6,11 @@ import java.util.List;
 
 public class Scene {
 
-    private String id, areaId;
+    private String id;
     private final List<Actor> actors = new LinkedList<Actor>();
 
-    private Scene(String id, String areaId) {
+    private Scene(String id) {
         this.id = id;
-        this.areaId = areaId;
     }
 
     private void addActor(Actor actor) {
@@ -22,16 +21,12 @@ public class Scene {
         return Collections.unmodifiableList(actors);
     }
 
-    public String getAreaId() {
-        return areaId;
-    }
-
     public String getId() {
         return id;
     }
 
-    public static SceneBuilder newScene(String id, String areaId) {
-        return new SceneBuilder(id, areaId);
+    public static SceneBuilder newScene(String id) {
+        return new SceneBuilder(id);
     }
 
     @Override
@@ -51,8 +46,8 @@ public class Scene {
 
         private final Scene scene;  // TODO: Use Private Data Class design pattern?
 
-        private SceneBuilder(String id, String areaId) {
-            scene = new Scene(id, areaId);
+        private SceneBuilder(String id) {
+            scene = new Scene(id);
         }
 
         public Scene build() {

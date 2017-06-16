@@ -5,4 +5,12 @@ import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import java.util.ArrayList;
 
 public class Scenes extends ArrayList<ScenePair> {
+
+    public ScenePair find(String id) {
+        for (ScenePair sp : this) {
+            if (sp.scene().getId().equals(id))
+                return sp;
+        }
+        return null;
+    }
 }

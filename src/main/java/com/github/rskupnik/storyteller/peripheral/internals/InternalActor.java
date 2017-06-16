@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.peripheral;
+package com.github.rskupnik.storyteller.peripheral.internals;
 
 public final class InternalActor {
 

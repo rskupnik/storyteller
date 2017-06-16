@@ -21,7 +21,6 @@ public class EngineModule extends AbstractModule {
         bind(TextEffects.class).in(Scopes.SINGLETON);
         bind(Scenes.class).in(Scopes.SINGLETON);
         bind(Stages.class).in(Scopes.SINGLETON);
-        bind(Linkers.class).in(Scopes.SINGLETON);
     }
 
     @Provides

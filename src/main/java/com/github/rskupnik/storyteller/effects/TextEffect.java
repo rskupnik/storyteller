@@ -1,7 +1,7 @@
 package com.github.rskupnik.storyteller.effects;
 
 import aurelienribon.tweenengine.Tween;
-import com.github.rskupnik.storyteller.peripheral.InternalActor;
+import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 
 public abstract class TextEffect {
 
