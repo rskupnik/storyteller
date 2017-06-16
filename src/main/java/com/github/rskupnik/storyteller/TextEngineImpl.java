@@ -19,7 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 
-public class TextEngineImpl implements TextEngine {
+public final class TextEngineImpl implements TextEngine {
 
     private Injector injector;
 

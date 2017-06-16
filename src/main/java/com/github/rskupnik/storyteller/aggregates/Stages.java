@@ -1,10 +1,12 @@
 package com.github.rskupnik.storyteller.aggregates;
 
-import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 
 import java.util.ArrayList;
 
+/**
+ * Holds all Stages used in the engine as StagePair objects.
+ */
 public final class Stages extends ArrayList<StagePair> {
 
     public StagePair find(String id) {

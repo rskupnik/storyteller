@@ -10,7 +10,7 @@ import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 
-public class EngineModule extends AbstractModule {
+public final class EngineModule extends AbstractModule {
 
     @Override
     protected void configure() {

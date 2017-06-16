@@ -2,7 +2,7 @@ package com.github.rskupnik.storyteller.peripheral.internals;
 
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 
-public class InternalStage {
+public final class InternalStage {
 
     private ScenePair attachedScene;
 

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Scene {
+public final class Scene {
 
     private String id;
     private final List<Actor> actors = new LinkedList<Actor>();

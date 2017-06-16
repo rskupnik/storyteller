@@ -6,7 +6,7 @@ import aurelienribon.tweenengine.equations.Quad;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 
-public class VerticalMoveTextEffect extends TextEffect {
+public final class VerticalMoveTextEffect extends TextEffect {
 
     private TweenEquation equation = Quad.IN;
 

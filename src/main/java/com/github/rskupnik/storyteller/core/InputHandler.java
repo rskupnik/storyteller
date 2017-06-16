@@ -15,14 +15,17 @@ import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InputHandler implements com.badlogic.gdx.InputProcessor {
+/**
+ * Handles input and triggers effects on actors.
+ */
+public final class InputHandler implements com.badlogic.gdx.InputProcessor {
 
     @Inject private Listeners listeners;
     @Inject private TextEffects textEffects;
     @Inject private TweenManager tweenManager;
 
     private Camera camera;
-    private Map<Scene, Map<Rectangle, Actor>> clickablesMap = new HashMap<>();
+    private Map<Scene, Map<Rectangle, Actor>> clickablesMap = new HashMap<>();  // Click detected in a rectangle should point to an actor
 
     public void init(Camera camera) {
         this.camera = camera;
@@ -51,7 +54,6 @@ public class InputHandler implements com.badlogic.gdx.InputProcessor {
 
     @Override
     public boolean keyDown(int i) {
-        System.out.println("KEY DOWN!");
         return false;
     }
 

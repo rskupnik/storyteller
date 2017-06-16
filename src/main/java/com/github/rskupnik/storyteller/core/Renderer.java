@@ -53,7 +53,7 @@ public final class Renderer {
 
     private void drawScenes(float delta) {
         for (ScenePair scenePair : scenes) {
-            StagePair stagePair = scenePair.internal().getAttachedStage();  // Retrieve the Stage this Scene is attached to
+            StagePair stagePair = scenePair.internal().getAttachedStage();
             drawScene(delta, stagePair.stage(), scenePair);
             scenePair.internal().wasDrawn();
         }

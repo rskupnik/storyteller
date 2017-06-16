@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 
-public class Actor {
+public final class Actor {
 
     private String text;
     private Color color;
