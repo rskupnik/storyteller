@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
+import com.github.rskupnik.storyteller.aggregates.Stages;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
@@ -30,11 +31,14 @@ public class TextEngineImpl implements TextEngine {
     @Inject private TextEffects textEffects;
     @Inject private TweenManager tweenManager;
     @Inject private Scenes scenes;
+    @Inject private Stages stages;
 
     void init(Injector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
 
-        renderer.init(stage, font);
+        stages.add(stage);
+
+        renderer.init(font);
         inputHandler.init(renderer.getCamera());
 
         Tween.registerAccessor(InternalActor.class, new ActorAccessor());

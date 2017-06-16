@@ -12,30 +12,28 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.rskupnik.storyteller.aggregates.Linkers;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
+import com.github.rskupnik.storyteller.aggregates.Stages;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.google.inject.Inject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public final class Renderer {
 
     @Inject private InputHandler inputHandler;
     @Inject private Scenes scenes;
+    @Inject private Stages stages;
+    @Inject private Linkers linkers;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Viewport viewport;
-
-    private Map<String, Stage> stages = new HashMap<>();
     private BitmapFont font;
 
-    public void init(Stage stage, BitmapFont font) {
-        this.stages.put(stage.getId(), stage);
+    public void init(BitmapFont font) {
         this.font = font;
 
         batch = new SpriteBatch();
@@ -56,7 +54,8 @@ public final class Renderer {
 
     private void drawScenes(float delta) {
         for (ScenePair scenePair : scenes) {
-            drawScene(delta, stages.get(scenePair.scene().getAreaId()), scenePair);
+            Stage stage = linkers.sceneToStage.get(scenePair.scene());  // Retrieve the Stage this Scene is attached to
+            drawScene(delta, stage, scenePair);
             scenePair.internal().wasDrawn();
         }
     }

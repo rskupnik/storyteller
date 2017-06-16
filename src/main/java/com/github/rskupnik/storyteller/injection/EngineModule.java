@@ -2,9 +2,7 @@ package com.github.rskupnik.storyteller.injection;
 
 import aurelienribon.tweenengine.TweenManager;
 import com.github.rskupnik.storyteller.*;
-import com.github.rskupnik.storyteller.aggregates.Listeners;
-import com.github.rskupnik.storyteller.aggregates.Scenes;
-import com.github.rskupnik.storyteller.aggregates.TextEffects;
+import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
 import com.google.inject.AbstractModule;
@@ -22,6 +20,8 @@ public class EngineModule extends AbstractModule {
         bind(Listeners.class).in(Scopes.SINGLETON);
         bind(TextEffects.class).in(Scopes.SINGLETON);
         bind(Scenes.class).in(Scopes.SINGLETON);
+        bind(Stages.class).in(Scopes.SINGLETON);
+        bind(Linkers.class).in(Scopes.SINGLETON);
     }
 
     @Provides
