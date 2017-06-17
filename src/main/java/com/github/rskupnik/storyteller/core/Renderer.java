@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.rskupnik.storyteller.effects.appear.AppearEffect;
+import com.github.rskupnik.storyteller.effects.transformers.EffectTransformer;
 import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
@@ -76,6 +78,14 @@ public final class Renderer {
         if (font == null)
             return;
 
+        // If an AppearEffect is defined, use it, otherwise continue to default rendering
+        AppearEffect appearEffect = commons.appearEffect;
+        if (appearEffect != null) {
+            appearEffect.render();
+            return;
+        }
+
+        // This is the default rendering used if no AppearEffect is defined
         for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();
             for (Triplet<GlyphLayout, Rectangle, Vector2> actorData : actorToDataPair.getValue1()) {
