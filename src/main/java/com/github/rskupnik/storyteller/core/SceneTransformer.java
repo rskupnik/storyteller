@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.github.rskupnik.storyteller.UndefinedOutput;
@@ -23,7 +24,11 @@ public final class SceneTransformer {
 
     @Inject private Commons commons;
 
+    private UndefinedOutput undefinedOutput;
+
     public UndefinedOutput transform(ScenePair scenePair) {
+        undefinedOutput = new UndefinedOutput();
+
         BitmapFont font = commons.font;
         StagePair stagePair = scenePair.internal().getAttachedStage();
         if (!scenePair.notNull() || font == null || !stagePair.notNull())
@@ -35,8 +40,8 @@ public final class SceneTransformer {
         int y = (int) stage.getTopLeft().y;
         boolean firstLine = true;
         for (Actor actor : scenePair.scene().getActors()) {
-            ArrayList<Pair<GlyphLayout, Rectangle>> listOfGLRectPairs = new ArrayList<>();
-            Pair<Actor, ArrayList<Pair<GlyphLayout, Rectangle>>> outerPair = new Pair<>(actor, listOfGLRectPairs);
+            ArrayList<Pair<Pair<GlyphLayout, Rectangle>, Vector2>> listOfGLRectPairs = new ArrayList<>();
+            Pair<Actor, ArrayList<Pair<Pair<GlyphLayout, Rectangle>, Vector2>>> outerPair = new Pair<>(actor, listOfGLRectPairs);
 
             // We need to produce the whole text first to see how LibGDX plans to structure it and do some adjusting if needed
             GlyphLayout GL_wholeText = new GlyphLayout(
@@ -70,10 +75,10 @@ public final class SceneTransformer {
 
                 // If it's clickable, produce a Rectangle
                 Rectangle rect = null;
-                if (scenePair.internal().isFirstDraw() && actor.isClickable()) {
+                if (actor.isClickable()) {
                     rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
                 }
-                listOfGLRectPairs.add(Pair.with(GL_fragLine, rect));
+                listOfGLRectPairs.add(Pair.with(Pair.with(GL_fragLine, rect), new Vector2(x, y)));
 
                 // Adjust x and y after the fragmented line to continue with the rest of the text
                 x = (int) stage.getTopLeft().x;
@@ -105,22 +110,38 @@ public final class SceneTransformer {
             // The last run (line) of glyphs, used to extract new x and y for further rendering
             GlyphLayout.GlyphRun GR_last = GL_body.runs.get(GL_body.runs.size-1);
 
-            // TODO PICKUP: Probably need to split the last part into body + tail GLs and join them with their corresponding Rectangles
-
             // If it's clickable, produce a Rectangle
-            if (scenePair.internal().isFirstDraw() && actor.isClickable()) {
+            Rectangle rect = null;
+            Pair<Pair<GlyphLayout, Rectangle>, Vector2> tailPair = null;
+            if (actor.isClickable()) {
                 // If the text body spans multiple lines, we need to handle the last line as it might end in the middle of a line
                 GlyphLayout.GlyphRun GR_tail = GR_last;
                 int heightAdjust = 0;
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
-                    Rectangle rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
+                    rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
                     //inputHandler.addClickable(scenePair.scene(), rect, actor);
                     heightAdjust = GR_tail.glyphs.get(0).height;
+
+                    GlyphLayout GL_tail = new GlyphLayout(
+                            font,
+                            glyphsToText(new StringBuilder(GR_tail.glyphs.size), GR_tail).toString(),
+                            actor.getColor() != null ? actor.getColor() : Color.WHITE,
+                            GR_tail.width,
+                            Align.left,
+                            true
+                    );
+                    tailPair = Pair.with(Pair.with(GL_tail, rect), new Vector2(rect.x, rect.y));
                 }
-                Rectangle rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height - heightAdjust);
+                rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height - heightAdjust);
                 //inputHandler.addClickable(scenePair.scene(), rect, actor);
+                GL_body.runs.removeIndex(GL_body.runs.size-1);
             }
+
+            listOfGLRectPairs.add(Pair.with(Pair.with(GL_body, rect), new Vector2(x, y)));
+
+            if (tailPair != null)
+                listOfGLRectPairs.add(tailPair);
 
             // Extract new position
             x += (int) GR_last.width;
@@ -131,10 +152,14 @@ public final class SceneTransformer {
                     y += GR_last.glyphs.get(0).height;
                 }
             }
+
+            undefinedOutput.add(outerPair);
         }   // end: for
 
         // GlyphLayouts mapped to an Actor
         // Rectangle (clickable area) mapped to an Actor
+
+        undefinedOutput.print();
 
         return null;
     }

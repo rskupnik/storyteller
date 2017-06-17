@@ -70,6 +70,7 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 touched = camera.unproject(new Vector3(screenX, screenY, 0));
+        System.out.println("Clicked: "+touched);
         for (Map.Entry<Scene, Map<Rectangle, Actor>> sceneToInnerEntry : clickablesMap.entrySet()) {
             for (Map.Entry<Rectangle, Actor> entry : sceneToInnerEntry.getValue().entrySet()) {
                 Rectangle rect = entry.getKey();

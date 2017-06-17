@@ -7,6 +7,7 @@ import com.github.rskupnik.storyteller.accessors.ActorAccessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
+import com.github.rskupnik.storyteller.core.SceneTransformer;
 import com.github.rskupnik.storyteller.effects.TextEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.*;
@@ -30,9 +31,12 @@ public final class TextEngineImpl implements TextEngine {
     @Inject private TweenManager tweenManager;
     @Inject private Scenes scenes;
     @Inject private Stages stages;
+    @Inject private SceneTransformer sceneTransformer;
+    @Inject private Commons commons;
 
     void init(Injector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
+        commons.font = font;
 
         stages.add(new StagePair(stage, new InternalStage()));
 
@@ -74,6 +78,8 @@ public final class TextEngineImpl implements TextEngine {
 
         stagePair.internal().attachScene(scenePair);
         scenePair.internal().attachStage(stagePair);
+
+        sceneTransformer.transform(scenePair);
     }
 
     @Override
