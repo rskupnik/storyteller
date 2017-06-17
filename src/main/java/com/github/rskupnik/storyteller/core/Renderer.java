@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.rskupnik.storyteller.UndefinedOutput;
+import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.aggregates.Stages;
@@ -24,6 +24,7 @@ import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
+import org.javatuples.Triplet;
 
 import java.util.ArrayList;
 
@@ -67,7 +68,7 @@ public final class Renderer {
 
     private void newDraw(ScenePair scenePair) {
         // TODO: Remember this needs to be scene-bound, not held in a single instance!
-        UndefinedOutput data = commons.undefinedOutput;
+        TransformedScene data = commons.transformedScene;
         if (data == null)
             return;
 
@@ -75,13 +76,13 @@ public final class Renderer {
         if (font == null)
             return;
 
-        for (Pair<Actor, ArrayList<Pair<Pair<GlyphLayout, Rectangle>, Vector2>>> actorToDataPair : data.getData()) {
+        for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();
-            for (Pair<Pair<GlyphLayout, Rectangle>, Vector2> actorData : actorToDataPair.getValue1()) {
+            for (Triplet<GlyphLayout, Rectangle, Vector2> actorData : actorToDataPair.getValue1()) {
                 // Unpack data
-                GlyphLayout GL = actorData.getValue0().getValue0();
-                Rectangle rectangle = actorData.getValue0().getValue1();
-                Vector2 position = actorData.getValue1();
+                GlyphLayout GL = actorData.getValue0();
+                Rectangle rectangle = actorData.getValue1();
+                Vector2 position = actorData.getValue2();
 
                 if (GL == null || position == null)
                     continue;

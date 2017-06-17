@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.github.rskupnik.storyteller.UndefinedOutput;
+import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.peripheral.Stage;
@@ -16,6 +16,7 @@ import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
+import org.javatuples.Triplet;
 
 import java.util.ArrayList;
 
@@ -23,8 +24,8 @@ public final class SceneTransformer {
 
     @Inject private Commons commons;
 
-    public UndefinedOutput transform(ScenePair scenePair) {
-        UndefinedOutput undefinedOutput = new UndefinedOutput();
+    public TransformedScene transform(ScenePair scenePair) {
+        TransformedScene transformedScene = new TransformedScene();
 
         BitmapFont font = commons.font;
         StagePair stagePair = scenePair.internal().getAttachedStage();
@@ -37,8 +38,8 @@ public final class SceneTransformer {
         int y = (int) stage.getTopLeft().y;
         boolean firstLine = true;
         for (Actor actor : scenePair.scene().getActors()) {
-            ArrayList<Pair<Pair<GlyphLayout, Rectangle>, Vector2>> listOfGLRectPairs = new ArrayList<>();
-            Pair<Actor, ArrayList<Pair<Pair<GlyphLayout, Rectangle>, Vector2>>> outerPair = new Pair<>(actor, listOfGLRectPairs);
+            ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>> triplets = new ArrayList<>();
+            Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> outerPair = new Pair<>(actor, triplets);
 
             // We need to produce the whole text first to see how LibGDX plans to structure it and do some adjusting if needed
             GlyphLayout GL_wholeText = new GlyphLayout(
@@ -75,7 +76,7 @@ public final class SceneTransformer {
                 if (actor.isClickable()) {
                     rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
                 }
-                listOfGLRectPairs.add(Pair.with(Pair.with(GL_fragLine, rect), new Vector2(x, y)));
+                triplets.add(Triplet.with(GL_fragLine, rect, new Vector2(x, y)));
 
                 // Adjust x and y after the fragmented line to continue with the rest of the text
                 x = (int) stage.getTopLeft().x;
@@ -109,7 +110,7 @@ public final class SceneTransformer {
 
             // If it's clickable, produce a Rectangle
             Rectangle rect = null;
-            Pair<Pair<GlyphLayout, Rectangle>, Vector2> tailPair = null;
+            Triplet<GlyphLayout, Rectangle, Vector2> tailTriplet = null;
             int GLBodyLines = GL_body.runs.size;    // Save the no of lines because we remove the last line but we need the pre-removal size in position adjustement
             if (actor.isClickable()) {
                 // If the text body spans multiple lines, we need to handle the last line as it might end in the middle of a line
@@ -127,7 +128,7 @@ public final class SceneTransformer {
                             Align.left,
                             true
                     );
-                    tailPair = Pair.with(Pair.with(GL_tail, rect), new Vector2(rect.x, rect.y));
+                    tailTriplet = Triplet.with(GL_tail, rect, new Vector2(rect.x, rect.y));
 
                     GL_body.runs.removeIndex(GL_body.runs.size-1);  // Remove the tail from the body
                 }
@@ -135,10 +136,10 @@ public final class SceneTransformer {
                 //inputHandler.addClickable(scenePair.scene(), rect, actor);
             }
 
-            listOfGLRectPairs.add(Pair.with(Pair.with(GL_body, rect), new Vector2(x, y)));
+            triplets.add(Triplet.with(GL_body, rect, new Vector2(x, y)));
 
-            if (tailPair != null)
-                listOfGLRectPairs.add(tailPair);
+            if (tailTriplet != null)
+                triplets.add(tailTriplet);
 
             // Extract new position
             x += (int) GR_last.width;
@@ -150,15 +151,15 @@ public final class SceneTransformer {
                 }
             }
 
-            undefinedOutput.add(outerPair);
+            transformedScene.add(outerPair);
         }   // end: for
 
         // GlyphLayouts mapped to an Actor
         // Rectangle (clickable area) mapped to an Actor
 
-        undefinedOutput.print();
+        transformedScene.print();
 
-        return undefinedOutput;
+        return transformedScene;
     }
 
     private StringBuilder glyphsToText(StringBuilder sb, GlyphLayout.GlyphRun input) {
