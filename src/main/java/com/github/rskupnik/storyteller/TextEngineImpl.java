@@ -79,7 +79,7 @@ public final class TextEngineImpl implements TextEngine {
         stagePair.internal().attachScene(scenePair);
         scenePair.internal().attachStage(stagePair);
 
-        sceneTransformer.transform(scenePair);
+        commons.undefinedOutput = sceneTransformer.transform(scenePair);
     }
 
     @Override

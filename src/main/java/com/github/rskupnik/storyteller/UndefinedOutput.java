@@ -16,6 +16,10 @@ public class UndefinedOutput {
 
     private List<Pair<Actor, ArrayList<Pair<Pair<GlyphLayout, Rectangle>, Vector2>>>> data = new ArrayList<>();
 
+    public List<Pair<Actor, ArrayList<Pair<Pair<GlyphLayout, Rectangle>, Vector2>>>> getData() {
+        return data;
+    }
+
     public void add(Pair<Actor, ArrayList<Pair<Pair<GlyphLayout, Rectangle>, Vector2>>> pair) {
         data.add(pair);
     }

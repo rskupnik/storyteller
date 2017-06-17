@@ -18,16 +18,13 @@ import com.google.inject.Inject;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public final class SceneTransformer {
 
     @Inject private Commons commons;
 
-    private UndefinedOutput undefinedOutput;
-
     public UndefinedOutput transform(ScenePair scenePair) {
-        undefinedOutput = new UndefinedOutput();
+        UndefinedOutput undefinedOutput = new UndefinedOutput();
 
         BitmapFont font = commons.font;
         StagePair stagePair = scenePair.internal().getAttachedStage();
@@ -113,15 +110,14 @@ public final class SceneTransformer {
             // If it's clickable, produce a Rectangle
             Rectangle rect = null;
             Pair<Pair<GlyphLayout, Rectangle>, Vector2> tailPair = null;
+            int GLBodyLines = GL_body.runs.size;    // Save the no of lines because we remove the last line but we need the pre-removal size in position adjustement
             if (actor.isClickable()) {
                 // If the text body spans multiple lines, we need to handle the last line as it might end in the middle of a line
                 GlyphLayout.GlyphRun GR_tail = GR_last;
-                int heightAdjust = 0;
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
                     rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
                     //inputHandler.addClickable(scenePair.scene(), rect, actor);
-                    heightAdjust = GR_tail.glyphs.get(0).height;
 
                     GlyphLayout GL_tail = new GlyphLayout(
                             font,
@@ -132,10 +128,11 @@ public final class SceneTransformer {
                             true
                     );
                     tailPair = Pair.with(Pair.with(GL_tail, rect), new Vector2(rect.x, rect.y));
+
+                    GL_body.runs.removeIndex(GL_body.runs.size-1);  // Remove the tail from the body
                 }
-                rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height - heightAdjust);
+                rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height);
                 //inputHandler.addClickable(scenePair.scene(), rect, actor);
-                GL_body.runs.removeIndex(GL_body.runs.size-1);
             }
 
             listOfGLRectPairs.add(Pair.with(Pair.with(GL_body, rect), new Vector2(x, y)));
@@ -145,9 +142,9 @@ public final class SceneTransformer {
 
             // Extract new position
             x += (int) GR_last.width;
-            if (GL_body.runs.size > 1) {
+            if (GLBodyLines > 1) {
                 y -= (int) GL_body.height;
-                if (firstLine) {
+                if (firstLine) {    // This is compensating for the fact we start from top-left of the scene but text draws from bottom-left of each line
                     firstLine = false;
                     y += GR_last.glyphs.get(0).height;
                 }
@@ -161,7 +158,7 @@ public final class SceneTransformer {
 
         undefinedOutput.print();
 
-        return null;
+        return undefinedOutput;
     }
 
     private StringBuilder glyphsToText(StringBuilder sb, GlyphLayout.GlyphRun input) {

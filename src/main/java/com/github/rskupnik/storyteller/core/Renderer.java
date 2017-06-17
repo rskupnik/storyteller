@@ -8,10 +8,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.rskupnik.storyteller.UndefinedOutput;
+import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.aggregates.Stages;
 import com.github.rskupnik.storyteller.peripheral.Actor;
@@ -20,12 +23,16 @@ import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
+import org.javatuples.Pair;
+
+import java.util.ArrayList;
 
 public final class Renderer {
 
     @Inject private InputHandler inputHandler;
     @Inject private Scenes scenes;
     @Inject private Stages stages;
+    @Inject private Commons commons;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -47,8 +54,48 @@ public final class Renderer {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        drawScenes(delta);
+        //drawScenes(delta);
+        newDrawScenes();
         batch.end();
+    }
+
+    private void newDrawScenes() {
+        for (ScenePair scenePair : scenes) {
+            newDraw(scenePair);
+        }
+    }
+
+    private void newDraw(ScenePair scenePair) {
+        // TODO: Remember this needs to be scene-bound, not held in a single instance!
+        UndefinedOutput data = commons.undefinedOutput;
+        if (data == null)
+            return;
+
+        BitmapFont font = commons.font;
+        if (font == null)
+            return;
+
+        for (Pair<Actor, ArrayList<Pair<Pair<GlyphLayout, Rectangle>, Vector2>>> actorToDataPair : data.getData()) {
+            Actor actor = actorToDataPair.getValue0();
+            for (Pair<Pair<GlyphLayout, Rectangle>, Vector2> actorData : actorToDataPair.getValue1()) {
+                // Unpack data
+                GlyphLayout GL = actorData.getValue0().getValue0();
+                Rectangle rectangle = actorData.getValue0().getValue1();
+                Vector2 position = actorData.getValue1();
+
+                if (GL == null || position == null)
+                    continue;
+
+                // Draw the GL
+                font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
+
+                // Add the Rectangle to clickables
+                // TODO: Maybe this should be done somewhere else instead of render(), since it's a one-time action
+                if (rectangle != null && scenePair.internal().isFirstDraw())
+                    inputHandler.addClickable(scenePair.scene(), rectangle, actor);
+            }
+        }
+        scenePair.internal().wasDrawn();
     }
 
     private void drawScenes(float delta) {
