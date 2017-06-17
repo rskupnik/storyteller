@@ -1,8 +1,7 @@
 package com.github.rskupnik.storyteller;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Rectangle;
-import com.github.rskupnik.storyteller.effects.TextEffect;
+import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.EngineModule;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.Stage;
@@ -29,7 +28,7 @@ public final class Storyteller {
         return this;
     }
 
-    public Storyteller withTextClickEffect(TextEffect effect) {
+    public Storyteller withTextClickEffect(ClickEffect effect) {
         engine.setTextClickEffect(effect);
         return this;
     }

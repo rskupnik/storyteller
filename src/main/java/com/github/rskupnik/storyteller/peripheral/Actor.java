@@ -1,7 +1,7 @@
 package com.github.rskupnik.storyteller.peripheral;
 
 import com.badlogic.gdx.graphics.Color;
-import com.github.rskupnik.storyteller.effects.TextEffect;
+import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 
 public final class Actor {
@@ -9,7 +9,7 @@ public final class Actor {
     private String text;
     private Color color;
     private boolean clickable;
-    private TextEffect clickEffect;
+    private ClickEffect clickEffect;
 
     private final InternalActor internalActor = new InternalActor();
 
@@ -33,7 +33,7 @@ public final class Actor {
         return clickable;
     }
 
-    public TextEffect getClickEffect() {
+    public ClickEffect getClickEffect() {
         return clickEffect;
     }
 
@@ -45,7 +45,7 @@ public final class Actor {
         this.clickable = clickable;
     }
 
-    private void setClickEffect(TextEffect clickEffect) {
+    private void setClickEffect(ClickEffect clickEffect) {
         this.clickEffect = clickEffect;
     }
 
@@ -71,7 +71,7 @@ public final class Actor {
             return this;
         }
 
-        public ActorBuilder withClickEffect(TextEffect clickEffect) {
+        public ActorBuilder withClickEffect(ClickEffect clickEffect) {
             actor.setClickEffect(clickEffect);
             return this;
         }

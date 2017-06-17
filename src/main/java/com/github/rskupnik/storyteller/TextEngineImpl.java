@@ -8,7 +8,7 @@ import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
 import com.github.rskupnik.storyteller.core.SceneTransformer;
-import com.github.rskupnik.storyteller.effects.TextEffect;
+import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.*;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
@@ -63,7 +63,7 @@ public final class TextEngineImpl implements TextEngine {
     }
 
     @Override
-    public void setTextClickEffect(TextEffect effect) {
+    public void setTextClickEffect(ClickEffect effect) {
         textEffects.clickEffect = effect;
     }
 

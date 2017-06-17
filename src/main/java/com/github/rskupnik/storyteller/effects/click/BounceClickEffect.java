@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.effects;
+package com.github.rskupnik.storyteller.effects.click;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
@@ -6,15 +6,15 @@ import aurelienribon.tweenengine.equations.Quad;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 
-public final class VerticalMoveTextEffect extends TextEffect {
+public final class BounceClickEffect extends ClickEffect {
 
     private TweenEquation equation = Quad.IN;
 
-    public VerticalMoveTextEffect(float duration, float target) {
+    public BounceClickEffect(float duration, float target) {
         super(ActorAccessor.POSITION_Y, duration, new float[] {target});
     }
 
-    public VerticalMoveTextEffect withEquation(TweenEquation equation) {
+    public BounceClickEffect withEquation(TweenEquation equation) {
         this.equation = equation;
         return this;
     }
