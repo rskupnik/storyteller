@@ -1,5 +1,6 @@
 package com.github.rskupnik.storyteller.effects.appear;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,6 +13,7 @@ import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
 import com.google.inject.Inject;
 import net.dermetfan.gdx.Typewriter;
 import org.javatuples.Pair;
+import org.javatuples.Quartet;
 import org.javatuples.Triplet;
 
 import java.util.ArrayList;
@@ -19,7 +21,8 @@ import java.util.List;
 
 public final class TypewriterAppearEffect extends AppearEffect {
 
-    private List<Pair<Actor, ArrayList<Triplet<CharSequence, Rectangle, Vector2>>>> data;
+    private List<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> data;
+    //private TransformedScene data;
     private Typewriter typewriter;
 
     public TypewriterAppearEffect() {
@@ -35,17 +38,19 @@ public final class TypewriterAppearEffect extends AppearEffect {
 
     @Override
     public void transform(TransformedScene input) {
-        List<Pair<Actor, ArrayList<Triplet<CharSequence, Rectangle, Vector2>>>> output = new ArrayList<>();
+        //this.data = input;
+        List<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> output = new ArrayList<>();
         for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : input.getData()) {
             Actor actor = actorToDataPair.getValue0();
-            ArrayList<Triplet<CharSequence, Rectangle, Vector2>> tripletList = new ArrayList<>();
+            ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>> quartetList = new ArrayList<>();
             for (Triplet<GlyphLayout, Rectangle, Vector2> actorData : actorToDataPair.getValue1()) {
                 GlyphLayout GL = actorData.getValue0();
-                String str = TextConverter.glyphLayoutToString(new StringBuilder(), GL).toString();
+                String str = TextConverter.glyphLayoutToString(new StringBuilder(), GL, false).toString();
                 System.out.println(str);
-                tripletList.add(Triplet.with((CharSequence) str, actorData.getValue1(), actorData.getValue2()));
+                // This assumes the whole GL has one color
+                quartetList.add(Quartet.with((CharSequence) str, actorData.getValue1(), actorData.getValue2(), GL.runs.get(0).color));
             }
-            output.add(Pair.with(actor, tripletList));
+            output.add(Pair.with(actor, quartetList));
         }
         this.data = output;
     }
@@ -55,19 +60,24 @@ public final class TypewriterAppearEffect extends AppearEffect {
         if (font == null || batch == null)
             return; // Throw exception?
 
-        for (Pair<Actor, ArrayList<Triplet<CharSequence, Rectangle, Vector2>>> actorToDataPair : data) {
+        for (Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>> actorToDataPair : data) {
             Actor actor = actorToDataPair.getValue0();
-            for (Triplet<CharSequence, Rectangle, Vector2> actorData : actorToDataPair.getValue1()) {
+            for (Quartet<CharSequence, Rectangle, Vector2, Color> actorData : actorToDataPair.getValue1()) {
                 // Unpack data
                 String str = (String) actorData.getValue0();
+                //GlyphLayout GL = actorData.getValue0();
                 Rectangle rectangle = actorData.getValue1();
                 Vector2 position = actorData.getValue2();
+                Color color = actorData.getValue3();
 
                 if (str == null || position == null)
                     continue;
 
                 // Draw the GL
+                Color prevColor = font.getColor();
+                font.setColor(color != null ? color : prevColor);
                 font.draw(batch, typewriter.updateAndType(str, delta), position.x, position.y + actor.getInternalActor().getYOffset());
+                font.setColor(prevColor);
 
                 // Add the Rectangle to clickables
                 // TODO: Maybe this should be done somewhere else instead of render(), since it's a one-time action

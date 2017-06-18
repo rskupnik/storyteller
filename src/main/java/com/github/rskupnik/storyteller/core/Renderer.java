@@ -145,7 +145,7 @@ public final class Renderer {
             if (StageUtils.notStartOfLine(stage, x) && multilineGL(GL_wholeText)) {
                 // Need to deal individually with the first, fragmented line and then continue with the rest of the body as usual
                 GlyphLayout.GlyphRun GR_fragLine = GL_wholeText.runs.get(0);
-                String lineEndText = TextConverter.glyphRunToString(new StringBuilder(GR_fragLine.glyphs.size), GR_fragLine).toString();
+                String lineEndText = TextConverter.glyphRunToString(new StringBuilder(GR_fragLine.glyphs.size), GR_fragLine, font.getData().markupEnabled).toString();
                 GlyphLayout GL_fragLine = new GlyphLayout(
                         font,
                         lineEndText,
@@ -170,7 +170,7 @@ public final class Renderer {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 1; i < GL_wholeText.runs.size; i++) {
                     GlyphLayout.GlyphRun glyphRun = GL_wholeText.runs.get(i);
-                    TextConverter.glyphRunToString(sb, glyphRun);
+                    TextConverter.glyphRunToString(sb, glyphRun, font.getData().markupEnabled);
                 }
                 String restText = sb.toString();
 
