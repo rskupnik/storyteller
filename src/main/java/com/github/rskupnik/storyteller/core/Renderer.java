@@ -71,8 +71,10 @@ public final class Renderer {
     }
 
     private void newDraw(float delta, ScenePair scenePair) {
-        // TODO: Remember this needs to be scene-bound, not held in a single instance!
-        TransformedScene data = commons.transformedScene;
+        if (!scenePair.notNull())
+            return;
+
+        TransformedScene data = scenePair.internal().getTransformedScene();
         if (data == null)
             return;
 

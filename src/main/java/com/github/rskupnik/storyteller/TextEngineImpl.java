@@ -14,6 +14,7 @@ import com.github.rskupnik.storyteller.peripheral.*;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalScene;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalStage;
+import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
@@ -80,9 +81,10 @@ public final class TextEngineImpl implements TextEngine {
         stagePair.internal().attachScene(scenePair);
         scenePair.internal().attachStage(stagePair);
 
-        commons.transformedScene = sceneTransformer.transform(scenePair);
+        TransformedScene transformedScene = sceneTransformer.transform(scenePair);
+        scenePair.internal().setTransformedScene(transformedScene);
         if (stagePair.stage().getAppearEffect() != null)
-            stagePair.stage().getAppearEffect().transform(commons.transformedScene);
+            stagePair.stage().getAppearEffect().transform(transformedScene);
     }
 
     @Override
