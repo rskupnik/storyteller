@@ -24,6 +24,7 @@ public final class EngineModule extends AbstractModule {
         bind(Stages.class).in(Scopes.SINGLETON);
         bind(SceneTransformer.class).in(Scopes.SINGLETON);
         bind(Commons.class).in(Scopes.SINGLETON);
+        bind(Clickables.class).in(Scopes.SINGLETON);
     }
 
     @Provides

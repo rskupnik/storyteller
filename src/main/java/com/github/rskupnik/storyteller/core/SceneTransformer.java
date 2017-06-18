@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.peripheral.Actor;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 public final class SceneTransformer {
 
     @Inject private Commons commons;
+    @Inject private Clickables clickables;
 
     public TransformedScene transform(ScenePair scenePair) {
         TransformedScene transformedScene = new TransformedScene();
@@ -69,12 +71,12 @@ public final class SceneTransformer {
                         Align.left,
                         true
                 );
-                //font.draw(batch, GL_fragLine, x, y + actor.getInternalActor().getYOffset());    // Offsets used for tween animation
 
                 // If it's clickable, produce a Rectangle
                 Rectangle rect = null;
                 if (actor.isClickable()) {
                     rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
+                    clickables.addClickable(scenePair.scene(), rect, actor);
                 }
                 triplets.add(Triplet.with(GL_fragLine, rect, new Vector2(x, y)));
 
@@ -102,9 +104,6 @@ public final class SceneTransformer {
 
             }
 
-            // Offsets are used to animate the actors with tweens
-            //font.draw(batch, GL_body, x, y + actor.getInternalActor().getYOffset());    // Draw the main body of the text
-
             // The last run (line) of glyphs, used to extract new x and y for further rendering
             GlyphLayout.GlyphRun GR_last = GL_body.runs.get(GL_body.runs.size-1);
 
@@ -118,7 +117,7 @@ public final class SceneTransformer {
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
                     rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
-                    //inputHandler.addClickable(scenePair.scene(), rect, actor);
+                    clickables.addClickable(scenePair.scene(), rect, actor);
 
                     GlyphLayout GL_tail = new GlyphLayout(
                             font,
@@ -133,7 +132,8 @@ public final class SceneTransformer {
                     GL_body.runs.removeIndex(GL_body.runs.size-1);  // Remove the tail from the body
                 }
                 rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height);
-                //inputHandler.addClickable(scenePair.scene(), rect, actor);
+                clickables.addClickable(scenePair.scene(), rect, actor);
+
             }
 
             triplets.add(Triplet.with(GL_body, rect, new Vector2(x, y)));

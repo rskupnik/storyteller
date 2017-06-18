@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.effects.appear.AppearEffect;
 import com.github.rskupnik.storyteller.utils.TextConverter;
 import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
@@ -35,6 +36,7 @@ public final class Renderer {
     @Inject private Scenes scenes;
     @Inject private Stages stages;
     @Inject private Commons commons;
+    @Inject private Clickables clickables;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -104,12 +106,13 @@ public final class Renderer {
                 // Add the Rectangle to clickables
                 // TODO: Maybe this should be done somewhere else instead of render(), since it's a one-time action
                 if (rectangle != null && scenePair.internal().isFirstDraw())
-                    inputHandler.addClickable(scenePair.scene(), rectangle, actor);
+                    clickables.addClickable(scenePair.scene(), rectangle, actor);
             }
         }
         scenePair.internal().wasDrawn();
     }
 
+    @Deprecated
     private void drawScenes(float delta) {
         for (ScenePair scenePair : scenes) {
             StagePair stagePair = scenePair.internal().getAttachedStage();
@@ -118,6 +121,7 @@ public final class Renderer {
         }
     }
 
+    @Deprecated
     private void drawScene(float delta, Stage stage, ScenePair scenePair) {
         if (!scenePair.notNull() || font == null || stage == null)
             return;
@@ -159,7 +163,7 @@ public final class Renderer {
                 // If it's clickable, produce a Rectangle
                 if (scenePair.internal().isFirstDraw() && actor.isClickable()) {
                     Rectangle rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
-                    inputHandler.addClickable(scenePair.scene(), rect, actor);
+                    clickables.addClickable(scenePair.scene(), rect, actor);
                 }
 
                 // Adjust x and y after the fragmented line to continue with the rest of the text
@@ -200,11 +204,11 @@ public final class Renderer {
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
                     Rectangle rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
-                    inputHandler.addClickable(scenePair.scene(), rect, actor);
+                    clickables.addClickable(scenePair.scene(), rect, actor);
                     heightAdjust = GR_tail.glyphs.get(0).height;
                 }
                 Rectangle rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height - heightAdjust);
-                inputHandler.addClickable(scenePair.scene(), rect, actor);
+                clickables.addClickable(scenePair.scene(), rect, actor);
             }
 
             // Extract new position

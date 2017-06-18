@@ -33,6 +33,7 @@ public final class TextEngineImpl implements TextEngine {
     @Inject private Stages stages;
     @Inject private SceneTransformer sceneTransformer;
     @Inject private Commons commons;
+    @Inject private Clickables clickables;
 
     void init(Injector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
@@ -94,7 +95,7 @@ public final class TextEngineImpl implements TextEngine {
         ScenePair scenePair = scenes.find(id);
 
         if (scenePair != null) {
-            inputHandler.removeScene(scenePair.scene());
+            clickables.removeScene(scenePair.scene());
             scenes.remove(scenePair);
 
             StagePair stagePair = scenePair.internal().getAttachedStage();
