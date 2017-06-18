@@ -6,11 +6,9 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.utils.TextConverter;
 import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
-import com.google.inject.Inject;
 import net.dermetfan.gdx.Typewriter;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
@@ -24,14 +22,13 @@ import java.util.Map;
 public final class TypewriterAppearEffect extends AppearEffect {
 
     private List<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> data;
-    //private TransformedScene data;
     private Typewriter typewriter;
-    private Map<Actor, List<Integer>> processingMap = new HashMap<>();
+    private Map<Actor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
 
     public TypewriterAppearEffect() {
         typewriter = new Typewriter();
         typewriter.getAppender().set(new CharSequence[] {""}, new float[] {0});
-        typewriter.setCharsPerSecond(2);
+        typewriter.setCharsPerSecond(20);
     }
 
     @Override
@@ -41,7 +38,6 @@ public final class TypewriterAppearEffect extends AppearEffect {
 
     @Override
     public void transform(TransformedScene input) {
-        //this.data = input;
         List<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> output = new ArrayList<>();
         for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : input.getData()) {
             Actor actor = actorToDataPair.getValue0();
@@ -63,27 +59,33 @@ public final class TypewriterAppearEffect extends AppearEffect {
         if (font == null || batch == null)
             return; // Throw exception?
 
-        // Start typewriting the first element and set a flag
-        // If the flag is set, all further elements are ignored
-        // After typewriting is done, set another flag pointing that this actor is typewritten already
-        // A typewritten actor should simple be printed without a typewriter
-        // The next in line should start being typewritten and the flag needs to be set again
-        // Any further actors need to be ignored - until the one being typewritten is finished, the flag is reset, and so on...
-        int i = 0;
-        int currentlyProcessedActorIndex = -1;
+        /*
+            The algorithm here is as follows:
+            - hold the index of the actor being iterated in variable i
+            - if currentlyProcessedActorIndex is -1, it means no actor is processed currently
+            - we choose the first unprocessed actor we find and make it the currently processed one
+            - all actors that are already processed simply display their text
+            - the actor that is being processed, displays his text using a resetted typewriter
+            - all actors that are not processed but are not the currently processed one, are ignored
+            - the same happens inside every actor for his list of CharSequences
+         */
+        int i = 0;  // Index of the current actor from the actor list
+        int currentlyProcessedActorIndex = -1;  // Index of the actor that is currently processed
         for (Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>> actorToDataPair : data) {
             Actor actor = actorToDataPair.getValue0();
-            if (currentlyProcessedActorIndex == -1) {
+            if (currentlyProcessedActorIndex == -1) {   // If no actor is being processed, set it to this one
                 currentlyProcessedActorIndex = i;
             }
 
+            // If actor is not yet processed and is not the one currently processed, ignore
             if (!actor.getInternalActor().isProcessed() && i != currentlyProcessedActorIndex) {
                 i++;
                 continue;
             }
-            int currentlyProcessedFragmentIndex = -1;
-            int j = 0;
-            boolean allFragmentsProcessed = true;
+
+            int currentlyProcessedFragmentIndex = -1;   // Index of the fragment currently being processed (in scope of the actor)
+            int j = 0;  // Index of the current fragment from the actor's fragment list
+            boolean allFragmentsProcessed = true;   // Set to false if at least one fragment is unprocessed
             for (Quartet<CharSequence, Rectangle, Vector2, Color> actorData : actorToDataPair.getValue1()) {
                 // Unpack data
                 String str = (String) actorData.getValue0();
@@ -99,17 +101,17 @@ public final class TypewriterAppearEffect extends AppearEffect {
                 Color prevColor = font.getColor();
                 font.setColor(color != null ? color : prevColor);
 
-                if (isProcessed(actor, j)) {
+                if (isProcessed(actor, j)) {    // If this fragment is already processed, draw it as is
                     font.draw(batch, str, position.x, position.y + actor.getInternalActor().getYOffset());
                     j++;
                     continue;
                 } else {
-                    allFragmentsProcessed = false;
+                    allFragmentsProcessed = false;  // Fragment is not processed so falsify the flag
 
                     if (currentlyProcessedFragmentIndex == -1)
                         currentlyProcessedFragmentIndex = j;
 
-                    if (currentlyProcessedFragmentIndex != j) {
+                    if (currentlyProcessedFragmentIndex != j) { // If this fragment is not the one being processed right now, ignore
                         j++;
                         continue;
                     }
@@ -117,8 +119,7 @@ public final class TypewriterAppearEffect extends AppearEffect {
                     CharSequence cs = typewriter.updateAndType(str, delta);
                     font.draw(batch, cs, position.x, position.y + actor.getInternalActor().getYOffset());
 
-                    if (cs.length() == str.length()) {
-                        //actor.getInternalActor().setProcessed(true);
+                    if (cs.length() == str.length()) {  // Check if processing of the fragment is finished
                         List<Integer> actorsProcessedIndices = processingMap.get(actor);
                         if (actorsProcessedIndices == null) {
                             actorsProcessedIndices = new ArrayList<>();
@@ -141,7 +142,7 @@ public final class TypewriterAppearEffect extends AppearEffect {
                 //    inputHandler.addClickable(scenePair.scene(), rectangle, actor);
             }
 
-            if (allFragmentsProcessed) {
+            if (allFragmentsProcessed) {    // If all fragments for the actor are processed, reset the pointer to find the next one to process
                 actor.getInternalActor().setProcessed(true);
                 currentlyProcessedActorIndex = -1;
             }
