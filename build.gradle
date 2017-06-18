@@ -20,6 +20,7 @@ dependencies {
     compileOnly group: 'com.badlogicgames.gdx', name: 'gdx', version:'1.9.6'
     compile group: 'com.google.inject', name: 'guice', version: '3.0'
     compile 'org.javatuples:javatuples:1.2'
+    compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.4"
 }
 
 publishing {

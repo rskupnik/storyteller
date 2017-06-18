@@ -10,11 +10,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.effects.appear.AppearEffect;
-import com.github.rskupnik.storyteller.effects.transformers.EffectTransformer;
+import com.github.rskupnik.storyteller.utils.TextConverter;
 import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
@@ -44,6 +43,7 @@ public final class Renderer {
 
     public void init(BitmapFont font) {
         this.font = font;
+        font.getData().markupEnabled = true;
 
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
@@ -58,17 +58,17 @@ public final class Renderer {
 
         batch.begin();
         //drawScenes(delta);
-        newDrawScenes();
+        newDrawScenes(delta);
         batch.end();
     }
 
-    private void newDrawScenes() {
+    private void newDrawScenes(float delta) {
         for (ScenePair scenePair : scenes) {
-            newDraw(scenePair);
+            newDraw(delta, scenePair);
         }
     }
 
-    private void newDraw(ScenePair scenePair) {
+    private void newDraw(float delta, ScenePair scenePair) {
         // TODO: Remember this needs to be scene-bound, not held in a single instance!
         TransformedScene data = commons.transformedScene;
         if (data == null)
@@ -81,7 +81,8 @@ public final class Renderer {
         // If an AppearEffect is defined, use it, otherwise continue to default rendering
         AppearEffect appearEffect = commons.appearEffect;
         if (appearEffect != null) {
-            appearEffect.render();
+            appearEffect.render(delta, batch, font);
+            scenePair.internal().wasDrawn();
             return;
         }
 
@@ -144,7 +145,7 @@ public final class Renderer {
             if (StageUtils.notStartOfLine(stage, x) && multilineGL(GL_wholeText)) {
                 // Need to deal individually with the first, fragmented line and then continue with the rest of the body as usual
                 GlyphLayout.GlyphRun GR_fragLine = GL_wholeText.runs.get(0);
-                String lineEndText = glyphsToText(new StringBuilder(GR_fragLine.glyphs.size), GR_fragLine).toString();
+                String lineEndText = TextConverter.glyphRunToString(new StringBuilder(GR_fragLine.glyphs.size), GR_fragLine).toString();
                 GlyphLayout GL_fragLine = new GlyphLayout(
                         font,
                         lineEndText,
@@ -169,7 +170,7 @@ public final class Renderer {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 1; i < GL_wholeText.runs.size; i++) {
                     GlyphLayout.GlyphRun glyphRun = GL_wholeText.runs.get(i);
-                    glyphsToText(sb, glyphRun);
+                    TextConverter.glyphRunToString(sb, glyphRun);
                 }
                 String restText = sb.toString();
 
@@ -216,17 +217,6 @@ public final class Renderer {
                 }
             }
         }   // end: for
-    }
-
-    private StringBuilder glyphsToText(StringBuilder sb, GlyphLayout.GlyphRun input) {
-        StringBuilder buffer = sb;
-        Array<BitmapFont.Glyph> glyphs = input.glyphs;
-        int i = 0;
-        for(int n = glyphs.size; i < n; ++i) {
-            BitmapFont.Glyph g = (BitmapFont.Glyph)glyphs.get(i);
-            buffer.append((char)g.id);
-        }
-        return buffer;
     }
 
     /**
