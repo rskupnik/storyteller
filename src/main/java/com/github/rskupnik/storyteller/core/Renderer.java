@@ -80,8 +80,12 @@ public final class Renderer {
         if (font == null)
             return;
 
+        StagePair stagePair = scenePair.internal().getAttachedStage();
+        if (!stagePair.notNull())
+            throw new IllegalStateException("Cannot render a scene without a stage. Scene passed: "+scenePair.scene().getId());
+
         // If an AppearEffect is defined, use it, otherwise continue to default rendering
-        AppearEffect appearEffect = commons.appearEffect;
+        AppearEffect appearEffect = stagePair.stage().getAppearEffect();
         if (appearEffect != null) {
             appearEffect.render(delta, batch, font);
             scenePair.internal().wasDrawn();
@@ -102,11 +106,6 @@ public final class Renderer {
 
                 // Draw the GL
                 font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
-
-                // Add the Rectangle to clickables
-                // TODO: Maybe this should be done somewhere else instead of render(), since it's a one-time action
-                if (rectangle != null && scenePair.internal().isFirstDraw())
-                    clickables.addClickable(scenePair.scene(), rectangle, actor);
             }
         }
         scenePair.internal().wasDrawn();

@@ -135,11 +135,6 @@ public final class TypewriterAppearEffect extends AppearEffect {
                 font.setColor(prevColor);
 
                 j++;
-
-                // Add the Rectangle to clickables
-                // TODO: Maybe this should be done somewhere else instead of render(), since it's a one-time action
-                //if (rectangle != null && scenePair.internal().isFirstDraw())
-                //    inputHandler.addClickable(scenePair.scene(), rectangle, actor);
             }
 
             if (allFragmentsProcessed) {    // If all fragments for the actor are processed, reset the pointer to find the next one to process

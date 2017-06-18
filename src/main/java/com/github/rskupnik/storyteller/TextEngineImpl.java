@@ -81,8 +81,8 @@ public final class TextEngineImpl implements TextEngine {
         scenePair.internal().attachStage(stagePair);
 
         commons.transformedScene = sceneTransformer.transform(scenePair);
-        if (commons.appearEffect != null)
-            commons.appearEffect.transform(commons.transformedScene);
+        if (stagePair.stage().getAppearEffect() != null)
+            stagePair.stage().getAppearEffect().transform(commons.transformedScene);
     }
 
     @Override

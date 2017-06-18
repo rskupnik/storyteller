@@ -2,11 +2,14 @@ package com.github.rskupnik.storyteller.peripheral;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.rskupnik.storyteller.effects.appear.AppearEffect;
 
 public final class Stage {
 
     private String id;
     private Rectangle rectangle;
+
+    private AppearEffect appearEffect;
 
     private Vector2 topLeft;
     private int width;
@@ -34,6 +37,14 @@ public final class Stage {
         return width;
     }
 
+    public AppearEffect getAppearEffect() {
+        return appearEffect;
+    }
+
+    private void setAppearEffect(AppearEffect appearEffect) {
+        this.appearEffect = appearEffect;
+    }
+
     @Override
     public int hashCode() {
         return id.hashCode();
@@ -57,6 +68,11 @@ public final class Stage {
 
         public StageBuilder(String id, Vector2 bottomLeft, Vector2 dimensions) {
             this.stage = new Stage(id, new Rectangle(bottomLeft.x, bottomLeft.y, dimensions.x, dimensions.y));
+        }
+
+        public StageBuilder withAppearEffect(AppearEffect appearEffect) {
+            stage.setAppearEffect(appearEffect);
+            return this;
         }
 
         public Stage build() {
