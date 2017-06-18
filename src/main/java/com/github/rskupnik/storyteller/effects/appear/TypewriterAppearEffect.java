@@ -45,7 +45,7 @@ public final class TypewriterAppearEffect extends AppearEffect {
             for (Triplet<GlyphLayout, Rectangle, Vector2> actorData : actorToDataPair.getValue1()) {
                 GlyphLayout GL = actorData.getValue0();
                 String str = TextConverter.glyphLayoutToString(new StringBuilder(), GL, false).toString();
-                System.out.println(str);
+
                 // This assumes the whole GL has one color
                 quartetList.add(Quartet.with((CharSequence) str, actorData.getValue1(), actorData.getValue2(), GL.runs.get(0).color));
             }

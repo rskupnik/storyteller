@@ -157,7 +157,7 @@ public final class SceneTransformer {
         // GlyphLayouts mapped to an Actor
         // Rectangle (clickable area) mapped to an Actor
 
-        transformedScene.print();
+        //transformedScene.print();
 
         return transformedScene;
     }
