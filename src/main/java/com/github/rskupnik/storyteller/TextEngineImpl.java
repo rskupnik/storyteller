@@ -97,7 +97,7 @@ public final class TextEngineImpl implements TextEngine {
         ScenePair scenePair = scenes.find(id);
 
         if (scenePair != null) {
-            clickables.removeScene(scenePair.scene());
+            clickables.removeScene(scenePair);
             scenes.remove(scenePair);
 
             StagePair stagePair = scenePair.internal().getAttachedStage();

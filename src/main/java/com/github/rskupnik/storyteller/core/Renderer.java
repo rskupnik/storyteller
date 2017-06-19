@@ -164,7 +164,7 @@ public final class Renderer {
                 // If it's clickable, produce a Rectangle
                 if (scenePair.internal().isFirstDraw() && actor.isClickable()) {
                     Rectangle rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
-                    clickables.addClickable(scenePair.scene(), rect, actor);
+                    clickables.addClickable(scenePair, rect, actor);
                 }
 
                 // Adjust x and y after the fragmented line to continue with the rest of the text
@@ -205,11 +205,11 @@ public final class Renderer {
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
                     Rectangle rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
-                    clickables.addClickable(scenePair.scene(), rect, actor);
+                    clickables.addClickable(scenePair, rect, actor);
                     heightAdjust = GR_tail.glyphs.get(0).height;
                 }
                 Rectangle rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height - heightAdjust);
-                clickables.addClickable(scenePair.scene(), rect, actor);
+                clickables.addClickable(scenePair, rect, actor);
             }
 
             // Extract new position

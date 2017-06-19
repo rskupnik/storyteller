@@ -11,6 +11,8 @@ import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.peripheral.Scene;
+import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
 
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 touched = camera.unproject(new Vector3(screenX, screenY, 0));
         System.out.println("Clicked: "+touched);
-        for (Map.Entry<Scene, Map<Rectangle, Actor>> sceneToInnerEntry : clickables.entrySet()) {
+        for (Map.Entry<ScenePair, Map<Rectangle, Actor>> sceneToInnerEntry : clickables.entrySet()) {
             for (Map.Entry<Rectangle, Actor> entry : sceneToInnerEntry.getValue().entrySet()) {
                 Rectangle rect = entry.getKey();
                 if (touched.x >= rect.getX() && touched.x <= rect.getX() + rect.getWidth() &&
@@ -61,10 +63,15 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
                         listener.onActorClicked(entry.getValue(), new Vector2(touched.x, touched.y), button);
                     }
 
-                    if (entry.getValue().getClickEffect() != null) {
+                    if (entry.getValue().getClickEffect() != null) {    // Use Actor's Click Effect first
                         entry.getValue().getClickEffect().produceTween(entry.getValue().getInternalActor()).start(tweenManager);
-                    } else if (textEffects.clickEffect != null) {
-                        textEffects.clickEffect.produceTween(entry.getValue().getInternalActor()).start(tweenManager);
+                    } else {
+                        StagePair stagePair = sceneToInnerEntry.getKey().internal().getAttachedStage();
+                        if (stagePair.notNull() && stagePair.stage().getTextEffects().clickEffect != null) {    // Use Stage's click effect next
+                            stagePair.stage().getTextEffects().clickEffect.produceTween(entry.getValue().getInternalActor()).start(tweenManager);
+                        } else if (textEffects.clickEffect != null) {   // Fallback to engine's click effect
+                            textEffects.clickEffect.produceTween(entry.getValue().getInternalActor()).start(tweenManager);
+                        }
                     }
                 }
             }

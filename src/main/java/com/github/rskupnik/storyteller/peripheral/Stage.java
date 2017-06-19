@@ -2,7 +2,9 @@ package com.github.rskupnik.storyteller.peripheral;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.effects.appear.AppearEffect;
+import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 
 public final class Stage {
 
@@ -10,6 +12,7 @@ public final class Stage {
     private Rectangle rectangle;
 
     private AppearEffect appearEffect;
+    private TextEffects textEffects = new TextEffects();    // TextEffects can be defined for the whole engine or for a single Stage
 
     private Vector2 topLeft;
     private int width;
@@ -45,6 +48,10 @@ public final class Stage {
         this.appearEffect = appearEffect;
     }
 
+    public TextEffects getTextEffects() {
+        return textEffects;
+    }
+
     @Override
     public int hashCode() {
         return id.hashCode();
@@ -72,6 +79,11 @@ public final class Stage {
 
         public StageBuilder withAppearEffect(AppearEffect appearEffect) {
             stage.setAppearEffect(appearEffect);
+            return this;
+        }
+
+        public StageBuilder withClickEffect(ClickEffect clickEffect) {
+            stage.getTextEffects().clickEffect = clickEffect;
             return this;
         }
 

@@ -76,7 +76,7 @@ public final class SceneTransformer {
                 Rectangle rect = null;
                 if (actor.isClickable()) {
                     rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
-                    clickables.addClickable(scenePair.scene(), rect, actor);
+                    clickables.addClickable(scenePair, rect, actor);
                 }
                 triplets.add(Triplet.with(GL_fragLine, rect, new Vector2(x, y)));
 
@@ -117,7 +117,7 @@ public final class SceneTransformer {
                 if (multilineGL(GL_body)) {
                     GR_tail = GL_body.runs.get(GL_body.runs.size-1);
                     rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
-                    clickables.addClickable(scenePair.scene(), rect, actor);
+                    clickables.addClickable(scenePair, rect, actor);
 
                     GlyphLayout GL_tail = new GlyphLayout(
                             font,
@@ -132,7 +132,7 @@ public final class SceneTransformer {
                     GL_body.runs.removeIndex(GL_body.runs.size-1);  // Remove the tail from the body
                 }
                 rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height);
-                clickables.addClickable(scenePair.scene(), rect, actor);
+                clickables.addClickable(scenePair, rect, actor);
 
             }
 
