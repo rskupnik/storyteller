@@ -1,5 +1,6 @@
 package com.github.rskupnik.storyteller.effects.appear;
 
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -55,7 +56,7 @@ public final class TypewriterAppearEffect extends AppearEffect {
     }
 
     @Override
-    public void render(float delta, SpriteBatch batch, BitmapFont font) {
+    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager) {
         if (font == null || batch == null)
             return; // Throw exception?
 

@@ -3,7 +3,9 @@ package com.github.rskupnik.storyteller;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
+import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
@@ -46,6 +48,7 @@ public final class TextEngineImpl implements TextEngine {
         inputHandler.init(renderer.getCamera());
 
         Tween.registerAccessor(InternalActor.class, new ActorAccessor());
+        Tween.registerAccessor(Vector2.class, new Vector2Accessor());
     }
 
     @Override

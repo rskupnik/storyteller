@@ -1,5 +1,6 @@
 package com.github.rskupnik.storyteller.core;
 
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -37,6 +38,7 @@ public final class Renderer {
     @Inject private Stages stages;
     @Inject private Commons commons;
     @Inject private Clickables clickables;
+    @Inject private TweenManager tweenManager;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -89,7 +91,7 @@ public final class Renderer {
         // If an AppearEffect is defined, use it, otherwise continue to default rendering
         AppearEffect appearEffect = stagePair.stage().getAppearEffect();
         if (appearEffect != null) {
-            appearEffect.render(delta, batch, font);
+            appearEffect.render(delta, batch, font, tweenManager);
             scenePair.internal().wasDrawn();
             return;
         }

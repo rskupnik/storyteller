@@ -1,11 +1,16 @@
 package com.github.rskupnik.storyteller.effects.appear;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Quad;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.rskupnik.storyteller.accessors.ActorAccessor;
+import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.utils.TextConverter;
 import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
@@ -23,6 +28,11 @@ import java.util.List;
 public final class LineFadeUpAppearEffect extends AppearEffect {
 
     private List<Pair<Actor, ArrayList<Quartet<GlyphLayout, Rectangle, Vector2, Integer>>>> data;
+
+    private boolean inProgress = false;
+    private boolean finished = false;
+    private int currentlyProcessedLine = 1;
+    private long timestamp = 0;
 
     @Override
     public Object getData() {
@@ -49,6 +59,7 @@ public final class LineFadeUpAppearEffect extends AppearEffect {
                     line++;
                 }
                 lastX = pos.x;
+                pos.y -= 5;
                 quartetList.add(Quartet.with(GL, actorData.getValue1(), actorData.getValue2(), line));
                 System.out.println(line+": "+GL.toString());
             }
@@ -58,10 +69,17 @@ public final class LineFadeUpAppearEffect extends AppearEffect {
     }
 
     @Override
-    public void render(float delta, SpriteBatch batch, BitmapFont font) {
+    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager) {
         if (font == null || batch == null)
             return; // Throw exception?
 
+        if (inProgress && System.currentTimeMillis() > timestamp) {
+            inProgress = false;
+            currentlyProcessedLine++;
+        }
+
+        boolean atLeastOneProcessed = false;
+        boolean shouldStop = true;
         for (Pair<Actor, ArrayList<Quartet<GlyphLayout, Rectangle, Vector2, Integer>>> actorToDataPair : data) {
             Actor actor = actorToDataPair.getValue0();
             for (Quartet<GlyphLayout, Rectangle, Vector2, Integer> actorData : actorToDataPair.getValue1()) {
@@ -74,8 +92,32 @@ public final class LineFadeUpAppearEffect extends AppearEffect {
                 if (GL == null || position == null)
                     continue;
 
-                font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
+                if (finished)
+                    font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
+                else {
+                    if (!inProgress && line == currentlyProcessedLine) {    // Should start tweening
+                        Tween.to(position, Vector2Accessor.Y, 1.0f)
+                                .target(position.y + 5)
+                                .ease(Quad.OUT)
+                                .start(tweenManager);
+                        atLeastOneProcessed = true;
+                    }
+
+                    if (line == currentlyProcessedLine)
+                        shouldStop = false;
+
+                    if (line <= currentlyProcessedLine)
+                        font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
+                }
             }
         }
+
+        if (atLeastOneProcessed) {
+            timestamp = System.currentTimeMillis() + 1000;
+            inProgress = true;
+        }
+
+        if (shouldStop)
+            finished = true;
     }
 }
