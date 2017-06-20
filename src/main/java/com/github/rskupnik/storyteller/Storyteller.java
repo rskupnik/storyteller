@@ -23,6 +23,11 @@ public final class Storyteller {
         return new Storyteller(engine);
     }
 
+    public Storyteller withStage(Stage stage) {
+        engine.addStage(stage);
+        return this;
+    }
+
     public Storyteller withClickListener(ClickListener clickListener) {
         engine.setClickListener(clickListener);
         return this;

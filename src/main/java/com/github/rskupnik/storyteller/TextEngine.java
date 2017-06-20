@@ -4,6 +4,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.github.rskupnik.storyteller.peripheral.Stage;
 
 public interface TextEngine {
     void render(float delta);
@@ -15,6 +16,8 @@ public interface TextEngine {
     void attachScene(String stageId, Scene scene);
     void removeScene(String id);
     void removeScene(Scene scene);
+
+    void addStage(Stage stage);
 
     InputProcessor getInputProcessor();
 }

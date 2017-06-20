@@ -44,7 +44,7 @@ public final class TextEngineImpl implements TextEngine {
         this.injector = injector;
         commons.font = font;
 
-        stages.add(new StagePair(stage, new InternalStage()));
+        addStage(stage);
 
         renderer.init(font);
         inputHandler.init(renderer.getCamera());
@@ -84,6 +84,9 @@ public final class TextEngineImpl implements TextEngine {
         if (stagePair == null)
             throw new IllegalStateException("Cannot attach to stage "+stageId+" as it doesn't exist");
 
+        if (stagePair.internal().getAttachedScene() != null)
+            removeScene(stagePair.internal().getAttachedScene().scene());
+
         stagePair.internal().attachScene(scenePair);
         scenePair.internal().attachStage(stagePair);
 
@@ -110,6 +113,11 @@ public final class TextEngineImpl implements TextEngine {
             stagePair.internal().attachScene(null);
             scenePair.internal().attachStage(null);
         }
+    }
+
+    @Override
+    public void addStage(Stage stage) {
+        stages.add(new StagePair(stage, new InternalStage()));
     }
 
     @Override
