@@ -76,7 +76,7 @@ public final class Renderer {
         if (!scenePair.notNull())
             return;
 
-        TransformedScene data = scenePair.internal().getTransformedScene();
+        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> data = scenePair.internal().getTransformedScene();
         if (data == null)
             return;
 
@@ -97,7 +97,7 @@ public final class Renderer {
         }
 
         // This is the default rendering used if no AppearEffect is defined
-        for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : data.getData()) {
+        for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : data) {
             Actor actor = actorToDataPair.getValue0();
             for (Triplet<GlyphLayout, Rectangle, Vector2> actorData : actorToDataPair.getValue1()) {
                 // Unpack data

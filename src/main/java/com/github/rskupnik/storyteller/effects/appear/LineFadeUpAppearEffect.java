@@ -53,15 +53,17 @@ public final class LineFadeUpAppearEffect extends AppearEffect {
 
     /**
      * Algorithm to extract line numbers is simple:
-     * Simply look at what x does each GL start and if it's lower than previous
-     * then we have a new line
+     * Simply look at what x does each GL start with and if it's lower than previous
+     * then we have a new line.
+     * TODO: Will this work with \n symbols?
      */
     @Override
     public void transform(TransformedScene input) {
+        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> input2 = (TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>>) input;
         List<Pair<Actor, ArrayList<Quintet<GlyphLayout, Rectangle, Vector2, Integer, Color>>>> output = new ArrayList<>();
         int line = 1;
         float lastX = 0;
-        for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : input.getData()) {
+        for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : input2) {
             Actor actor = actorToDataPair.getValue0();
             ArrayList<Quintet<GlyphLayout, Rectangle, Vector2, Integer, Color>> quintetList = new ArrayList<>();
             for (Triplet<GlyphLayout, Rectangle, Vector2> actorData : actorToDataPair.getValue1()) {
@@ -109,9 +111,9 @@ public final class LineFadeUpAppearEffect extends AppearEffect {
                 if (GL == null || position == null)
                     continue;
 
-                if (finished)
+                if (finished) {
                     font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
-                else {  // Only apply the algorithm if not yet finished
+                } else {  // Only apply the algorithm if not yet finished
                     if (!inProgress && line == currentlyProcessedLine) {    // Should start tweening this line
                         Tween.to(position, Vector2Accessor.Y, duration / 1000.0f)
                                 .target(position.y + 5)

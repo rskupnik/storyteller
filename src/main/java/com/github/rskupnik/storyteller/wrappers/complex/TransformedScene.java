@@ -37,9 +37,9 @@ import java.util.List;
  * ]}
  * </pre>
  */
-public class TransformedScene {
+public class TransformedScene<T> extends ArrayList<T> {
 
-    private List<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> data = new ArrayList<>();
+    /*private List<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> data = new ArrayList<>();
 
     public List<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> getData() {
         return data;
@@ -60,5 +60,5 @@ public class TransformedScene {
                     System.out.println("        = R: pos["+r.x+", "+r.y+"] wh["+r.width+", "+r.height+"]");
             }
         }
-    }
+    }*/
 }
