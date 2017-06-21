@@ -21,13 +21,14 @@ import org.javatuples.Triplet;
 
 import java.util.ArrayList;
 
-public final class BasicTransformer {
+public final class BasicTransformer implements Transformer<ScenePair,
+        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>>> {
 
     @Inject private Commons commons;
     @Inject private Clickables clickables;
 
     public TransformedScene transform(ScenePair scenePair) {
-        TransformedScene transformedScene = new TransformedScene();
+        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> transformedScene = new TransformedScene();
 
         BitmapFont font = commons.font;
         StagePair stagePair = scenePair.internal().getAttachedStage();
