@@ -1,19 +1,12 @@
 package com.github.rskupnik.storyteller.wrappers.complex;
 
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.github.rskupnik.storyteller.core.SceneTransformer;
-import com.github.rskupnik.storyteller.peripheral.Actor;
-import org.javatuples.Pair;
-import org.javatuples.Triplet;
+import com.github.rskupnik.storyteller.core.transformation.BasicTransformer;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A complex data class that holds the output of transforming a Scene
- * by {@link SceneTransformer}.
+ * by {@link BasicTransformer}.
  * <br/>
  * It holds the following relation: {@code [Actor - [<GlyphLayout, Optional<Rectangle>, Vector2>]]}
  * In a list of actors, for each Actor, we keep a list of triplets which contains: the GlyphLayout, and optional Rectangle

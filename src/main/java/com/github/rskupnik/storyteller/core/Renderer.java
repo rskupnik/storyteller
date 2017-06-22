@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
+import com.github.rskupnik.storyteller.core.transformation.BasicTransformer;
+import com.github.rskupnik.storyteller.core.transformation.TransformationTree;
 import com.github.rskupnik.storyteller.effects.appear.AppearEffect;
 import com.github.rskupnik.storyteller.utils.TextConverter;
 import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
@@ -39,6 +41,7 @@ public final class Renderer {
     @Inject private Commons commons;
     @Inject private Clickables clickables;
     @Inject private TweenManager tweenManager;
+    @Inject private TransformationTree transformationTree;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -76,7 +79,7 @@ public final class Renderer {
         if (!scenePair.notNull())
             return;
 
-        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> data = scenePair.internal().getTransformedScene();
+        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> data = ((BasicTransformer) transformationTree.get(BasicTransformer.class)).getData();
         if (data == null)
             return;
 

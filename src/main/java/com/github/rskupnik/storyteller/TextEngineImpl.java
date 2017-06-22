@@ -11,14 +11,15 @@ import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
-import com.github.rskupnik.storyteller.core.SceneTransformer;
+import com.github.rskupnik.storyteller.core.transformation.BasicTransformer;
+import com.github.rskupnik.storyteller.core.transformation.TransformationTree;
+import com.github.rskupnik.storyteller.core.transformation.TransformerNode;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.*;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalScene;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalStage;
-import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
@@ -36,9 +37,9 @@ public final class TextEngineImpl implements TextEngine {
     @Inject private TweenManager tweenManager;
     @Inject private Scenes scenes;
     @Inject private Stages stages;
-    @Inject private SceneTransformer sceneTransformer;
     @Inject private Commons commons;
     @Inject private Clickables clickables;
+    @Inject private TransformationTree transformationTree;
 
     void init(Injector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
@@ -90,10 +91,13 @@ public final class TextEngineImpl implements TextEngine {
         stagePair.internal().attachScene(scenePair);
         scenePair.internal().attachStage(stagePair);
 
-        TransformedScene transformedScene = sceneTransformer.transform(scenePair);
+        TransformerNode basicTransformer = transformationTree.get(BasicTransformer.class);
+        basicTransformer.transformAndPropagate(scenePair);
+
+        /*TransformedScene transformedScene = sceneTransformer.transform(scenePair);
         scenePair.internal().setTransformedScene(transformedScene);
         if (stagePair.stage().getAppearEffect() != null)
-            stagePair.stage().getAppearEffect().transform(transformedScene);
+            stagePair.stage().getAppearEffect().transform(transformedScene);*/
     }
 
     @Override

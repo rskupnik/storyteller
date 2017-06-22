@@ -21,7 +21,7 @@ import org.javatuples.Triplet;
 
 import java.util.ArrayList;
 
-public final class BasicTransformer extends ChainedTransformer<ScenePair,
+public final class BasicTransformer extends TransformerNode<ScenePair,
         TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>>> {
 
     @Inject private Commons commons;
