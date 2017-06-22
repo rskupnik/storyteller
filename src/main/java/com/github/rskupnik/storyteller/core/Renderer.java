@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
-import com.github.rskupnik.storyteller.core.transformation.nodes.BasicTransformer;
+import com.github.rskupnik.storyteller.core.transformation.nodes.SceneTransformer;
 import com.github.rskupnik.storyteller.core.transformation.TransformationTree;
 import com.github.rskupnik.storyteller.effects.appear.AppearEffect;
 import com.github.rskupnik.storyteller.utils.TextConverter;
@@ -79,7 +79,7 @@ public final class Renderer {
         if (!scenePair.notNull())
             return;
 
-        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> data = ((BasicTransformer) transformationTree.get(BasicTransformer.class)).getData();
+        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> data = ((SceneTransformer) transformationTree.get(SceneTransformer.class)).getData();
         if (data == null)
             return;
 

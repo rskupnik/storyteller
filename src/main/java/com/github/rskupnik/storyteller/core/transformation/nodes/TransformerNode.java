@@ -1,12 +1,12 @@
 package com.github.rskupnik.storyteller.core.transformation.nodes;
 
-import com.github.rskupnik.storyteller.core.transformation.Transformer;
+import com.github.rskupnik.storyteller.core.transformation.SceneExtender;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class TransformerNode<I, O> implements Transformer<I, O> {
+public abstract class TransformerNode<I, O> implements SceneExtender<I, O> {
 
     private List<TransformerNode> nodes = new ArrayList<>();
     private O data;

@@ -11,7 +11,7 @@ import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
-import com.github.rskupnik.storyteller.core.transformation.nodes.BasicTransformer;
+import com.github.rskupnik.storyteller.core.transformation.nodes.SceneTransformer;
 import com.github.rskupnik.storyteller.core.transformation.TransformationTree;
 import com.github.rskupnik.storyteller.core.transformation.nodes.TransformerNode;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
@@ -91,7 +91,7 @@ public final class TextEngineImpl implements TextEngine {
         stagePair.internal().attachScene(scenePair);
         scenePair.internal().attachStage(stagePair);
 
-        TransformerNode basicTransformer = transformationTree.get(BasicTransformer.class);
+        TransformerNode basicTransformer = transformationTree.get(SceneTransformer.class);
         basicTransformer.transformAndPropagate(scenePair);
 
         /*TransformedScene transformedScene = sceneTransformer.transform(scenePair);

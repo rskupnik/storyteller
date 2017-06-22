@@ -1,6 +1,6 @@
 package com.github.rskupnik.storyteller.core.transformation;
 
-import com.github.rskupnik.storyteller.core.transformation.nodes.BasicTransformer;
+import com.github.rskupnik.storyteller.core.transformation.nodes.SceneTransformer;
 import com.github.rskupnik.storyteller.core.transformation.nodes.ExtractColorTransformer;
 import com.github.rskupnik.storyteller.core.transformation.nodes.GLToCharSequenceTransformer;
 import com.github.rskupnik.storyteller.core.transformation.nodes.TransformerNode;
@@ -14,9 +14,9 @@ public final class TransformationTree {
     private Map<Class, TransformerNode> transformers = new HashMap<>();
 
     @Inject
-    public TransformationTree(BasicTransformer basicTransformer) {
-        transformers.put(BasicTransformer.class, basicTransformer);
-        add(new ExtractColorTransformer(), BasicTransformer.class);
+    public TransformationTree(SceneTransformer basicTransformer) {
+        transformers.put(SceneTransformer.class, basicTransformer);
+        add(new ExtractColorTransformer(), SceneTransformer.class);
         add(new GLToCharSequenceTransformer(), ExtractColorTransformer.class);
     }
 
