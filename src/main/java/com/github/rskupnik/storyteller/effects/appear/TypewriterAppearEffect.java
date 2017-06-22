@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.rskupnik.storyteller.core.transformation.TransformationTree;
+import com.github.rskupnik.storyteller.core.transformation.nodes.GLToCharSequenceTransformer;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.utils.TextConverter;
 import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
@@ -22,7 +24,7 @@ import java.util.Map;
 
 public final class TypewriterAppearEffect extends AppearEffect {
 
-    private List<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> data;
+    //private List<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> data;
     private Typewriter typewriter;
     private Map<Actor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
 
@@ -34,7 +36,7 @@ public final class TypewriterAppearEffect extends AppearEffect {
 
     @Override
     public Object getData() {
-        return data;
+        return null;
     }
 
     @Override
@@ -53,14 +55,16 @@ public final class TypewriterAppearEffect extends AppearEffect {
             }
             output.add(Pair.with(actor, quartetList));
         }
-        this.data = output;
+        //this.data = output;
     }
 
     @Override
-    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager) {
+    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager, TransformationTree transformationTree) {
         if (font == null || batch == null)
             return; // Throw exception?
 
+
+        TransformedScene<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> data = ((GLToCharSequenceTransformer) transformationTree.get(GLToCharSequenceTransformer.class)).getData();
         /*
             The algorithm here is as follows:
             - hold the index of the actor being iterated in variable i

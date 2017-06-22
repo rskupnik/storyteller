@@ -1,4 +1,6 @@
-package com.github.rskupnik.storyteller.core.transformation;
+package com.github.rskupnik.storyteller.core.transformation.nodes;
+
+import com.github.rskupnik.storyteller.core.transformation.Transformer;
 
 import java.util.ArrayList;
 import java.util.Collections;

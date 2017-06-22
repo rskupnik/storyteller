@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
-import com.github.rskupnik.storyteller.core.transformation.BasicTransformer;
+import com.github.rskupnik.storyteller.core.transformation.nodes.BasicTransformer;
 import com.github.rskupnik.storyteller.core.transformation.TransformationTree;
 import com.github.rskupnik.storyteller.effects.appear.AppearEffect;
 import com.github.rskupnik.storyteller.utils.TextConverter;
@@ -94,7 +94,7 @@ public final class Renderer {
         // If an AppearEffect is defined, use it, otherwise continue to default rendering
         AppearEffect appearEffect = stagePair.stage().getAppearEffect();
         if (appearEffect != null) {
-            appearEffect.render(delta, batch, font, tweenManager);
+            appearEffect.render(delta, batch, font, tweenManager, transformationTree);
             scenePair.internal().wasDrawn();
             return;
         }

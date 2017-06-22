@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.core.transformation;
+package com.github.rskupnik.storyteller.core.transformation.nodes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

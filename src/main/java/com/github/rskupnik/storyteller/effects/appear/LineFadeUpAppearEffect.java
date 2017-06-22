@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
+import com.github.rskupnik.storyteller.core.transformation.TransformationTree;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.utils.TextConverter;
 import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
@@ -87,7 +88,7 @@ public final class LineFadeUpAppearEffect extends AppearEffect {
     }
 
     @Override
-    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager) {
+    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager, TransformationTree transformationTree) {
         if (font == null || batch == null)
             return; // Throw exception?
 

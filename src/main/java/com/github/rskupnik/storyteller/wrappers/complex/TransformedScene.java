@@ -1,6 +1,6 @@
 package com.github.rskupnik.storyteller.wrappers.complex;
 
-import com.github.rskupnik.storyteller.core.transformation.BasicTransformer;
+import com.github.rskupnik.storyteller.core.transformation.nodes.BasicTransformer;
 
 import java.util.ArrayList;
 
