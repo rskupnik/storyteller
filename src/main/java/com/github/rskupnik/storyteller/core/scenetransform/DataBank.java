@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.core.transformation;
+package com.github.rskupnik.storyteller.core.scenetransform;
 
 import java.util.HashMap;
 

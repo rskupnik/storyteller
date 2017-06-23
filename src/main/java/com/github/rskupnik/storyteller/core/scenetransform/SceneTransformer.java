@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.core.transformation.nodes;
+package com.github.rskupnik.storyteller.core.scenetransform;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,16 +9,12 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
-import com.github.rskupnik.storyteller.core.transformation.Fragment;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.utils.StageUtils;
-import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
-import org.javatuples.Pair;
-import org.javatuples.Triplet;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,9 @@
-package com.github.rskupnik.storyteller.wrappers.complex;
+package com.github.rskupnik.storyteller.core.scenetransform;
 
-import com.github.rskupnik.storyteller.core.transformation.Fragment;
-import com.github.rskupnik.storyteller.core.transformation.nodes.SceneTransformer;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -58,27 +55,4 @@ public class TransformedScene {
         }
         return null;
     }
-
-    /*private List<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> data = new ArrayList<>();
-
-    public List<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> getData() {
-        return data;
-    }
-
-    public void add(Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> pair) {
-        data.add(pair);
-    }
-
-    public void print() {
-        for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> pair : data) {
-            System.out.println("Actor ["+pair.getValue0().getText()+"]");
-            for (Triplet<GlyphLayout, Rectangle, Vector2> triplet : pair.getValue1()) {
-                System.out.println("    = ["+triplet.getValue2().x+", "+triplet.getValue2().y+"]");
-                System.out.println("        = GL: width["+triplet.getValue0().width+"]");
-                Rectangle r = triplet.getValue1();
-                if (r != null)
-                    System.out.println("        = R: pos["+r.x+", "+r.y+"] wh["+r.width+", "+r.height+"]");
-            }
-        }
-    }*/
 }

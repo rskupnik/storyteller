@@ -1,70 +1,44 @@
-package com.github.rskupnik.storyteller.effects.appear;
+package com.github.rskupnik.storyteller.effects.inout;
 
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.rskupnik.storyteller.core.transformation.TransformationTree;
-import com.github.rskupnik.storyteller.core.transformation.nodes.GLToCharSequenceTransformer;
+import com.github.rskupnik.storyteller.core.scenetransform.Fragment;
+import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
+import com.github.rskupnik.storyteller.core.sceneextend.CharSequenceExtender;
+import com.github.rskupnik.storyteller.core.sceneextend.ColorExtender;
 import com.github.rskupnik.storyteller.peripheral.Actor;
-import com.github.rskupnik.storyteller.utils.TextConverter;
-import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
+import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
+import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import net.dermetfan.gdx.Typewriter;
 import org.javatuples.Pair;
-import org.javatuples.Quartet;
-import org.javatuples.Triplet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class TypewriterAppearEffect extends AppearEffect {
+public final class TypewriterIOEffect extends IOEffect {
 
-    //private List<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> data;
     private Typewriter typewriter;
     private Map<Actor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
 
-    public TypewriterAppearEffect() {
+    public TypewriterIOEffect() {
+        super(ExtenderChain.from(new CharSequenceExtender(), new ColorExtender()));
         typewriter = new Typewriter();
         typewriter.getAppender().set(new CharSequence[] {""}, new float[] {0});
         typewriter.setCharsPerSecond(20);
     }
 
     @Override
-    public Object getData() {
-        return null;
-    }
-
-    @Override
-    public void transform(TransformedScene input) {
-        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> input2 = (TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>>) input;
-        List<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> output = new ArrayList<>();
-        for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : input2) {
-            Actor actor = actorToDataPair.getValue0();
-            ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>> quartetList = new ArrayList<>();
-            for (Triplet<GlyphLayout, Rectangle, Vector2> actorData : actorToDataPair.getValue1()) {
-                GlyphLayout GL = actorData.getValue0();
-                String str = TextConverter.glyphLayoutToString(new StringBuilder(), GL, false).toString();
-
-                // This assumes the whole GL has one color
-                quartetList.add(Quartet.with((CharSequence) str, actorData.getValue1(), actorData.getValue2(), GL.runs.get(0).color));
-            }
-            output.add(Pair.with(actor, quartetList));
-        }
-        //this.data = output;
-    }
-
-    @Override
-    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager, TransformationTree transformationTree) {
+    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager, ScenePair scenePair) {
         if (font == null || batch == null)
             return; // Throw exception?
 
-
-        TransformedScene<Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>>> data = ((GLToCharSequenceTransformer) transformationTree.get(GLToCharSequenceTransformer.class)).getData();
+        TransformedScene data = scenePair.internal().getTransformedScene();
         /*
             The algorithm here is as follows:
             - hold the index of the actor being iterated in variable i
@@ -77,7 +51,7 @@ public final class TypewriterAppearEffect extends AppearEffect {
          */
         int i = 0;  // Index of the current actor from the actor list
         int currentlyProcessedActorIndex = -1;  // Index of the actor that is currently processed
-        for (Pair<Actor, ArrayList<Quartet<CharSequence, Rectangle, Vector2, Color>>> actorToDataPair : data) {
+        for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();
             if (currentlyProcessedActorIndex == -1) {   // If no actor is being processed, set it to this one
                 currentlyProcessedActorIndex = i;
@@ -92,13 +66,13 @@ public final class TypewriterAppearEffect extends AppearEffect {
             int currentlyProcessedFragmentIndex = -1;   // Index of the fragment currently being processed (in scope of the actor)
             int j = 0;  // Index of the current fragment from the actor's fragment list
             boolean allFragmentsProcessed = true;   // Set to false if at least one fragment is unprocessed
-            for (Quartet<CharSequence, Rectangle, Vector2, Color> actorData : actorToDataPair.getValue1()) {
+            for (Fragment actorData : actorToDataPair.getValue1()) {
                 // Unpack data
-                String str = (String) actorData.getValue0();
+                String str = (String) actorData.get("charSequence");
                 //GlyphLayout GL = actorData.getValue0();
-                Rectangle rectangle = actorData.getValue1();
-                Vector2 position = actorData.getValue2();
-                Color color = actorData.getValue3();
+                Rectangle rectangle = (Rectangle) actorData.get("clickableArea");
+                Vector2 position = (Vector2) actorData.get("position");
+                Color color = (Color) actorData.get("color");
 
                 if (str == null || position == null)
                     continue;

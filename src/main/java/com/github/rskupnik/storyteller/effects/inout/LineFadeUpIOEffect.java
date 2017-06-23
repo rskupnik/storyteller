@@ -1,96 +1,56 @@
-package com.github.rskupnik.storyteller.effects.appear;
+package com.github.rskupnik.storyteller.effects.inout;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenManager;
-import aurelienribon.tweenengine.equations.Quad;
-import aurelienribon.tweenengine.equations.Quint;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.rskupnik.storyteller.accessors.ActorAccessor;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
-import com.github.rskupnik.storyteller.core.transformation.TransformationTree;
+import com.github.rskupnik.storyteller.core.scenetransform.Fragment;
+import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
+import com.github.rskupnik.storyteller.core.sceneextend.ColorToTransparentExtender;
+import com.github.rskupnik.storyteller.core.sceneextend.LineExtender;
+import com.github.rskupnik.storyteller.core.sceneextend.PullDownExtender;
 import com.github.rskupnik.storyteller.peripheral.Actor;
-import com.github.rskupnik.storyteller.utils.TextConverter;
-import com.github.rskupnik.storyteller.wrappers.complex.TransformedScene;
+import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
+import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import org.javatuples.Pair;
-import org.javatuples.Quartet;
-import org.javatuples.Quintet;
-import org.javatuples.Triplet;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * In order to apply this effect we need to store additional information about
  * which line does each GL belong to.
  */
-public final class LineFadeUpAppearEffect extends AppearEffect {
+public final class LineFadeUpIOEffect extends IOEffect {
 
     private final TweenEquation equation;
     private final int duration;
-
-    private List<Pair<Actor, ArrayList<Quintet<GlyphLayout, Rectangle, Vector2, Integer, Color>>>> data;
 
     private boolean inProgress = false;     // Determines if any line is being tweened right now
     private boolean finished = false;       // Determines if the whole text is visible and done tweening
     private int currentlyProcessedLine = 1;
     private long timestamp = 0;             // Needed to line the effects one after another
 
-    public LineFadeUpAppearEffect(TweenEquation equation, int duration) {
+    public LineFadeUpIOEffect(TweenEquation equation, int duration) {
+        super(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender()));
         this.equation = equation;
         this.duration = duration;
     }
 
     @Override
-    public Object getData() {
-        return data;
-    }
-
-    /**
-     * Algorithm to extract line numbers is simple:
-     * Simply look at what x does each GL start with and if it's lower than previous
-     * then we have a new line.
-     * TODO: Will this work with \n symbols?
-     */
-    @Override
-    public void transform(TransformedScene input) {
-        TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>> input2 = (TransformedScene<Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>>>) input;
-        List<Pair<Actor, ArrayList<Quintet<GlyphLayout, Rectangle, Vector2, Integer, Color>>>> output = new ArrayList<>();
-        int line = 1;
-        float lastX = 0;
-        for (Pair<Actor, ArrayList<Triplet<GlyphLayout, Rectangle, Vector2>>> actorToDataPair : input2) {
-            Actor actor = actorToDataPair.getValue0();
-            ArrayList<Quintet<GlyphLayout, Rectangle, Vector2, Integer, Color>> quintetList = new ArrayList<>();
-            for (Triplet<GlyphLayout, Rectangle, Vector2> actorData : actorToDataPair.getValue1()) {
-                GlyphLayout GL = actorData.getValue0();
-                Vector2 pos = actorData.getValue2();
-                Color color = GL.runs.get(0).color;
-
-                if (pos.x <= lastX) {
-                    line++;
-                }
-                lastX = pos.x;
-
-                pos.y -= 5;
-                color.a = 0;
-
-                quintetList.add(Quintet.with(GL, actorData.getValue1(), actorData.getValue2(), line, color));
-            }
-            output.add(Pair.with(actor, quintetList));
-        }
-        this.data = output;
-    }
-
-    @Override
-    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager, TransformationTree transformationTree) {
+    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager, ScenePair scenePair) {
         if (font == null || batch == null)
             return; // Throw exception?
+
+        TransformedScene data = scenePair.internal().getTransformedScene();
+        if (data == null)
+            return;
 
         if (inProgress && System.currentTimeMillis() > timestamp) {
             inProgress = false;
@@ -99,15 +59,15 @@ public final class LineFadeUpAppearEffect extends AppearEffect {
 
         boolean atLeastOneProcessed = false;
         boolean shouldStop = true;
-        for (Pair<Actor, ArrayList<Quintet<GlyphLayout, Rectangle, Vector2, Integer, Color>>> actorToDataPair : data) {
+        for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();
-            for (Quintet<GlyphLayout, Rectangle, Vector2, Integer, Color> actorData : actorToDataPair.getValue1()) {
+            for (Fragment actorData : actorToDataPair.getValue1()) {
                 // Unpack data
-                GlyphLayout GL = actorData.getValue0();
-                Rectangle rectangle = actorData.getValue1();
-                Vector2 position = actorData.getValue2();
-                Integer line = actorData.getValue3();
-                Color color = actorData.getValue4();
+                GlyphLayout GL = (GlyphLayout) actorData.get("glyphLayout");
+                Rectangle rectangle = (Rectangle) actorData.get("clickableArea");
+                Vector2 position = (Vector2) actorData.get("position");
+                Integer line = (Integer) actorData.get("line");
+                Color color = (Color) actorData.get("color");
 
                 if (GL == null || position == null)
                     continue;
