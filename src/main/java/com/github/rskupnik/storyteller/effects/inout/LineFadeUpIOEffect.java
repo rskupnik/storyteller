@@ -1,8 +1,6 @@
 package com.github.rskupnik.storyteller.effects.inout;
 
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenEquation;
-import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -21,7 +19,9 @@ import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import org.javatuples.Pair;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * In order to apply this effect we need to store additional information about
@@ -31,16 +31,19 @@ public final class LineFadeUpIOEffect extends IOEffect {
 
     private final TweenEquation equation;
     private final int duration;
+    private final int lingerTime;
 
     private boolean inProgress = false;     // Determines if any line is being tweened right now
     private boolean finished = false;       // Determines if the whole text is visible and done tweening
     private int currentlyProcessedLine = 1;
     private long timestamp = 0;             // Needed to line the effects one after another
+    private Map<Integer, Float> linePosition = new HashMap<>();
 
-    public LineFadeUpIOEffect(TweenEquation equation, int duration) {
+    public LineFadeUpIOEffect(TweenEquation equation, int duration, int lingerTime) {
         super(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender()));
         this.equation = equation;
         this.duration = duration;
+        this.lingerTime = lingerTime;
     }
 
     @Override
@@ -72,19 +75,55 @@ public final class LineFadeUpIOEffect extends IOEffect {
                 if (GL == null || position == null)
                     continue;
 
+                if (linePosition.get(line) == null) {
+                    linePosition.put(line, position.y);
+                }
+
                 if (finished) {
                     font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
                 } else {  // Only apply the algorithm if not yet finished
                     if (!inProgress && line == currentlyProcessedLine) {    // Should start tweening this line
-                        Tween.to(position, Vector2Accessor.Y, duration / 1000.0f)
-                                .target(position.y + 5)
-                                .ease(equation)
-                                .start(tweenManager);
-                        Tween.to(color, ColorAccessor.ALPHA, duration / 1000.0f)
-                                .target(1.0f)
-                                .ease(equation)
-                                .start(tweenManager);
                         atLeastOneProcessed = true;
+
+                        Timeline sequence = Timeline.createSequence();
+                        sequence.beginParallel()
+                                .push(
+                                    Tween.to(position, Vector2Accessor.Y, duration / 1000f)
+                                        .target(position.y + 5)
+                                        .ease(equation)
+                                ).push(
+                                    Tween.to(color, ColorAccessor.ALPHA, duration / 1000.0f)
+                                        .target(1.0f)
+                                        .ease(equation)
+                                )
+                                .end();
+                        if (lingerTime > 0) {
+                            int i = line;
+                            while (i > 1) {
+                                sequence.push(
+                                        Tween.to(position, Vector2Accessor.Y, duration / 1000f)
+                                                .target(linePosition.get(i - 1))
+                                                .ease(equation)
+                                        //.delay(lingerTime / 1000f)
+                                );
+                                i--;
+                            }
+                            sequence.beginParallel()
+                                    .push(
+                                            Tween.to(position, Vector2Accessor.Y, duration / 1000f)
+                                                    .target(linePosition.get(1) + 5.0f)
+                                                    .ease(equation)
+                                                    .delay(lingerTime / 1000f)
+                                    )
+                                    .push(
+                                            Tween.to(color, ColorAccessor.ALPHA, duration / 1000.0f)
+                                                    .target(0f)
+                                                    .ease(equation)
+                                                    .delay(lingerTime / 1000f)
+                                    )
+                                    .end();
+                        }
+                        sequence.start(tweenManager);
                     }
 
                     if (line == currentlyProcessedLine)     // Will make the algorithm stop if we move beyond the number of available lines
