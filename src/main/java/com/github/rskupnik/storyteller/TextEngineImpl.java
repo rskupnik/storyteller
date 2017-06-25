@@ -11,7 +11,6 @@ import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
-import com.github.rskupnik.storyteller.core.scenetransform.SceneTransformer;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.Scene;
@@ -19,7 +18,7 @@ import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalScene;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalStage;
-import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
+import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
@@ -39,7 +38,7 @@ public final class TextEngineImpl implements TextEngine {
     @Inject private Stages stages;
     @Inject private Commons commons;
     @Inject private Clickables clickables;
-    @Inject private SceneTransformer sceneTransformer;
+    @Inject private SceneUtils sceneUtils;
 
     void init(Injector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
@@ -91,10 +90,7 @@ public final class TextEngineImpl implements TextEngine {
         stagePair.internal().attachScene(scenePair);
         scenePair.internal().attachStage(stagePair);
 
-        TransformedScene transformedScene = sceneTransformer.transform(scenePair);
-        if (stagePair.stage().getIOEffect() != null)
-            stagePair.stage().getIOEffect().getChain().apply(transformedScene);
-        scenePair.internal().setTransformedScene(transformedScene);
+        sceneUtils.transform(scenePair);
     }
 
     @Override

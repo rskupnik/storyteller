@@ -19,6 +19,7 @@ import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.aggregates.Stages;
 import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
@@ -34,6 +35,7 @@ public final class Renderer {
     @Inject private Commons commons;
     @Inject private Clickables clickables;
     @Inject private TweenManager tweenManager;
+    @Inject private SceneUtils sceneUtils;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -70,6 +72,10 @@ public final class Renderer {
         if (!scenePair.notNull())
             return;
 
+        if (scenePair.scene().isDirty()) {
+            sceneUtils.transform(scenePair);
+        }
+
         TransformedScene data = scenePair.internal().getTransformedScene();
         if (data == null)
             return;
@@ -91,6 +97,7 @@ public final class Renderer {
         }
 
         // This is the default rendering used if no IOEffect is defined
+        // TODO: Pull this out to a BaiscRenderer class or sth to be consistent
         for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();
             for (Fragment fragment : actorToDataPair.getValue1()) {

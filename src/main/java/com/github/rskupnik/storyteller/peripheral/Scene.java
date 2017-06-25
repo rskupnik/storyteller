@@ -8,6 +8,7 @@ public final class Scene {
 
     private String id;
     private final List<Actor> actors = new LinkedList<Actor>();
+    private boolean dirty = true;
 
     private Scene(String id) {
         this.id = id;
@@ -17,12 +18,25 @@ public final class Scene {
         actors.add(actor);
     }
 
+    public void append(Actor actor) {
+        actors.add(actor);
+        dirty = true;
+    }
+
     public List<Actor> getActors() {
         return Collections.unmodifiableList(actors);
     }
 
     public String getId() {
         return id;
+    }
+
+    public void setDirty(boolean b) {
+        this.dirty = b;
+    }
+
+    public boolean isDirty() {
+        return dirty;
     }
 
     public static SceneBuilder newScene(String id) {

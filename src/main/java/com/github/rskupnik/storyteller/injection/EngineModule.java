@@ -6,6 +6,7 @@ import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
 import com.github.rskupnik.storyteller.core.scenetransform.SceneTransformer;
+import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
@@ -25,6 +26,7 @@ public final class EngineModule extends AbstractModule {
         bind(Commons.class).in(Scopes.SINGLETON);
         bind(Clickables.class).in(Scopes.SINGLETON);
         bind(SceneTransformer.class).in(Scopes.SINGLETON);
+        bind(SceneUtils.class).in(Scopes.SINGLETON);
     }
 
     @Provides

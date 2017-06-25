@@ -1,8 +1,12 @@
 package com.github.rskupnik.storyteller.core.sceneextend;
 
+import com.github.rskupnik.storyteller.core.scenetransform.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
+import com.github.rskupnik.storyteller.peripheral.Actor;
+import org.javatuples.Pair;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExtenderChain extends ArrayList<SceneExtender> {
 
@@ -21,6 +25,10 @@ public class ExtenderChain extends ArrayList<SceneExtender> {
     public void apply(TransformedScene scene) {
         for (SceneExtender extender : this) {
             extender.extend(scene);
+        }
+
+        for (Pair<Actor, List<Fragment>> pair : scene.getData()) {
+            pair.getValue0().getInternalActor().setExtended(true);
         }
     }
 }

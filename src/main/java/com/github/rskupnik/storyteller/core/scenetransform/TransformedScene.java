@@ -1,5 +1,6 @@
 package com.github.rskupnik.storyteller.core.scenetransform;
 
+import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import org.javatuples.Pair;
 
@@ -36,6 +37,10 @@ public class TransformedScene {
 
     private List<Pair<Actor, List<Fragment>>> data = new ArrayList<>();
 
+    // TODO: Extract these to a SavedState class or sth
+    private Vector2 savedCursorPosition;
+    private Boolean savedIsFirstLine;
+
     public List<Pair<Actor, List<Fragment>>> getData() {
         return data;
     }
@@ -54,5 +59,27 @@ public class TransformedScene {
                 return pair;
         }
         return null;
+    }
+
+    public void merge(TransformedScene scene) {
+        for (Pair<Actor, List<Fragment>> pair : scene.getData()) {
+            data.add(pair);
+        }
+    }
+
+    public Vector2 getSavedCursorPosition() {
+        return savedCursorPosition;
+    }
+
+    public void setSavedCursorPosition(Vector2 savedCursorPosition) {
+        this.savedCursorPosition = savedCursorPosition;
+    }
+
+    public Boolean getSavedIsFirstLine() {
+        return savedIsFirstLine;
+    }
+
+    public void setSavedIsFirstLine(boolean savedIsFirstLine) {
+        this.savedIsFirstLine = savedIsFirstLine;
     }
 }

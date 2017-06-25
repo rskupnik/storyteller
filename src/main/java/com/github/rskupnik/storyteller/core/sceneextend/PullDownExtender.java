@@ -15,6 +15,9 @@ public class PullDownExtender implements SceneExtender {
     public void extend(TransformedScene scene) {
         for (Pair<Actor, List<Fragment>> actorToDataPair : scene.getData()) {
             Actor actor = actorToDataPair.getValue0();
+            if (actor.getInternalActor().isExtended())  // TODO: Pull this up to an abstract class
+                continue;
+
             for (Fragment fragment : actorToDataPair.getValue1()) {
                 GlyphLayout GL = (GlyphLayout) fragment.get("glyphLayout");
                 Vector2 pos = (Vector2) fragment.get("position");

@@ -27,6 +27,7 @@ import java.util.Map;
  * In order to apply this effect we need to store additional information about
  * which line does each GL belong to.
  */
+// TODO: Rename this line of classes to RenderingUnit(s) and make them internal - they should be created via initializer stub with settings only
 public final class LineFadeUpIOEffect extends IOEffect {
 
     private final TweenEquation equation;
