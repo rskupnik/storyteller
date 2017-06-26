@@ -74,6 +74,7 @@ public final class Renderer {
 
         if (scenePair.scene().isDirty()) {
             sceneUtils.transform(scenePair);
+            System.out.println("SCENE TRANSFORMED");
         }
 
         TransformedScene data = scenePair.internal().getTransformedScene();

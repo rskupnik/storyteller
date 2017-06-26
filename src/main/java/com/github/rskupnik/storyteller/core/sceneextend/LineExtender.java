@@ -17,8 +17,6 @@ public class LineExtender implements SceneExtender {
         float lastX = 0;
         for (Pair<Actor, List<Fragment>> actorToDataPair : scene.getData()) {
             Actor actor = actorToDataPair.getValue0();
-            if (actor.getInternalActor().isExtended())
-                continue;
 
             for (Fragment fragment : actorToDataPair.getValue1()) {
                 GlyphLayout GL = (GlyphLayout) fragment.get("glyphLayout");
@@ -29,7 +27,8 @@ public class LineExtender implements SceneExtender {
                 }
                 lastX = pos.x;
 
-                fragment.put("line", line);
+                if (!actor.getInternalActor().isExtended())
+                    fragment.put("line", line);
             }
         }
     }
