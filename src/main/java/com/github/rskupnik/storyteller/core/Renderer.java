@@ -98,7 +98,7 @@ public final class Renderer {
         }
 
         // This is the default rendering used if no IOEffect is defined
-        // TODO: Pull this out to a BaiscRenderer class or sth to be consistent
+        // TODO: Pull this out to a BasicRenderer class or sth to be consistent
         for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();
             for (Fragment fragment : actorToDataPair.getValue1()) {
@@ -114,6 +114,7 @@ public final class Renderer {
                 font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
             }
         }
+        scenePair.scene().setDirty(false);
         scenePair.internal().wasDrawn();
     }
 

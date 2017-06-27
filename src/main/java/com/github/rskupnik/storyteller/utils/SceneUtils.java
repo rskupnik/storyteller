@@ -23,7 +23,7 @@ public class SceneUtils {
 
         if (stagePair.stage().getIOEffect() != null)
             stagePair.stage().getIOEffect().getChain().apply(transformedScene);
-        scenePair.scene().setDirty(false);
+        //scenePair.scene().setDirty(false);
         scenePair.internal().setTransformedScene(transformedScene);
     }
 }

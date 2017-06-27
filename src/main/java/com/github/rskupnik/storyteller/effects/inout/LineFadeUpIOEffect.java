@@ -9,11 +9,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
+import com.github.rskupnik.storyteller.core.sceneextend.*;
 import com.github.rskupnik.storyteller.core.scenetransform.Fragment;
-import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
-import com.github.rskupnik.storyteller.core.sceneextend.ColorToTransparentExtender;
-import com.github.rskupnik.storyteller.core.sceneextend.LineExtender;
-import com.github.rskupnik.storyteller.core.sceneextend.PullDownExtender;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
@@ -47,7 +44,7 @@ public final class LineFadeUpIOEffect extends IOEffect {
     private boolean suspended = false;
 
     public LineFadeUpIOEffect(TweenEquation equation, int duration, boolean disappear) {
-        super(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender()));
+        super(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender(), new StateFlagsExtender()));
         this.equation = equation;
         this.duration = duration;
         this.disappear = disappear;
@@ -72,14 +69,19 @@ public final class LineFadeUpIOEffect extends IOEffect {
                 Vector2 position = (Vector2) actorData.get("position");
                 Integer line = (Integer) actorData.get("line");
                 Color color = (Color) actorData.get("color");
+                Map<String, Boolean> stateFlags = (Map<String, Boolean>) actorData.get("stateFlags");
 
                 if (GL == null || position == null)
                     continue;
 
                 if (line > highestLine) {
                     highestLine = line;
-                    suspended = false;
+                    //suspended = false;
                     System.out.println("highestLine="+highestLine);
+                }
+
+                if (suspended && scenePair.scene().isDirty()) {
+                    suspended = false;
                 }
 
                 if (!tweened && !suspended) {
