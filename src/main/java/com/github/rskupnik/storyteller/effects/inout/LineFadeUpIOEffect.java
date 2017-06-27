@@ -59,6 +59,17 @@ public final class LineFadeUpIOEffect extends IOEffect {
         if (data == null)
             return;
 
+        if (scenePair.scene().isDirty()) {
+            System.out.println("Scene is dirty");
+            if (suspended) {
+                System.out.println("UNSUSPENDED");
+                suspended = false;
+            }
+            tweened = false;
+            currentlyProcessedLine--;
+            System.out.println("CurrentLine: "+currentlyProcessedLine);
+        }
+
         boolean tweenedInternal = false;
         for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();
@@ -70,6 +81,7 @@ public final class LineFadeUpIOEffect extends IOEffect {
                 Integer line = (Integer) actorData.get("line");
                 Color color = (Color) actorData.get("color");
                 Map<String, Boolean> stateFlags = (Map<String, Boolean>) actorData.get("stateFlags");
+                boolean processed = stateFlags.get("processed") != null ? stateFlags.get("processed") : false;
 
                 if (GL == null || position == null)
                     continue;
@@ -80,12 +92,8 @@ public final class LineFadeUpIOEffect extends IOEffect {
                     System.out.println("highestLine="+highestLine);
                 }
 
-                if (suspended && scenePair.scene().isDirty()) {
-                    suspended = false;
-                }
-
                 if (!tweened && !suspended) {
-                    if (line == currentlyProcessedLine) {
+                    if (line == currentlyProcessedLine && !processed) {
                         System.out.println("Tweening line "+line);
                         Timeline.createSequence()
                                 .beginParallel()
@@ -102,10 +110,11 @@ public final class LineFadeUpIOEffect extends IOEffect {
                                 .start(tweenManager);
 
                         tweenedInternal = true;
+                        stateFlags.put("processed", true);
                     }
                 }
 
-                if (line <= currentlyProcessedLine)
+                if (line <= currentlyProcessedLine || processed)
                     font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
             }
         }

@@ -93,6 +93,7 @@ public final class Renderer {
         IOEffect ioEffect = stagePair.stage().getIOEffect();
         if (ioEffect != null) {
             ioEffect.render(delta, batch, font, tweenManager, scenePair);
+            scenePair.scene().setDirty(false);
             scenePair.internal().wasDrawn();
             return;
         }
