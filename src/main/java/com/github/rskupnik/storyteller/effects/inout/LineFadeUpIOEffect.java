@@ -30,16 +30,17 @@ public final class LineFadeUpIOEffect extends IOEffect {
     private final TweenEquation equation;
     private final int duration;
     private final int lingerTime = 0;
-    private final boolean disappear;
+    private final boolean disappearEnabled;
 
-    private boolean inProgress = false;     // Determines if any line is being tweened right now
+    private boolean inProgress = false;     // Determines if any line is being isAppearing right now
     //private boolean finished = false;       // Determines if the whole text is visible and done tweening
-    private int currentlyProcessedLine = 0;
+    private int currentlyProcessedLine = 1;
     private int disappearLineThreshold = -1;
     private long timestamp = 0;             // Needed to line the effects one after another
     private Map<Integer, Float> linePosition = new HashMap<>();
     private float yAdjust = 0;
-    private boolean tweened = false;
+    private boolean isAppearing = false;
+    private boolean isDisappearing = false;
     private int highestLine = 0;
     private boolean suspended = false;
 
@@ -47,7 +48,7 @@ public final class LineFadeUpIOEffect extends IOEffect {
         super(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender(), new StateFlagsExtender()));
         this.equation = equation;
         this.duration = duration;
-        this.disappear = disappear;
+        this.disappearEnabled = disappear;
     }
 
     @Override
@@ -65,12 +66,13 @@ public final class LineFadeUpIOEffect extends IOEffect {
                 System.out.println("UNSUSPENDED");
                 suspended = false;
             }
-            tweened = false;
+            isAppearing = false;
             currentlyProcessedLine--;
             System.out.println("CurrentLine: "+currentlyProcessedLine);
         }
 
-        boolean tweenedInternal = false;
+        boolean isAppearingInternal = false;
+        boolean isDisappearingInternal = false;
         for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();
             for (Fragment actorData : actorToDataPair.getValue1()) {
@@ -92,7 +94,7 @@ public final class LineFadeUpIOEffect extends IOEffect {
                     System.out.println("highestLine="+highestLine);
                 }
 
-                if (!tweened && !suspended) {
+                if (!isAppearing && !suspended) {
                     if (line == currentlyProcessedLine && !processed) {
                         System.out.println("Tweening line "+line);
                         Timeline.createSequence()
@@ -109,18 +111,42 @@ public final class LineFadeUpIOEffect extends IOEffect {
                                 .end()
                                 .start(tweenManager);
 
-                        tweenedInternal = true;
+                        isAppearingInternal = true;
                         stateFlags.put("processed", true);
                     }
                 }
 
-                if (line <= currentlyProcessedLine || processed)
+                if (disappearEnabled && !isDisappearing) {
+                    if (line == disappearLineThreshold) {
+                        System.out.println("Disappearing line: " + line);
+                        Timeline.createSequence()
+                                .beginParallel()
+                                .push(
+                                        Tween.to(position, Vector2Accessor.Y, duration / 1000f)
+                                                .target(position.y + 5)
+                                                .ease(equation)
+                                ).push(
+                                Tween.to(color, ColorAccessor.ALPHA, duration / 1000.0f)
+                                        .target(0f)
+                                        .ease(equation)
+                        )
+                                .end()
+                                .start(tweenManager);
+
+                        isDisappearingInternal = true;
+                    }
+                }
+
+                if ((line <= currentlyProcessedLine || processed) && line >= disappearLineThreshold)
                     font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
             }
         }
 
-        if (tweenedInternal)
-            tweened = true;
+        if (isAppearingInternal)
+            isAppearing = true;
+
+        if (isDisappearingInternal && disappearEnabled)
+            isDisappearing = true;
 
         if (System.currentTimeMillis() > timestamp) {
 
@@ -129,12 +155,18 @@ public final class LineFadeUpIOEffect extends IOEffect {
             else
                 suspended = true;
 
-            if (disappear)
-                disappearLineThreshold++;
+            isAppearing = false;
+
+            if (disappearEnabled) {
+                if (disappearLineThreshold != highestLine)
+                    disappearLineThreshold++;
+
+                isDisappearing = false;
+            }
 
             timestamp = System.currentTimeMillis() + duration;
-            tweened = false;
-            System.out.println("TICK, currentLine: "+currentlyProcessedLine);
+
+            System.out.println("TICK, currentLine: "+currentlyProcessedLine+"; disappearLine: "+disappearLineThreshold);
         }
     }
 
