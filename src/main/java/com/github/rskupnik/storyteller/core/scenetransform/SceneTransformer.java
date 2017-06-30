@@ -11,6 +11,7 @@ import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.peripheral.Stage;
+import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;

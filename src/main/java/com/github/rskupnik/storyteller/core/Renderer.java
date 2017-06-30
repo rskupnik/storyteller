@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
-import com.github.rskupnik.storyteller.core.scenetransform.Fragment;
+import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.effects.inout.IOEffect;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.aggregates.Commons;

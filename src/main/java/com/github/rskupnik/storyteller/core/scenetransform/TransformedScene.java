@@ -2,6 +2,7 @@ package com.github.rskupnik.storyteller.core.scenetransform;
 
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.structs.Fragment;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;

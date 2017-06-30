@@ -10,13 +10,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.core.sceneextend.*;
-import com.github.rskupnik.storyteller.core.scenetransform.Fragment;
+import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import org.javatuples.Pair;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

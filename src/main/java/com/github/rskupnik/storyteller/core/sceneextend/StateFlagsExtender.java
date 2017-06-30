@@ -1,7 +1,6 @@
 package com.github.rskupnik.storyteller.core.sceneextend;
 
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.github.rskupnik.storyteller.core.scenetransform.Fragment;
+import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import org.javatuples.Pair;

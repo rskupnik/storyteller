@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.rskupnik.storyteller.core.scenetransform.Fragment;
+import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
 import com.github.rskupnik.storyteller.core.sceneextend.CharSequenceExtender;
 import com.github.rskupnik.storyteller.core.sceneextend.ColorExtender;
