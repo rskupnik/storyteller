@@ -33,17 +33,16 @@ public final class LineFadeUpIOEffect extends IOEffect {
     private final int disappearInterval;
     private final boolean disappearEnabled;
 
-    // TODO: Comment these and the algorithm
-    private int currentlyProcessedLine_Appear = 1;
-    private int currentlyProcessedLine_Disappear = -1;
-    private long timestampAppear = 0;
-    private long timestampDisappear = 0;
-    private boolean isAppearing = false;
+    private int currentlyProcessedLine_Appear = 1;              // Denotes the line currently being processed by the appear part
+    private int currentlyProcessedLine_Disappear = -1;          // Same but for the disappear part
+    private long timestampAppear = 0;                           // Used to fire the algorithm in equal period of time
+    private long timestampDisappear = 0;                        // Same but for the disappear part
+    private boolean isAppearing = false;                        // Set to true if a text is being tweened right now to avoid processing the other ones
     private boolean isDisappearing = false;
-    private int highestLine = 0;
-    private boolean appearingSuspended = false;
-    private boolean disappearingSuspended = false;
-    private Vector2 offset = new Vector2(0, 0);
+    private int highestLine = 0;                                // Stored to determine when the algorithm has processed all the lines
+    private boolean appearingSuspended = false;                 // Denotes whether appearing part is suspended
+    private boolean disappearingSuspended = false;              // Same but for disappearing
+    private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
 
     public LineFadeUpIOEffect(TweenEquation equation, int duration, int appearInterval, int disappearInterval) {
         super(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender(), new StateFlagsExtender()));
@@ -80,7 +79,7 @@ public final class LineFadeUpIOEffect extends IOEffect {
             //currentlyProcessedLine_Disappear--;
         }
 
-        boolean isAppearingInternal = false;
+        boolean isAppearingInternal = false;    // These are set if at least one fragment is processed, based on those the larger flags are set later
         boolean isDisappearingInternal = false;
         for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();
@@ -99,13 +98,12 @@ public final class LineFadeUpIOEffect extends IOEffect {
 
                 if (line > highestLine) {
                     highestLine = line;
-                    //appearingSuspended = false;
-                    System.out.println("highestLine="+highestLine);
                 }
 
+                //region Process Appearing Part
                 if (!isAppearing && !appearingSuspended) {
                     if (line == currentlyProcessedLine_Appear && !processed) {
-                        System.out.println("Tweening line "+line);
+                        // Float-up and fade-in
                         Timeline.createSequence()
                                 .beginParallel()
                                 .push(
@@ -124,10 +122,12 @@ public final class LineFadeUpIOEffect extends IOEffect {
                         stateFlags.put("processed", true);
                     }
                 }
+                //endregion
 
+                //region Process Disappearing Part
                 if (disappearEnabled && !isDisappearing && !disappearingSuspended) {
                     if (line == currentlyProcessedLine_Disappear) {
-                        System.out.println("Disappearing line: " + line);
+                        // Fade-out. The float-up part is handled by adjusting the offset variable
                         Tween.to(color, ColorAccessor.ALPHA, duration / 1000.0f)
                                 .target(0f)
                                 .ease(equation)
@@ -135,6 +135,7 @@ public final class LineFadeUpIOEffect extends IOEffect {
                         isDisappearingInternal = true;
                     }
                 }
+                //endregion
 
                 if ((line <= currentlyProcessedLine_Appear || processed) && line >= currentlyProcessedLine_Disappear)
                     font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset() + offset.y);
@@ -147,12 +148,13 @@ public final class LineFadeUpIOEffect extends IOEffect {
         if (isDisappearingInternal && disappearEnabled)
             isDisappearing = true;
 
+        //region Manage Disappear Part
         if (disappearEnabled && System.currentTimeMillis() > timestampDisappear) {
 
             if (currentlyProcessedLine_Disappear != highestLine) {
                 currentlyProcessedLine_Disappear++;
 
-                if (currentlyProcessedLine_Disappear > 0) {
+                if (currentlyProcessedLine_Disappear > 0) { // Increase the offset to make the whole text move and new text to be added with the offset included
                     Tween.to(offset, Vector2Accessor.Y, duration / 1000f)
                             .target(offset.y + 18)
                             .ease(equation)
@@ -162,10 +164,11 @@ public final class LineFadeUpIOEffect extends IOEffect {
                 disappearingSuspended = true;
 
             isDisappearing = false;
-
             timestampDisappear = System.currentTimeMillis() + disappearInterval;
         }
+        //endregion
 
+        //region Manage Appear Part
         if (System.currentTimeMillis() > timestampAppear) {
 
             if (currentlyProcessedLine_Appear != highestLine+1)
@@ -174,10 +177,8 @@ public final class LineFadeUpIOEffect extends IOEffect {
                 appearingSuspended = true;
 
             isAppearing = false;
-
             timestampAppear = System.currentTimeMillis() + appearInterval;
-
-            System.out.println("TICK, currentLine: "+ currentlyProcessedLine_Appear +"; disappearLine: "+ currentlyProcessedLine_Disappear);
         }
+        //endregion
     }
 }
