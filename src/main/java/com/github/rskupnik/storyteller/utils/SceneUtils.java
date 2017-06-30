@@ -2,9 +2,11 @@ package com.github.rskupnik.storyteller.utils;
 
 import com.github.rskupnik.storyteller.core.scenetransform.SceneTransformer;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
+import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class SceneUtils {
 
@@ -25,5 +27,10 @@ public class SceneUtils {
             stagePair.stage().getIOEffect().getChain().apply(transformedScene);
         //scenePair.scene().setDirty(false);
         scenePair.internal().setTransformedScene(transformedScene);
+    }
+
+    // TODO: Implement this
+    public int extractLineHeight(Scene scene) {
+        throw new NotImplementedException();
     }
 }
