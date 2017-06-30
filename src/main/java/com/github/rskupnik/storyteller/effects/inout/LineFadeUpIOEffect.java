@@ -62,22 +62,21 @@ public final class LineFadeUpIOEffect extends IOEffect {
         if (data == null)
             return;
 
+        //region Handle Dirty Scene
         if (scenePair.scene().isDirty()) {  // When the scene is dirty, need to un-suspend the algorithm.
-            System.out.println("Scene is dirty");
-            if (appearingSuspended) {
-                System.out.println("UNSUSPENDED");
+            if (appearingSuspended)
                 appearingSuspended = false;
-            }
+
             isAppearing = false;
             currentlyProcessedLine_Appear--;    // Why is this decreased?
-            System.out.println("CurrentLine: "+ currentlyProcessedLine_Appear);
 
-            if (disappearingSuspended) {
+            if (disappearingSuspended)
                 disappearingSuspended = false;
-            }
+
             isDisappearing = false;
             //currentlyProcessedLine_Disappear--;
         }
+        //endregion
 
         boolean isAppearingInternal = false;    // These are set if at least one fragment is processed, based on those the larger flags are set later
         boolean isDisappearingInternal = false;
@@ -93,7 +92,7 @@ public final class LineFadeUpIOEffect extends IOEffect {
                 Map<String, Boolean> stateFlags = (Map<String, Boolean>) actorData.get("stateFlags");
                 boolean processed = stateFlags.get("processed") != null ? stateFlags.get("processed") : false;
 
-                if (GL == null || position == null)
+                if (GL == null || position == null || line == null || stateFlags == null)
                     continue;
 
                 if (line > highestLine) {
