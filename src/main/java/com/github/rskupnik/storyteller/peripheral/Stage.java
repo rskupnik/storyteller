@@ -3,7 +3,7 @@ package com.github.rskupnik.storyteller.peripheral;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
-import com.github.rskupnik.storyteller.effects.inout.IOEffect;
+import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 
 public final class Stage {
@@ -11,7 +11,7 @@ public final class Stage {
     private String id;
     private Rectangle rectangle;
 
-    private IOEffect IOEffect;
+    private RenderingUnit RenderingUnit;
     private TextEffects textEffects = new TextEffects();    // TextEffects can be defined for the whole engine or for a single Stage
 
     private Vector2 topLeft;
@@ -40,12 +40,12 @@ public final class Stage {
         return width;
     }
 
-    public IOEffect getIOEffect() {
-        return IOEffect;
+    public RenderingUnit getRenderingUnit() {
+        return RenderingUnit;
     }
 
-    private void setIOEffect(IOEffect IOEffect) {
-        this.IOEffect = IOEffect;
+    private void setRenderingUnit(RenderingUnit renderingUnit) {
+        this.RenderingUnit = renderingUnit;
     }
 
     public TextEffects getTextEffects() {
@@ -77,8 +77,8 @@ public final class Stage {
             this.stage = new Stage(id, new Rectangle(bottomLeft.x, bottomLeft.y, dimensions.x, dimensions.y));
         }
 
-        public StageBuilder withAppearEffect(IOEffect IOEffect) {
-            stage.setIOEffect(IOEffect);
+        public StageBuilder withAppearEffect(RenderingUnit RenderingUnit) {
+            stage.setRenderingUnit(RenderingUnit);
             return this;
         }
 

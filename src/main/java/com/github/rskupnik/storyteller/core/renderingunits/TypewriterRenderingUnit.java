@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.effects.inout;
+package com.github.rskupnik.storyteller.core.renderingunits;
 
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Color;
@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class TypewriterIOEffect extends IOEffect {
+public final class TypewriterRenderingUnit extends RenderingUnit {
 
     private Typewriter typewriter;
     private Map<Actor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
 
-    public TypewriterIOEffect() {
+    public TypewriterRenderingUnit() {
         super(ExtenderChain.from(new CharSequenceExtender(), new ColorExtender()));
         typewriter = new Typewriter();
         typewriter.getAppender().set(new CharSequence[] {""}, new float[] {0});

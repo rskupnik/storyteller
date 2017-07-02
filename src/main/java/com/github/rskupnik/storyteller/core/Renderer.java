@@ -12,8 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
+import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit;
 import com.github.rskupnik.storyteller.structs.Fragment;
-import com.github.rskupnik.storyteller.effects.inout.IOEffect;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
@@ -89,16 +89,16 @@ public final class Renderer {
         if (!stagePair.notNull())
             throw new IllegalStateException("Cannot render a scene without a stage. Scene passed: "+scenePair.scene().getId());
 
-        // If an IOEffect is defined, use it, otherwise continue to default rendering
-        IOEffect ioEffect = stagePair.stage().getIOEffect();
-        if (ioEffect != null) {
-            ioEffect.render(delta, batch, font, tweenManager, scenePair);
+        // If an RenderingUnit is defined, use it, otherwise continue to default rendering
+        RenderingUnit renderingUnit = stagePair.stage().getRenderingUnit();
+        if (renderingUnit != null) {
+            renderingUnit.render(delta, batch, font, tweenManager, scenePair);
             scenePair.scene().setDirty(false);
             scenePair.internal().wasDrawn();
             return;
         }
 
-        // This is the default rendering used if no IOEffect is defined
+        // This is the default rendering used if no RenderingUnit is defined
         // TODO: Pull this out to a BasicRenderer class or sth to be consistent
         for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();

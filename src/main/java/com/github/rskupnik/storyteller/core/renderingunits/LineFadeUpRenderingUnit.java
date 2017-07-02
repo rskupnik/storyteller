@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.effects.inout;
+package com.github.rskupnik.storyteller.core.renderingunits;
 
 import aurelienribon.tweenengine.*;
 import com.badlogic.gdx.graphics.Color;
@@ -24,7 +24,7 @@ import java.util.Map;
  * which line does each GL belong to.
  */
 // TODO: Rename this line of classes to RenderingUnit(s) and make them internal - they should be created via initializer stub with settings only
-public final class LineFadeUpIOEffect extends IOEffect {
+public final class LineFadeUpRenderingUnit extends RenderingUnit {
 
     private final TweenEquation equation;
     private final int duration;
@@ -43,7 +43,7 @@ public final class LineFadeUpIOEffect extends IOEffect {
     private boolean disappearingSuspended = false;              // Same but for disappearing
     private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
 
-    public LineFadeUpIOEffect(TweenEquation equation, int duration, int appearInterval, int disappearInterval) {
+    public LineFadeUpRenderingUnit(TweenEquation equation, int duration, int appearInterval, int disappearInterval) {
         super(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender(), new StateFlagsExtender()));
         this.equation = equation;
         this.duration = duration;

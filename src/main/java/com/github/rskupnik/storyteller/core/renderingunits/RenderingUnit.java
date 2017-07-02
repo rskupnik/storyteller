@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.effects.inout;
+package com.github.rskupnik.storyteller.core.renderingunits;
 
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,11 +9,11 @@ import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 /**
  * Group of classes that decide how text will appear on the Stage and disappear from it.
  */
-public abstract class IOEffect {
+public abstract class RenderingUnit {
 
     private ExtenderChain chain;
 
-    public IOEffect(ExtenderChain chain) {
+    public RenderingUnit(ExtenderChain chain) {
         this.chain = chain;
     }
 
