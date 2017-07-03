@@ -89,8 +89,8 @@ public final class Renderer {
         if (!stagePair.notNull())
             throw new IllegalStateException("Cannot render a scene without a stage. Scene passed: "+scenePair.scene().getId());
 
-        // If an RenderingUnit is defined, use it, otherwise continue to default rendering
-        RenderingUnit renderingUnit = stagePair.stage().getRenderingUnit();
+        // If an LineFadeFloatInitializer is defined, use it, otherwise continue to default rendering
+        RenderingUnit renderingUnit = stagePair.internal().getRenderingUnit();
         if (renderingUnit != null) {
             renderingUnit.render(delta, batch, font, tweenManager, scenePair);
             scenePair.scene().setDirty(false);
@@ -98,7 +98,7 @@ public final class Renderer {
             return;
         }
 
-        // This is the default rendering used if no RenderingUnit is defined
+        // This is the default rendering used if no LineFadeFloatInitializer is defined
         // TODO: Pull this out to a BasicRenderer class or sth to be consistent
         for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
             Actor actor = actorToDataPair.getValue0();

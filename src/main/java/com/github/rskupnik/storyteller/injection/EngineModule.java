@@ -5,12 +5,11 @@ import com.github.rskupnik.storyteller.*;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
+import com.github.rskupnik.storyteller.core.renderingunits.factory.IRenderingUnitFactory;
+import com.github.rskupnik.storyteller.core.renderingunits.factory.RenderingUnitFactory;
 import com.github.rskupnik.storyteller.core.scenetransform.SceneTransformer;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Scopes;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 public final class EngineModule extends AbstractModule {
 
@@ -27,6 +26,12 @@ public final class EngineModule extends AbstractModule {
         bind(Clickables.class).in(Scopes.SINGLETON);
         bind(SceneTransformer.class).in(Scopes.SINGLETON);
         bind(SceneUtils.class).in(Scopes.SINGLETON);
+        bind(IRenderingUnitFactory.class).to(RenderingUnitFactory.class);
+        /*install(new FactoryModuleBuilder()
+                .implement(IRenderingUnit.class, LineFadeFloatRenderingUnit.class)
+                .build(IRenderingUnitFactory.class)
+        );*/
+
     }
 
     @Provides

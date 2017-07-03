@@ -23,8 +23,8 @@ public class SceneUtils {
                 sceneTransformer.transform(scenePair) :
                 sceneTransformer.transform(existingScene, scenePair);
 
-        if (stagePair.stage().getRenderingUnit() != null)
-            stagePair.stage().getRenderingUnit().getChain().apply(transformedScene);
+        if (stagePair.internal().getRenderingUnit() != null)
+            stagePair.internal().getRenderingUnit().getChain().apply(transformedScene);
         //scenePair.scene().setDirty(false);
         scenePair.internal().setTransformedScene(transformedScene);
     }

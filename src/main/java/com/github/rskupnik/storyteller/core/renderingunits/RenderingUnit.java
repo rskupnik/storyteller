@@ -3,6 +3,7 @@ package com.github.rskupnik.storyteller.core.renderingunits;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 
@@ -13,7 +14,7 @@ public abstract class RenderingUnit {
 
     private ExtenderChain chain;
 
-    public RenderingUnit(ExtenderChain chain) {
+    protected RenderingUnit(ExtenderChain chain) {
         this.chain = chain;
     }
 

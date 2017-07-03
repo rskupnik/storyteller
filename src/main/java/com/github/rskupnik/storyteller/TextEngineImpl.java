@@ -11,6 +11,7 @@ import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
+import com.github.rskupnik.storyteller.core.renderingunits.factory.IRenderingUnitFactory;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.Scene;
@@ -39,6 +40,7 @@ public final class TextEngineImpl implements TextEngine {
     @Inject private Commons commons;
     @Inject private Clickables clickables;
     @Inject private SceneUtils sceneUtils;
+    @Inject private IRenderingUnitFactory renderingUnitFactory;
 
     void init(Injector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
@@ -114,7 +116,9 @@ public final class TextEngineImpl implements TextEngine {
 
     @Override
     public void addStage(Stage stage) {
-        stages.add(new StagePair(stage, new InternalStage()));
+        InternalStage internalStage = new InternalStage();
+        internalStage.setRenderingUnit(renderingUnitFactory.create(stage.getRenderingUnitInitializer()));
+        stages.add(new StagePair(stage, internalStage));
     }
 
     @Override

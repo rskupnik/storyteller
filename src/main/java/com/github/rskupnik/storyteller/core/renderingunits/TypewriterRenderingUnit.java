@@ -6,12 +6,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.rskupnik.storyteller.structs.Fragment;
-import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
+import com.github.rskupnik.storyteller.core.renderingunits.initializers.TypewriterInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.CharSequenceExtender;
 import com.github.rskupnik.storyteller.core.sceneextend.ColorExtender;
-import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
+import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import net.dermetfan.gdx.Typewriter;
 import org.javatuples.Pair;
@@ -26,11 +27,11 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
     private Typewriter typewriter;
     private Map<Actor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
 
-    public TypewriterRenderingUnit() {
+    public TypewriterRenderingUnit(TypewriterInitializer initializer) {
         super(ExtenderChain.from(new CharSequenceExtender(), new ColorExtender()));
         typewriter = new Typewriter();
         typewriter.getAppender().set(new CharSequence[] {""}, new float[] {0});
-        typewriter.setCharsPerSecond(20);
+        typewriter.setCharsPerSecond(initializer.getCharsPerSecond());
     }
 
     @Override

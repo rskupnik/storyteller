@@ -1,6 +1,9 @@
 package com.github.rskupnik.storyteller.core.renderingunits;
 
-import aurelienribon.tweenengine.*;
+import aurelienribon.tweenengine.Timeline;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenEquation;
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -9,10 +12,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
+import com.github.rskupnik.storyteller.core.renderingunits.initializers.LineFadeFloatInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.*;
-import com.github.rskupnik.storyteller.structs.Fragment;
-import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
+import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import org.javatuples.Pair;
 
@@ -23,8 +27,7 @@ import java.util.Map;
  * In order to apply this effect we need to store additional information about
  * which line does each GL belong to.
  */
-// TODO: Rename this line of classes to RenderingUnit(s) and make them internal - they should be created via initializer stub with settings only
-public final class LineFadeUpRenderingUnit extends RenderingUnit {
+public final class LineFadeFloatRenderingUnit extends com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit {
 
     private final TweenEquation equation;
     private final int duration;
@@ -43,12 +46,12 @@ public final class LineFadeUpRenderingUnit extends RenderingUnit {
     private boolean disappearingSuspended = false;              // Same but for disappearing
     private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
 
-    public LineFadeUpRenderingUnit(TweenEquation equation, int duration, int appearInterval, int disappearInterval) {
+    public LineFadeFloatRenderingUnit(LineFadeFloatInitializer initializer) {
         super(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender(), new StateFlagsExtender()));
-        this.equation = equation;
-        this.duration = duration;
-        this.appearInterval = appearInterval;
-        this.disappearInterval = disappearInterval;
+        this.equation = initializer.getEquation();
+        this.duration = initializer.getDuration();
+        this.appearInterval = initializer.getAppearInterval();
+        this.disappearInterval = initializer.getDisappearInterval();
         this.disappearEnabled = disappearInterval > 0;
     }
 
