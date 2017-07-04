@@ -69,6 +69,7 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
 
                 if (touched.x >= rect.getX() && touched.x <= rect.getX() + rect.getWidth() &&
                         touched.y <= rect.getY() + offsetY && touched.y >= rect.getY() - rect.getHeight() + offsetY) {
+                    System.out.println("RECT: "+rect);
                     ClickListener listener = listeners.clickListener;
                     if (listener != null) {
                         listener.onActorClicked(actor, new Vector2(touched.x, touched.y), button);
