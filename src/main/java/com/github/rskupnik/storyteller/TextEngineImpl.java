@@ -48,7 +48,7 @@ public final class TextEngineImpl implements TextEngine {
 
         addStage(stage);
 
-        renderer.init(font);
+        renderer.init();
         inputHandler.init(renderer.getCamera());
 
         Tween.registerAccessor(InternalActor.class, new ActorAccessor());
@@ -117,7 +117,7 @@ public final class TextEngineImpl implements TextEngine {
     @Override
     public void addStage(Stage stage) {
         InternalStage internalStage = new InternalStage();
-        internalStage.setRenderingUnit(renderingUnitFactory.create(stage.getRenderingUnitInitializer()));
+        internalStage.setRenderingUnit(renderingUnitFactory.create(injector, stage.getRenderingUnitInitializer()));
         stages.add(new StagePair(stage, internalStage));
     }
 

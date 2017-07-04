@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.rskupnik.storyteller.aggregates.Commons;
+import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.renderingunits.initializers.TypewriterInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.CharSequenceExtender;
 import com.github.rskupnik.storyteller.core.sceneextend.ColorExtender;
@@ -14,6 +16,7 @@ import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
+import com.google.inject.Inject;
 import net.dermetfan.gdx.Typewriter;
 import org.javatuples.Pair;
 
@@ -24,19 +27,25 @@ import java.util.Map;
 
 public final class TypewriterRenderingUnit extends RenderingUnit {
 
+    @Inject private Commons commons;
+    @Inject private TweenManager tweenManager;
+
     private Typewriter typewriter;
     private Map<Actor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
 
-    public TypewriterRenderingUnit(TypewriterInitializer initializer) {
-        super(ExtenderChain.from(new CharSequenceExtender(), new ColorExtender()));
+    @Override
+    public void init(RenderingUnitInitializer initializer) {
+        setChain(ExtenderChain.from(new CharSequenceExtender(), new ColorExtender()));
+
+        TypewriterInitializer initializerTW = (TypewriterInitializer) initializer;
         typewriter = new Typewriter();
         typewriter.getAppender().set(new CharSequence[] {""}, new float[] {0});
-        typewriter.setCharsPerSecond(initializer.getCharsPerSecond());
+        typewriter.setCharsPerSecond(initializerTW.getCharsPerSecond());
     }
 
     @Override
-    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager, ScenePair scenePair) {
-        if (font == null || batch == null)
+    public void render(float delta, ScenePair scenePair) {
+        if (commons.font == null || commons.batch == null)
             return; // Throw exception?
 
         TransformedScene data = scenePair.internal().getTransformedScene();
@@ -79,11 +88,11 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
                     continue;
 
                 // Draw the GL
-                Color prevColor = font.getColor();
-                font.setColor(color != null ? color : prevColor);
+                Color prevColor = commons.font.getColor();
+                commons.font.setColor(color != null ? color : prevColor);
 
                 if (isProcessed(actor, j)) {    // If this fragment is already processed, draw it as is
-                    font.draw(batch, str, position.x, position.y + actor.getInternalActor().getYOffset());
+                    commons.font.draw(commons.batch, str, position.x, position.y + actor.getInternalActor().getYOffset());
                     j++;
                     continue;
                 } else {
@@ -98,7 +107,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
                     }
 
                     CharSequence cs = typewriter.updateAndType(str, delta);
-                    font.draw(batch, cs, position.x, position.y + actor.getInternalActor().getYOffset());
+                    commons.font.draw(commons.batch, cs, position.x, position.y + actor.getInternalActor().getYOffset());
 
                     if (cs.length() == str.length()) {  // Check if processing of the fragment is finished
                         List<Integer> actorsProcessedIndices = processingMap.get(actor);
@@ -113,7 +122,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
                     }
                 }
 
-                font.setColor(prevColor);
+                commons.font.setColor(prevColor);
 
                 j++;
             }

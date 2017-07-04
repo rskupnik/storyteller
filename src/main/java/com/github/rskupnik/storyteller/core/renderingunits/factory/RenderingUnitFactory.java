@@ -6,16 +6,23 @@ import com.github.rskupnik.storyteller.core.renderingunits.TypewriterRenderingUn
 import com.github.rskupnik.storyteller.core.renderingunits.initializers.LineFadeFloatInitializer;
 import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.renderingunits.initializers.TypewriterInitializer;
+import com.google.inject.Injector;
 
 public class RenderingUnitFactory implements IRenderingUnitFactory {
 
     @Override
-    public RenderingUnit create(RenderingUnitInitializer initializer) {
+    public RenderingUnit create(Injector injector, RenderingUnitInitializer initializer) {
+        RenderingUnit ru = null;
         if (initializer instanceof LineFadeFloatInitializer)
-            return new LineFadeFloatRenderingUnit((LineFadeFloatInitializer) initializer);
+            ru = injector.getInstance(LineFadeFloatRenderingUnit.class);
         else if (initializer instanceof TypewriterInitializer)
-            return new TypewriterRenderingUnit((TypewriterInitializer) initializer);
+            ru = injector.getInstance(TypewriterRenderingUnit.class);
         else
             throw new IllegalArgumentException("Unknown RenderingUnitInitializer passed: "+initializer.getClass());
+
+        if (ru != null)
+            ru.init(initializer);
+
+        return ru;
     }
 }

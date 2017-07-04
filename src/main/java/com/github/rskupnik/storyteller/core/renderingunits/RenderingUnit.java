@@ -14,11 +14,13 @@ public abstract class RenderingUnit {
 
     private ExtenderChain chain;
 
-    protected RenderingUnit(ExtenderChain chain) {
+    public abstract void init(RenderingUnitInitializer initializer);
+
+    public abstract void render(float delta, ScenePair scenePair);
+
+    protected void setChain(ExtenderChain chain) {
         this.chain = chain;
     }
-
-    public abstract void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager, ScenePair scenePair);
 
     public ExtenderChain getChain() {
         return chain;

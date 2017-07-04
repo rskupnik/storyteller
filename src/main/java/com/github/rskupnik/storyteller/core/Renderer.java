@@ -40,17 +40,17 @@ public final class Renderer {
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Viewport viewport;
-    private BitmapFont font;
 
-    public void init(BitmapFont font) {
-        this.font = font;
-        font.getData().markupEnabled = true;
+    public void init() {
+        //commons.font.getData().markupEnabled = true;
 
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply(true);
+
+        commons.batch = batch;
     }
 
     public void render(float delta) {
@@ -92,7 +92,7 @@ public final class Renderer {
         // If an LineFadeFloatInitializer is defined, use it, otherwise continue to default rendering
         RenderingUnit renderingUnit = stagePair.internal().getRenderingUnit();
         if (renderingUnit != null) {
-            renderingUnit.render(delta, batch, font, tweenManager, scenePair);
+            renderingUnit.render(delta, scenePair);
             scenePair.scene().setDirty(false);
             scenePair.internal().wasDrawn();
             return;

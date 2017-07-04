@@ -12,12 +12,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
+import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.core.renderingunits.initializers.LineFadeFloatInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.*;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
+import com.google.inject.Inject;
 import org.javatuples.Pair;
 
 import java.util.List;
@@ -27,13 +30,16 @@ import java.util.Map;
  * In order to apply this effect we need to store additional information about
  * which line does each GL belong to.
  */
-public final class LineFadeFloatRenderingUnit extends com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit {
+public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
-    private final TweenEquation equation;
-    private final int duration;
-    private final int appearInterval;
-    private final int disappearInterval;
-    private final boolean disappearEnabled;
+    @Inject private Commons commons;
+    @Inject private TweenManager tweenManager;
+
+    private TweenEquation equation;
+    private int duration;
+    private int appearInterval;
+    private int disappearInterval;
+    private boolean disappearEnabled;
 
     private int currentlyProcessedLine_Appear = 1;              // Denotes the line currently being processed by the appear part
     private int currentlyProcessedLine_Disappear = -1;          // Same but for the disappear part
@@ -46,18 +52,21 @@ public final class LineFadeFloatRenderingUnit extends com.github.rskupnik.storyt
     private boolean disappearingSuspended = false;              // Same but for disappearing
     private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
 
-    public LineFadeFloatRenderingUnit(LineFadeFloatInitializer initializer) {
-        super(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender(), new StateFlagsExtender()));
-        this.equation = initializer.getEquation();
-        this.duration = initializer.getDuration();
-        this.appearInterval = initializer.getAppearInterval();
-        this.disappearInterval = initializer.getDisappearInterval();
+    @Override
+    public void init(RenderingUnitInitializer initializer) {
+        setChain(ExtenderChain.from(new LineExtender(), new ColorToTransparentExtender(), new PullDownExtender(), new StateFlagsExtender()));
+
+        LineFadeFloatInitializer initializerLFF = (LineFadeFloatInitializer) initializer;
+        this.equation = initializerLFF.getEquation();
+        this.duration = initializerLFF.getDuration();
+        this.appearInterval = initializerLFF.getAppearInterval();
+        this.disappearInterval = initializerLFF.getDisappearInterval();
         this.disappearEnabled = disappearInterval > 0;
     }
 
     @Override
-    public void render(float delta, SpriteBatch batch, BitmapFont font, TweenManager tweenManager, ScenePair scenePair) {
-        if (font == null || batch == null)
+    public void render(float delta, ScenePair scenePair) {
+        if (commons.font == null || commons.batch == null)
             return; // Throw exception?
 
         TransformedScene data = scenePair.internal().getTransformedScene();
@@ -139,7 +148,7 @@ public final class LineFadeFloatRenderingUnit extends com.github.rskupnik.storyt
                 //endregion
 
                 if ((line <= currentlyProcessedLine_Appear || processed) && line >= currentlyProcessedLine_Disappear)
-                    font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset() + offset.y);
+                    commons.font.draw(commons.batch, GL, position.x, position.y + actor.getInternalActor().getYOffset() + offset.y);
             }
         }
 
