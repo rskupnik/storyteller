@@ -2,9 +2,9 @@ package com.github.rskupnik.storyteller.structs;
 
 import java.util.HashMap;
 
-public abstract class DataBank extends HashMap<String, Object> {
+public abstract class DataBank<T> extends HashMap<String, T> {
 
-    public DataBank with(String id, Object item) {
+    public DataBank with(String id, T item) {
         put(id, item);
         return this;
     }

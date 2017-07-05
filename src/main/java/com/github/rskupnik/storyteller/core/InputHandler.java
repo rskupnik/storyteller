@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
+import com.github.rskupnik.storyteller.aggregates.NamedOffsets;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.Actor;
@@ -16,7 +17,9 @@ import com.github.rskupnik.storyteller.structs.State;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.google.inject.Inject;
+import org.javatuples.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,7 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
     @Inject private Clickables clickables;
     @Inject private TextEffects textEffects;
     @Inject private TweenManager tweenManager;
+    @Inject private NamedOffsets namedOffsets;
 
     private Camera camera;
 
@@ -57,6 +61,7 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
         Vector3 touched = camera.unproject(new Vector3(screenX, screenY, 0));
         System.out.println("Clicked: "+touched);
         for (Map.Entry<ScenePair, List<Clickable>> sceneToClickableListEntry : clickables.entrySet()) {
+            Vector2 offset = namedOffsets.get("LFF-offset-"+sceneToClickableListEntry.getKey().scene().getId());
             for (Clickable clickable : sceneToClickableListEntry.getValue()) {
                 Rectangle rect = clickable.rectangle();
                 Actor actor = clickable.actor();
@@ -65,11 +70,9 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
                 if (rect == null || actor == null)
                     continue;
 
-                int offsetY = state.get("offsetY") != null ? (int) state.get("offsetY") : 0;
-
                 if (touched.x >= rect.getX() && touched.x <= rect.getX() + rect.getWidth() &&
-                        touched.y <= rect.getY() + offsetY && touched.y >= rect.getY() - rect.getHeight() + offsetY) {
-                    System.out.println("RECT: "+rect);
+                        touched.y <= rect.getY() + offset.y && touched.y >= rect.getY() - rect.getHeight() + offset.y) {
+
                     ClickListener listener = listeners.clickListener;
                     if (listener != null) {
                         listener.onActorClicked(actor, new Vector2(touched.x, touched.y), button);

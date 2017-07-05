@@ -51,7 +51,9 @@ public class Clickables extends HashMap<ScenePair, List<Clickable>> {
     }
 
     public void clearClickables(ScenePair scene) {
-        this.get(scene).clear();
+        List<Clickable> clickables = this.get(scene);
+        if (clickables != null)
+            clickables.clear();
     }
 
     public void removeScene(ScenePair scene) {
