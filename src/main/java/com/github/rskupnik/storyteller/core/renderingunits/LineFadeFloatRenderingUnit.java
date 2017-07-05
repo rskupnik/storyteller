@@ -23,6 +23,7 @@ import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.structs.Clickable;
 import com.github.rskupnik.storyteller.structs.Fragment;
+import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
@@ -42,6 +43,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
     @Inject private TweenManager tweenManager;
     @Inject private Clickables clickables;
     @Inject private NamedOffsets namedOffsets;
+    private SceneUtils sceneUtils = new SceneUtils();
 
     private TweenEquation equation;
     private int duration;
@@ -59,6 +61,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
     private boolean appearingSuspended = false;                 // Denotes whether appearing part is suspended
     private boolean disappearingSuspended = false;              // Same but for disappearing
     private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
+    private int lineHeight = 0;
 
     @Override
     public void init(RenderingUnitInitializer initializer) {
@@ -80,6 +83,11 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         TransformedScene data = scenePair.internal().getTransformedScene();
         if (data == null)
             return;
+
+        if (lineHeight == 0) {
+            lineHeight = sceneUtils.extractLargestLineHeight(data);
+            System.out.println("LINE HEIGHT: "+lineHeight);
+        }
 
         //region Handle Dirty Scene
         if (scenePair.scene().isDirty()) {  // When the scene is dirty, need to un-suspend the algorithm.
@@ -180,7 +188,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
                 if (currentlyProcessedLine_Disappear > 0) { // Increase the offset to make the whole text move and new text to be added with the offset included
                     Tween.to(offset, Vector2Accessor.Y, duration / 1000f)
-                            .target(offset.y + 18)
+                            .target(offset.y + lineHeight)
                             .ease(equation)
                             .start(tweenManager);
                 }
