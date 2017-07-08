@@ -77,5 +77,10 @@ public final class Scene {
             scene.addActor(Actor.newActor(" ").build());
             return this;
         }
+
+        public SceneBuilder newLine() {
+            scene.addActor(Actor.newActor("\n").build());
+            return this;
+        }
     }
 }

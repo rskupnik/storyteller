@@ -47,7 +47,7 @@ public final class SceneTransformer {
             y = (int) cursor.y;
         } else {
             x = (int) stage.getTopLeft().x;
-            y = (int) stage.getTopLeft().y;
+            y = (int) stage.getTopLeft().y;// - (int) commons.font.getData().lineHeight;
         }
         firstLine = savedIsFirstLine != null ? savedIsFirstLine : true;
 
@@ -65,6 +65,14 @@ public final class SceneTransformer {
     }
 
     private void trn(TransformedScene output, Actor actor, ScenePair scenePair, BitmapFont font, Stage stage) {
+        // Handle a newline - simply adjust placement markers and set the actor as processed
+        if (actor.getText().equals("\n")) {
+            x = (int) stage.getTopLeft().x;
+            y -= commons.font.getData().lineHeight;
+            actor.getInternalActor().setTransformed(true);
+            return;
+        }
+
         List<Fragment> fragments = new ArrayList<>();
 
         // We need to produce the whole text first to see how LibGDX plans to structure it and do some adjusting if needed
@@ -155,7 +163,7 @@ public final class SceneTransformer {
                         true
                 );
 
-                rect = new Rectangle(stage.getTopLeft().x, stage.getTopLeft().y - GL_body.height - GR_tail.glyphs.get(0).height, GR_tail.width, GR_tail.glyphs.get(0).height);
+                rect = new Rectangle(stage.getTopLeft().x, y - commons.font.getData().lineHeight /*- GL_tail.height*/ /*+ GR_tail.glyphs.get(0).height*/, GR_tail.width, GR_tail.glyphs.get(0).height);
                 clickables.addClickable(scenePair, rect, actor, GL_tail);
 
                 tailFragment = (Fragment) new Fragment()
