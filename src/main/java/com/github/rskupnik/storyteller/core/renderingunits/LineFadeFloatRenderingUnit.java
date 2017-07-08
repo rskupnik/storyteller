@@ -188,7 +188,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
                 if (currentlyProcessedLine_Disappear > 0) { // Increase the offset to make the whole text move and new text to be added with the offset included
                     Tween.to(offset, Vector2Accessor.Y, duration / 1000f)
-                            .target(offset.y + lineHeight)
+                            .target(offset.y + commons.font.getData().lineHeight + commons.font.getData().blankLineScale)
                             .ease(equation)
                             .start(tweenManager);
                 }

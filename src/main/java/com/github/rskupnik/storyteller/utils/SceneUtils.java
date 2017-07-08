@@ -36,6 +36,7 @@ public class SceneUtils {
         scenePair.internal().setTransformedScene(transformedScene);
     }
 
+    // TODO: This is bad, it's better to use font.fontData.lineHeight + font.fontData.blankLineScale
     public int extractLargestLineHeight(TransformedScene scene) {
         int highest = 0;
         for (Pair<Actor, List<Fragment>> pair : scene.getData()) {
