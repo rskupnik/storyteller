@@ -30,3 +30,7 @@ publishing {
         }
     }
 }
+
+jar {
+    from sourceSets.main.allSource
+}
