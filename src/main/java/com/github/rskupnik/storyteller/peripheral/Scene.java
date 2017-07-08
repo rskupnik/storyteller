@@ -60,6 +60,8 @@ public final class Scene {
 
         private final Scene scene;  // TODO: Use Private Data Class design pattern?
 
+        private boolean autoSpace;
+
         private SceneBuilder(String id) {
             scene = new Scene(id);
         }
@@ -70,6 +72,13 @@ public final class Scene {
 
         public SceneBuilder text(Actor actor) {
             scene.addActor(actor);
+            if (autoSpace)
+                space();
+            return this;
+        }
+
+        public SceneBuilder autoSpace() {
+            this.autoSpace = !this.autoSpace;
             return this;
         }
 
