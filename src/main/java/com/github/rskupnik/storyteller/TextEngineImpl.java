@@ -21,9 +21,11 @@ import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalScene;
 import com.github.rskupnik.storyteller.peripheral.internals.InternalStage;
+import com.github.rskupnik.storyteller.peripheral.internals.StageState;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -85,14 +87,14 @@ public final class TextEngineImpl implements TextEngine {
         ScenePair scenePair = new ScenePair(scene, new InternalScene());
         scenes.add(scenePair);
 
-        StagePair stagePair = stages.find(stageId);
+        StatefulStage stagePair = stages.find(stageId);
         if (stagePair == null)
             throw new IllegalStateException("Cannot attach to stage "+stageId+" as it doesn't exist");
 
-        if (stagePair.internal().getAttachedScene() != null)
-            removeScene(stagePair.internal().getAttachedScene().scene());
+        if (stagePair.state().getAttachedScene() != null)
+            removeScene(stagePair.state().getAttachedScene().scene());
 
-        stagePair.internal().attachScene(scenePair);
+        stagePair.state().attachScene(scenePair);
         scenePair.internal().attachStage(stagePair);
 
         sceneUtils.transform(scenePair);
@@ -111,17 +113,17 @@ public final class TextEngineImpl implements TextEngine {
             clickables.removeScene(scenePair);
             scenes.remove(scenePair);
 
-            StagePair stagePair = scenePair.internal().getAttachedStage();
-            stagePair.internal().attachScene(null);
+            StatefulStage stagePair = scenePair.internal().getAttachedStage();
+            stagePair.state().attachScene(null);
             scenePair.internal().attachStage(null);
         }
     }
 
     @Override
     public void addStage(Stage stage) {
-        InternalStage internalStage = new InternalStage();
-        internalStage.setRenderingUnit(renderingUnitFactory.create(injector, stage.getRenderingUnitInitializer()));
-        stages.add(new StagePair(stage, internalStage));
+        StageState state = new StageState();
+        state.setRenderingUnit(renderingUnitFactory.create(injector, stage.getRenderingUnitInitializer()));
+        stages.add(new StatefulStage(stage, state));
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -34,11 +35,11 @@ public final class SceneTransformer {
 
     public TransformedScene transform(TransformedScene output, ScenePair scenePair) {
         BitmapFont font = commons.font;
-        StagePair stagePair = scenePair.internal().getAttachedStage();
-        if (!scenePair.notNull() || font == null || !stagePair.notNull())
+        StatefulStage statefulStage = scenePair.internal().getAttachedStage();
+        if (!scenePair.notNull() || font == null || !statefulStage.notNull())
             return null;    // TODO: throw an exception here?
 
-        Stage stage = stagePair.stage();
+        Stage stage = statefulStage.obj();
         Vector2 cursor = output.getSavedCursorPosition();
         Boolean savedIsFirstLine = output.getSavedIsFirstLine();
 

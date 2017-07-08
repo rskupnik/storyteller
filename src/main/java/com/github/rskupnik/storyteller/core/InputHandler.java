@@ -16,6 +16,7 @@ import com.github.rskupnik.storyteller.structs.Clickable;
 import com.github.rskupnik.storyteller.structs.State;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
 
@@ -83,9 +84,9 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
                     if (actor.getClickEffect() != null) {    // Use Actor's Click Effect first
                         actor.getClickEffect().produceTween(actor.getInternalActor()).start(tweenManager);
                     } else {
-                        StagePair stagePair = sceneToClickableListEntry.getKey().internal().getAttachedStage();
-                        if (stagePair.notNull() && stagePair.stage().getTextEffects().clickEffect != null) {    // Use Stage's click effect next
-                            stagePair.stage().getTextEffects().clickEffect.produceTween(actor.getInternalActor()).start(tweenManager);
+                        StatefulStage statefulStage = sceneToClickableListEntry.getKey().internal().getAttachedStage();
+                        if (statefulStage.notNull() && statefulStage.obj().getTextEffects().clickEffect != null) {    // Use Stage's click effect next
+                            statefulStage.obj().getTextEffects().clickEffect.produceTween(actor.getInternalActor()).start(tweenManager);
                         } else if (textEffects.clickEffect != null) {   // Fallback to engine's click effect
                             textEffects.clickEffect.produceTween(actor.getInternalActor()).start(tweenManager);
                         }

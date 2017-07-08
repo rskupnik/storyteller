@@ -2,11 +2,12 @@ package com.github.rskupnik.storyteller.peripheral.internals;
 
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 
 public final class InternalScene {
 
     private boolean firstDraw = true;
-    private StagePair attachedStage;
+    private StatefulStage attachedStage;
     private TransformedScene transformedScene;
 
     public boolean isFirstDraw() {
@@ -17,11 +18,11 @@ public final class InternalScene {
         firstDraw = false;
     }
 
-    public StagePair getAttachedStage() {
+    public StatefulStage getAttachedStage() {
         return attachedStage;
     }
 
-    public void attachStage(StagePair stage) {
+    public void attachStage(StatefulStage stage) {
         this.attachedStage = stage;
     }
 

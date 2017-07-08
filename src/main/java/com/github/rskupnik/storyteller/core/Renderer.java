@@ -22,6 +22,7 @@ import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
 
@@ -85,12 +86,12 @@ public final class Renderer {
         if (font == null)
             return;
 
-        StagePair stagePair = scenePair.internal().getAttachedStage();
-        if (!stagePair.notNull())
+        StatefulStage statefulStage = scenePair.internal().getAttachedStage();
+        if (!statefulStage.notNull())
             throw new IllegalStateException("Cannot render a scene without a stage. Scene passed: "+scenePair.scene().getId());
 
         // If an LineFadeFloatInitializer is defined, use it, otherwise continue to default rendering
-        RenderingUnit renderingUnit = stagePair.internal().getRenderingUnit();
+        RenderingUnit renderingUnit = statefulStage.state().getRenderingUnit();
         if (renderingUnit != null) {
             renderingUnit.render(delta, scenePair);
             scenePair.scene().setDirty(false);

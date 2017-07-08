@@ -9,6 +9,7 @@ import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -20,8 +21,8 @@ public class SceneUtils {
     @Inject private SceneTransformer sceneTransformer;
 
     public void transform(ScenePair scenePair) {
-        StagePair stagePair = scenePair.internal().getAttachedStage();
-        if (stagePair == null)
+        StatefulStage statefulStage = scenePair.internal().getAttachedStage();
+        if (statefulStage == null)
             return;
 
         TransformedScene existingScene = scenePair.internal().getTransformedScene();
@@ -30,8 +31,8 @@ public class SceneUtils {
                 sceneTransformer.transform(scenePair) :
                 sceneTransformer.transform(existingScene, scenePair);
 
-        if (stagePair.internal().getRenderingUnit() != null)
-            stagePair.internal().getRenderingUnit().getChain().apply(transformedScene);
+        if (statefulStage.state().getRenderingUnit() != null)
+            statefulStage.state().getRenderingUnit().getChain().apply(transformedScene);
         //scenePair.scene().setDirty(false);
         scenePair.internal().setTransformedScene(transformedScene);
     }

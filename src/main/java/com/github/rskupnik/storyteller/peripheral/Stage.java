@@ -6,6 +6,7 @@ import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit;
 import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
+import com.github.rskupnik.storyteller.structs.StatefulObject;
 
 public final class Stage {
 
