@@ -13,8 +13,7 @@ import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.peripheral.Stage;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.utils.StageUtils;
-import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
-import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
 
@@ -29,14 +28,14 @@ public final class SceneTransformer {
     private int x, y;
     private boolean firstLine;
 
-    public TransformedScene transform(ScenePair scenePair) {
-        return transform(new TransformedScene(), scenePair);
+    public TransformedScene transform(StatefulScene statefulScene) {
+        return transform(new TransformedScene(), statefulScene);
     }
 
-    public TransformedScene transform(TransformedScene output, ScenePair scenePair) {
+    public TransformedScene transform(TransformedScene output, StatefulScene statefulScene) {
         BitmapFont font = commons.font;
-        StatefulStage statefulStage = scenePair.internal().getAttachedStage();
-        if (!scenePair.notNull() || font == null || !statefulStage.notNull())
+        StatefulStage statefulStage = statefulScene.state().getAttachedStage();
+        if (!statefulScene.notNull() || font == null || !statefulStage.notNull())
             return null;    // TODO: throw an exception here?
 
         Stage stage = statefulStage.obj();
@@ -52,11 +51,11 @@ public final class SceneTransformer {
         }
         firstLine = savedIsFirstLine != null ? savedIsFirstLine : true;
 
-        for (Actor actor : scenePair.scene().getActors()) {
+        for (Actor actor : statefulScene.obj().getActors()) {
             if (actor.getInternalActor().isTransformed())
                 continue;
 
-            trn(output, actor, scenePair, font, stage);
+            trn(output, actor, statefulScene, font, stage);
         }
 
         output.setSavedCursorPosition(new Vector2(x, y));
@@ -65,7 +64,7 @@ public final class SceneTransformer {
         return output;
     }
 
-    private void trn(TransformedScene output, Actor actor, ScenePair scenePair, BitmapFont font, Stage stage) {
+    private void trn(TransformedScene output, Actor actor, StatefulScene statefulScene, BitmapFont font, Stage stage) {
         // Handle a newline - simply adjust placement markers and set the actor as processed
         if (actor.getText().equals("\n")) {
             x = (int) stage.getTopLeft().x;
@@ -109,7 +108,7 @@ public final class SceneTransformer {
             Rectangle rect = null;
             if (actor.isClickable()) {
                 rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
-                clickables.addClickable(scenePair, rect, actor, GL_fragLine);
+                clickables.addClickable(statefulScene, rect, actor, GL_fragLine);
             }
 
             fragments.add((Fragment) new Fragment()
@@ -165,7 +164,7 @@ public final class SceneTransformer {
                 );
 
                 rect = new Rectangle(stage.getTopLeft().x, y - commons.font.getData().lineHeight /*- GL_tail.height*/ /*+ GR_tail.glyphs.get(0).height*/, GR_tail.width, GR_tail.glyphs.get(0).height);
-                clickables.addClickable(scenePair, rect, actor, GL_tail);
+                clickables.addClickable(statefulScene, rect, actor, GL_tail);
 
                 tailFragment = (Fragment) new Fragment()
                         .with("glyphLayout", GL_tail)
@@ -176,7 +175,7 @@ public final class SceneTransformer {
                 GL_body.runs.removeIndex(GL_body.runs.size-1);  // Remove the tail from the body
             }
             rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height);
-            clickables.addClickable(scenePair, rect, actor, GL_body);
+            clickables.addClickable(statefulScene, rect, actor, GL_body);
 
         }
 

@@ -11,17 +11,12 @@ import com.github.rskupnik.storyteller.aggregates.NamedOffsets;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.Actor;
-import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.structs.Clickable;
 import com.github.rskupnik.storyteller.structs.State;
-import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
-import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
-import org.javatuples.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,8 +56,8 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 touched = camera.unproject(new Vector3(screenX, screenY, 0));
         System.out.println("Clicked: "+touched);
-        for (Map.Entry<ScenePair, List<Clickable>> sceneToClickableListEntry : clickables.entrySet()) {
-            Vector2 offset = namedOffsets.get("LFF-offset-"+sceneToClickableListEntry.getKey().scene().getId());
+        for (Map.Entry<StatefulScene, List<Clickable>> sceneToClickableListEntry : clickables.entrySet()) {
+            Vector2 offset = namedOffsets.get("LFF-offset-"+sceneToClickableListEntry.getKey().obj().getId());
             for (Clickable clickable : sceneToClickableListEntry.getValue()) {
                 Rectangle rect = clickable.rectangle();
                 Actor actor = clickable.actor();
@@ -84,7 +79,7 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
                     if (actor.getClickEffect() != null) {    // Use Actor's Click Effect first
                         actor.getClickEffect().produceTween(actor.getInternalActor()).start(tweenManager);
                     } else {
-                        StatefulStage statefulStage = sceneToClickableListEntry.getKey().internal().getAttachedStage();
+                        StatefulStage statefulStage = sceneToClickableListEntry.getKey().state().getAttachedStage();
                         if (statefulStage.notNull() && statefulStage.obj().getTextEffects().clickEffect != null) {    // Use Stage's click effect next
                             statefulStage.obj().getTextEffects().clickEffect.produceTween(actor.getInternalActor()).start(tweenManager);
                         } else if (textEffects.clickEffect != null) {   // Fallback to engine's click effect

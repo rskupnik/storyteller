@@ -18,13 +18,9 @@ import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.peripheral.Stage;
-import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
-import com.github.rskupnik.storyteller.peripheral.internals.InternalScene;
-import com.github.rskupnik.storyteller.peripheral.internals.InternalStage;
-import com.github.rskupnik.storyteller.peripheral.internals.StageState;
+import com.github.rskupnik.storyteller.peripheral.internals.*;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
-import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
-import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -84,20 +80,20 @@ public final class TextEngineImpl implements TextEngine {
 
     @Override
     public void attachScene(String stageId, Scene scene) {
-        ScenePair scenePair = new ScenePair(scene, new InternalScene());
-        scenes.add(scenePair);
+        StatefulScene statefulScene = new StatefulScene(scene, new SceneState());
+        scenes.add(statefulScene);
 
-        StatefulStage stagePair = stages.find(stageId);
-        if (stagePair == null)
+        StatefulStage statefulStage = stages.find(stageId);
+        if (statefulStage == null)
             throw new IllegalStateException("Cannot attach to stage "+stageId+" as it doesn't exist");
 
-        if (stagePair.state().getAttachedScene() != null)
-            removeScene(stagePair.state().getAttachedScene().scene());
+        if (statefulStage.state().getAttachedScene() != null)
+            removeScene(statefulStage.state().getAttachedScene().obj());
 
-        stagePair.state().attachScene(scenePair);
-        scenePair.internal().attachStage(stagePair);
+        statefulStage.state().attachScene(statefulScene);
+        statefulScene.state().attachStage(statefulStage);
 
-        sceneUtils.transform(scenePair);
+        sceneUtils.transform(statefulScene);
     }
 
     @Override
@@ -107,15 +103,15 @@ public final class TextEngineImpl implements TextEngine {
 
     @Override
     public void removeScene(String id) {
-        ScenePair scenePair = scenes.find(id);
+        StatefulScene statefulScene = scenes.find(id);
 
-        if (scenePair != null) {
-            clickables.removeScene(scenePair);
-            scenes.remove(scenePair);
+        if (statefulScene != null) {
+            clickables.removeScene(statefulScene);
+            scenes.remove(statefulScene);
 
-            StatefulStage stagePair = scenePair.internal().getAttachedStage();
+            StatefulStage stagePair = statefulScene.state().getAttachedStage();
             stagePair.state().attachScene(null);
-            scenePair.internal().attachStage(null);
+            statefulScene.state().attachStage(null);
         }
     }
 

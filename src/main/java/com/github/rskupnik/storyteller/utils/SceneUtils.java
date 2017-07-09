@@ -5,14 +5,11 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.github.rskupnik.storyteller.core.scenetransform.SceneTransformer;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.peripheral.Actor;
-import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.structs.Fragment;
-import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
-import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -20,21 +17,21 @@ public class SceneUtils {
 
     @Inject private SceneTransformer sceneTransformer;
 
-    public void transform(ScenePair scenePair) {
-        StatefulStage statefulStage = scenePair.internal().getAttachedStage();
+    public void transform(StatefulScene statefulScene) {
+        StatefulStage statefulStage = statefulScene.state().getAttachedStage();
         if (statefulStage == null)
             return;
 
-        TransformedScene existingScene = scenePair.internal().getTransformedScene();
+        TransformedScene existingScene = statefulScene.state().getTransformedScene();
 
         TransformedScene transformedScene = existingScene == null ?
-                sceneTransformer.transform(scenePair) :
-                sceneTransformer.transform(existingScene, scenePair);
+                sceneTransformer.transform(statefulScene) :
+                sceneTransformer.transform(existingScene, statefulScene);
 
         if (statefulStage.state().getRenderingUnit() != null)
             statefulStage.state().getRenderingUnit().getChain().apply(transformedScene);
         //scenePair.scene().setDirty(false);
-        scenePair.internal().setTransformedScene(transformedScene);
+        statefulScene.state().setTransformedScene(transformedScene);
     }
 
     // TODO: This is bad, it's better to use font.fontData.lineHeight + font.fontData.blankLineScale

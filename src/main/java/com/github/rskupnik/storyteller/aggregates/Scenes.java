@@ -1,17 +1,17 @@
 package com.github.rskupnik.storyteller.aggregates;
 
-import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
 
 import java.util.ArrayList;
 
 /**
- * Holds all Scenes used in the engine as ScenePair objects.
+ * Holds all Scenes used in the engine as StatefulScene objects.
  */
-public final class Scenes extends ArrayList<ScenePair> {
+public final class Scenes extends ArrayList<StatefulScene> {
 
-    public ScenePair find(String id) {
-        for (ScenePair sp : this) {
-            if (sp.scene().getId().equals(id))
+    public StatefulScene find(String id) {
+        for (StatefulScene sp : this) {
+            if (sp.obj().getId().equals(id))
                 return sp;
         }
         return null;

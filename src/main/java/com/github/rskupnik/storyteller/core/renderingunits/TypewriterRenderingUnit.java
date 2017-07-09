@@ -2,8 +2,6 @@ package com.github.rskupnik.storyteller.core.renderingunits;
 
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.Commons;
@@ -15,7 +13,7 @@ import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.structs.Fragment;
-import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
 import com.google.inject.Inject;
 import net.dermetfan.gdx.Typewriter;
 import org.javatuples.Pair;
@@ -44,11 +42,11 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
     }
 
     @Override
-    public void render(float delta, ScenePair scenePair) {
+    public void render(float delta, StatefulScene statefulScene) {
         if (commons.font == null || commons.batch == null)
             return; // Throw exception?
 
-        TransformedScene data = scenePair.internal().getTransformedScene();
+        TransformedScene data = statefulScene.state().getTransformedScene();
         /*
             The algorithm here is as follows:
             - hold the index of the actor being iterated in variable i

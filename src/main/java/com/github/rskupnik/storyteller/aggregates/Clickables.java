@@ -3,15 +3,17 @@ package com.github.rskupnik.storyteller.aggregates;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.github.rskupnik.storyteller.peripheral.Actor;
-import com.github.rskupnik.storyteller.peripheral.Scene;
 import com.github.rskupnik.storyteller.structs.Clickable;
-import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
-public class Clickables extends HashMap<ScenePair, List<Clickable>> {
+public class Clickables extends HashMap<StatefulScene, List<Clickable>> {
 
-    public void addClickable(ScenePair scene, Rectangle rectangle, Actor actor, GlyphLayout GL) {
+    public void addClickable(StatefulScene scene, Rectangle rectangle, Actor actor, GlyphLayout GL) {
         List<Clickable> clickablesPerScene = this.get(scene);
         if (clickablesPerScene == null)
             clickablesPerScene = new ArrayList<>();
@@ -19,8 +21,8 @@ public class Clickables extends HashMap<ScenePair, List<Clickable>> {
         this.put(scene, clickablesPerScene);
     }
 
-    public void removeClickable(ScenePair scenePair, Clickable target) {
-        List<Clickable> clickablesPerScene = this.get(scenePair);
+    public void removeClickable(StatefulScene StatefulScene, Clickable target) {
+        List<Clickable> clickablesPerScene = this.get(StatefulScene);
         if (clickablesPerScene == null)
             return;
 
@@ -31,9 +33,9 @@ public class Clickables extends HashMap<ScenePair, List<Clickable>> {
         }
     }
 
-    public void removeRectangle(ScenePair scenePair, Rectangle rectangle) {
+    public void removeRectangle(StatefulScene StatefulScene, Rectangle rectangle) {
         System.out.println("removeRectangle called");
-        List<Clickable> clickablesPerScene = this.get(scenePair);
+        List<Clickable> clickablesPerScene = this.get(StatefulScene);
         if (clickablesPerScene == null)
             return;
 
@@ -50,13 +52,13 @@ public class Clickables extends HashMap<ScenePair, List<Clickable>> {
         this.clear();
     }
 
-    public void clearClickables(ScenePair scene) {
+    public void clearClickables(StatefulScene scene) {
         List<Clickable> clickables = this.get(scene);
         if (clickables != null)
             clickables.clear();
     }
 
-    public void removeScene(ScenePair scene) {
+    public void removeScene(StatefulScene scene) {
         clearClickables(scene);
         this.remove(scene);
     }

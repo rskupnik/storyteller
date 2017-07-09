@@ -5,13 +5,10 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
-import com.github.rskupnik.storyteller.accessors.RectangleAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
@@ -21,15 +18,12 @@ import com.github.rskupnik.storyteller.core.renderingunits.initializers.Renderin
 import com.github.rskupnik.storyteller.core.sceneextend.*;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.peripheral.Actor;
-import com.github.rskupnik.storyteller.structs.Clickable;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
-import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,11 +70,11 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
     }
 
     @Override
-    public void render(float delta, ScenePair scenePair) {
+    public void render(float delta, StatefulScene scenePair) {
         if (commons.font == null || commons.batch == null)
             return; // Throw exception?
 
-        TransformedScene data = scenePair.internal().getTransformedScene();
+        TransformedScene data = scenePair.state().getTransformedScene();
         if (data == null)
             return;
 
@@ -90,7 +84,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         }
 
         //region Handle Dirty Scene
-        if (scenePair.scene().isDirty()) {  // When the scene is dirty, need to un-suspend the algorithm.
+        if (scenePair.obj().isDirty()) {  // When the scene is dirty, need to un-suspend the algorithm.
             if (appearingSuspended)
                 appearingSuspended = false;
 
@@ -105,8 +99,8 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         }
         //endregion
 
-        if (namedOffsets.get("LFF-offset-"+scenePair.scene().getId()) == null)
-            namedOffsets.put("LFF-offset-"+scenePair.scene().getId(), offset);
+        if (namedOffsets.get("LFF-offset-"+scenePair.obj().getId()) == null)
+            namedOffsets.put("LFF-offset-"+scenePair.obj().getId(), offset);
 
         boolean isAppearingInternal = false;    // These are set if at least one fragment is processed, based on those the larger flags are set later
         boolean isDisappearingInternal = false;

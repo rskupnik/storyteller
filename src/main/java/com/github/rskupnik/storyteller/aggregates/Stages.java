@@ -1,6 +1,5 @@
 package com.github.rskupnik.storyteller.aggregates;
 
-import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
 import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 
 import java.util.ArrayList;

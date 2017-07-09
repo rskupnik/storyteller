@@ -20,8 +20,7 @@ import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.aggregates.Stages;
 import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
-import com.github.rskupnik.storyteller.wrappers.pairs.ScenePair;
-import com.github.rskupnik.storyteller.wrappers.pairs.StagePair;
+import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
 import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
@@ -64,21 +63,21 @@ public final class Renderer {
     }
 
     private void drawScenes(float delta) {
-        for (ScenePair scenePair : scenes) {
-            draw(delta, scenePair);
+        for (StatefulScene statefulScene : scenes) {
+            draw(delta, statefulScene);
         }
     }
 
-    private void draw(float delta, ScenePair scenePair) {
-        if (!scenePair.notNull())
+    private void draw(float delta, StatefulScene statefulScene) {
+        if (!statefulScene.notNull())
             return;
 
-        if (scenePair.scene().isDirty()) {
-            sceneUtils.transform(scenePair);
+        if (statefulScene.obj().isDirty()) {
+            sceneUtils.transform(statefulScene);
             System.out.println("SCENE TRANSFORMED");
         }
 
-        TransformedScene data = scenePair.internal().getTransformedScene();
+        TransformedScene data = statefulScene.state().getTransformedScene();
         if (data == null)
             return;
 
@@ -86,16 +85,16 @@ public final class Renderer {
         if (font == null)
             return;
 
-        StatefulStage statefulStage = scenePair.internal().getAttachedStage();
+        StatefulStage statefulStage = statefulScene.state().getAttachedStage();
         if (!statefulStage.notNull())
-            throw new IllegalStateException("Cannot render a scene without a stage. Scene passed: "+scenePair.scene().getId());
+            throw new IllegalStateException("Cannot render a scene without a stage. Scene passed: "+statefulScene.obj().getId());
 
         // If an LineFadeFloatInitializer is defined, use it, otherwise continue to default rendering
         RenderingUnit renderingUnit = statefulStage.state().getRenderingUnit();
         if (renderingUnit != null) {
-            renderingUnit.render(delta, scenePair);
-            scenePair.scene().setDirty(false);
-            scenePair.internal().wasDrawn();
+            renderingUnit.render(delta, statefulScene);
+            statefulScene.obj().setDirty(false);
+            statefulScene.state().wasDrawn();
             return;
         }
 
@@ -116,8 +115,8 @@ public final class Renderer {
                 font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
             }
         }
-        scenePair.scene().setDirty(false);
-        scenePair.internal().wasDrawn();
+        statefulScene.obj().setDirty(false);
+        statefulScene.state().wasDrawn();
     }
 
     public void resize(int width, int height) {
