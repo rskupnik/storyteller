@@ -1,6 +1,6 @@
 package com.github.rskupnik.storyteller.aggregates;
 
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 
 import java.util.ArrayList;
 

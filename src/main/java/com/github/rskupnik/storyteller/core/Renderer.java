@@ -18,10 +18,10 @@ import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Scenes;
 import com.github.rskupnik.storyteller.aggregates.Stages;
-import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
 
@@ -100,8 +100,8 @@ public final class Renderer {
 
         // This is the default rendering used if no LineFadeFloatInitializer is defined
         // TODO: Pull this out to a BasicRenderer class or sth to be consistent
-        for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
-            Actor actor = actorToDataPair.getValue0();
+        for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {
+            StatefulActor actor = actorToDataPair.getValue0();
             for (Fragment fragment : actorToDataPair.getValue1()) {
                 // Unpack data
                 GlyphLayout GL = (GlyphLayout) fragment.get("glyphLayout");
@@ -112,7 +112,7 @@ public final class Renderer {
                     continue;
 
                 // Draw the GL
-                font.draw(batch, GL, position.x, position.y + actor.getInternalActor().getYOffset());
+                font.draw(batch, GL, position.x, position.y + actor.state().getYOffset());
             }
         }
         statefulScene.obj().setDirty(false);

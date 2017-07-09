@@ -9,12 +9,12 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
-import com.github.rskupnik.storyteller.peripheral.Actor;
-import com.github.rskupnik.storyteller.peripheral.Stage;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.utils.StageUtils;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -51,8 +51,8 @@ public final class SceneTransformer {
         }
         firstLine = savedIsFirstLine != null ? savedIsFirstLine : true;
 
-        for (Actor actor : statefulScene.obj().getActors()) {
-            if (actor.getInternalActor().isTransformed())
+        for (StatefulActor actor : statefulScene.obj().getActors()) {
+            if (actor.state().isTransformed())
                 continue;
 
             trn(output, actor, statefulScene, font, stage);
@@ -64,12 +64,12 @@ public final class SceneTransformer {
         return output;
     }
 
-    private void trn(TransformedScene output, Actor actor, StatefulScene statefulScene, BitmapFont font, Stage stage) {
+    private void trn(TransformedScene output, StatefulActor actor, StatefulScene statefulScene, BitmapFont font, Stage stage) {
         // Handle a newline - simply adjust placement markers and set the actor as processed
-        if (actor.getText().equals("\n")) {
+        if (actor.obj().getText().equals("\n")) {
             x = (int) stage.getTopLeft().x;
             y -= commons.font.getData().lineHeight;
-            actor.getInternalActor().setTransformed(true);
+            actor.state().setTransformed(true);
             return;
         }
 
@@ -78,8 +78,8 @@ public final class SceneTransformer {
         // We need to produce the whole text first to see how LibGDX plans to structure it and do some adjusting if needed
         GlyphLayout GL_wholeText = new GlyphLayout(
                 font,
-                actor.getText(),
-                actor.getColor() != null ? actor.getColor() : Color.WHITE,
+                actor.obj().getText(),
+                actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
                 StageUtils.calcRemainingWidth(stage, x),
                 Align.left,
                 true
@@ -98,7 +98,7 @@ public final class SceneTransformer {
             GlyphLayout GL_fragLine = new GlyphLayout(
                     font,
                     lineEndText,
-                    actor.getColor() != null ? actor.getColor() : Color.WHITE,
+                    actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
                     StageUtils.calcRemainingWidth(stage, x),
                     Align.left,
                     true
@@ -106,7 +106,7 @@ public final class SceneTransformer {
 
             // If it's clickable, produce a Rectangle
             Rectangle rect = null;
-            if (actor.isClickable()) {
+            if (actor.obj().isClickable()) {
                 rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
                 clickables.addClickable(statefulScene, rect, actor, GL_fragLine);
             }
@@ -133,7 +133,7 @@ public final class SceneTransformer {
             GL_body = new GlyphLayout(
                     font,
                     restText,
-                    actor.getColor() != null ? actor.getColor() : Color.WHITE,
+                    actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
                     stage.getWidth(),
                     Align.left,
                     true
@@ -148,7 +148,7 @@ public final class SceneTransformer {
         Rectangle rect = null;
         Fragment tailFragment = null;
         int GLBodyLines = GL_body.runs.size;    // Save the no of lines because we remove the last line but we need the pre-removal size in position adjustement
-        if (actor.isClickable()) {
+        if (actor.obj().isClickable()) {
             // If the text body spans multiple lines, we need to handle the last line as it might end in the middle of a line
             GlyphLayout.GlyphRun GR_tail = GR_last;
             if (multilineGL(GL_body)) {
@@ -157,7 +157,7 @@ public final class SceneTransformer {
                 GlyphLayout GL_tail = new GlyphLayout(
                         font,
                         glyphsToText(new StringBuilder(GR_tail.glyphs.size), GR_tail).toString(),
-                        actor.getColor() != null ? actor.getColor() : Color.WHITE,
+                        actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
                         GR_tail.width,
                         Align.left,
                         true
@@ -199,7 +199,7 @@ public final class SceneTransformer {
             }
         }
 
-        actor.getInternalActor().setTransformed(true);
+        actor.state().setTransformed(true);
 
         output.addActor(actor, fragments);
     }

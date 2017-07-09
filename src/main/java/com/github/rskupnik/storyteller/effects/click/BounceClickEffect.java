@@ -4,7 +4,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.equations.Quad;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
-import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 
 public final class BounceClickEffect extends ClickEffect {
 
@@ -20,7 +20,7 @@ public final class BounceClickEffect extends ClickEffect {
     }
 
     @Override
-    public Tween produceTween(InternalActor actor) {
+    public Tween produceTween(StatefulActor actor) {
         return super.produceTween(actor)
                 .ease(equation)
                 .repeatYoyo(1, 0);

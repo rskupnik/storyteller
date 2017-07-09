@@ -2,9 +2,9 @@ package com.github.rskupnik.storyteller.aggregates;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
-import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.structs.Clickable;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Clickables extends HashMap<StatefulScene, List<Clickable>> {
 
-    public void addClickable(StatefulScene scene, Rectangle rectangle, Actor actor, GlyphLayout GL) {
+    public void addClickable(StatefulScene scene, Rectangle rectangle, StatefulActor actor, GlyphLayout GL) {
         List<Clickable> clickablesPerScene = this.get(scene);
         if (clickablesPerScene == null)
             clickablesPerScene = new ArrayList<>();

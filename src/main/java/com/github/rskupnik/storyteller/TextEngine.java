@@ -2,9 +2,9 @@ package com.github.rskupnik.storyteller;
 
 import com.badlogic.gdx.InputProcessor;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
-import com.github.rskupnik.storyteller.peripheral.Scene;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
-import com.github.rskupnik.storyteller.peripheral.Stage;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
 
 public interface TextEngine {
     void render(float delta);

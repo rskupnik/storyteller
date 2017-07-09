@@ -16,12 +16,13 @@ import com.github.rskupnik.storyteller.core.Renderer;
 import com.github.rskupnik.storyteller.core.renderingunits.factory.IRenderingUnitFactory;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
-import com.github.rskupnik.storyteller.peripheral.Scene;
-import com.github.rskupnik.storyteller.peripheral.Stage;
-import com.github.rskupnik.storyteller.peripheral.internals.*;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
+import com.github.rskupnik.storyteller.statefulobjects.states.*;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -51,7 +52,7 @@ public final class TextEngineImpl implements TextEngine {
         renderer.init();
         inputHandler.init(renderer.getCamera());
 
-        Tween.registerAccessor(InternalActor.class, new ActorAccessor());
+        Tween.registerAccessor(StatefulActor.class, new ActorAccessor());
         Tween.registerAccessor(Vector2.class, new Vector2Accessor());
         Tween.registerAccessor(Color.class, new ColorAccessor());
         Tween.registerAccessor(Rectangle.class, new RectangleAccessor());

@@ -1,8 +1,8 @@
-package com.github.rskupnik.storyteller.peripheral.internals;
+package com.github.rskupnik.storyteller.statefulobjects.states;
 
 import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit;
 import com.github.rskupnik.storyteller.structs.State;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 
 public final class StageState extends State {
 

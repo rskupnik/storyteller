@@ -17,10 +17,10 @@ import com.github.rskupnik.storyteller.core.renderingunits.initializers.LineFade
 import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.*;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
-import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
 
@@ -104,8 +104,8 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
         boolean isAppearingInternal = false;    // These are set if at least one fragment is processed, based on those the larger flags are set later
         boolean isDisappearingInternal = false;
-        for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
-            Actor actor = actorToDataPair.getValue0();
+        for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {
+            StatefulActor actor = actorToDataPair.getValue0();
             for (Fragment actorData : actorToDataPair.getValue1()) {
                 // Unpack data
                 GlyphLayout GL = (GlyphLayout) actorData.get("glyphLayout");
@@ -164,7 +164,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
                 //endregion
 
                 if ((line <= currentlyProcessedLine_Appear || processed) && line >= currentlyProcessedLine_Disappear)
-                    commons.font.draw(commons.batch, GL, position.x, position.y + actor.getInternalActor().getYOffset() + offset.y);
+                    commons.font.draw(commons.batch, GL, position.x, position.y + actor.state().getYOffset() + offset.y);
             }
         }
 

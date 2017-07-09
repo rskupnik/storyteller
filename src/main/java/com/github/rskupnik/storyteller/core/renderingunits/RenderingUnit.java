@@ -2,7 +2,7 @@ package com.github.rskupnik.storyteller.core.renderingunits;
 
 import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 
 /**
  * Group of classes that decide how text will appear on the Stage and disappear from it.

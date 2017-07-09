@@ -1,7 +1,7 @@
-package com.github.rskupnik.storyteller.wrappers.pairs;
+package com.github.rskupnik.storyteller.statefulobjects;
 
-import com.github.rskupnik.storyteller.peripheral.Scene;
-import com.github.rskupnik.storyteller.peripheral.internals.SceneState;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
+import com.github.rskupnik.storyteller.statefulobjects.states.SceneState;
 import com.github.rskupnik.storyteller.structs.StatefulObject;
 
 public class StatefulScene extends StatefulObject<Scene, SceneState> {

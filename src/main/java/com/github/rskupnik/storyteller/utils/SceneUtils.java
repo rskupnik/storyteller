@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.github.rskupnik.storyteller.core.scenetransform.SceneTransformer;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
-import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.structs.Fragment;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulStage;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.google.inject.Inject;
 import org.javatuples.Pair;
 
@@ -37,7 +37,7 @@ public class SceneUtils {
     // TODO: This is bad, it's better to use font.fontData.lineHeight + font.fontData.blankLineScale
     public int extractLargestLineHeight(TransformedScene scene) {
         int highest = 0;
-        for (Pair<Actor, List<Fragment>> pair : scene.getData()) {
+        for (Pair<StatefulActor, List<Fragment>> pair : scene.getData()) {
             for (Fragment fragment : pair.getValue1()) {
                 GlyphLayout gl = (GlyphLayout) fragment.get("glyphLayout");
                 if (gl != null && gl.runs != null) {

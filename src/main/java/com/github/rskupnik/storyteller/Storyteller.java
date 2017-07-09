@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.EngineModule;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
-import com.github.rskupnik.storyteller.peripheral.Stage;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 

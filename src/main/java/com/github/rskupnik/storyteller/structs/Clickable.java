@@ -2,18 +2,17 @@ package com.github.rskupnik.storyteller.structs;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
-import com.github.rskupnik.storyteller.peripheral.Actor;
-import org.javatuples.Triplet;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import org.javatuples.Tuple;
 
 public final class Clickable extends Tuple {
 
-    public Clickable(Rectangle rectangle, Actor actor, GlyphLayout GL, State state) {
-        super(rectangle, actor, GL, state);
+    public Clickable(Rectangle rectangle, StatefulActor StatefulActor, GlyphLayout GL, State state) {
+        super(rectangle, StatefulActor, GL, state);
     }
 
-    public Clickable(Rectangle rectangle, Actor actor, GlyphLayout GL) {
-        this(rectangle, actor, GL, new State());
+    public Clickable(Rectangle rectangle, StatefulActor StatefulActor, GlyphLayout GL) {
+        this(rectangle, StatefulActor, GL, new State());
     }
 
     @Override
@@ -25,8 +24,8 @@ public final class Clickable extends Tuple {
         return (Rectangle) getValue(0);
     }
 
-    public Actor actor() {
-        return (Actor) getValue(1);
+    public StatefulActor actor() {
+        return (StatefulActor) getValue(1);
     }
 
     public GlyphLayout glyphLayout() {

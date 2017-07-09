@@ -1,12 +1,10 @@
-package com.github.rskupnik.storyteller.peripheral;
+package com.github.rskupnik.storyteller.statefulobjects.objects;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
-import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit;
 import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
-import com.github.rskupnik.storyteller.structs.StatefulObject;
 
 public final class Stage {
 

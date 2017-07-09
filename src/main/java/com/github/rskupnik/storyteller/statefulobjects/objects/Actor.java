@@ -1,8 +1,7 @@
-package com.github.rskupnik.storyteller.peripheral;
+package com.github.rskupnik.storyteller.statefulobjects.objects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
-import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
 
 public final class Actor {
 
@@ -11,14 +10,8 @@ public final class Actor {
     private boolean clickable;
     private ClickEffect clickEffect;
 
-    private final InternalActor internalActor = new InternalActor();
-
     public Actor(String text) {
         this.text = text;
-    }
-
-    public InternalActor getInternalActor() {
-        return internalActor;
     }
 
     public String getText() {

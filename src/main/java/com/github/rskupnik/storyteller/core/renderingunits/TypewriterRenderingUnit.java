@@ -11,9 +11,9 @@ import com.github.rskupnik.storyteller.core.sceneextend.CharSequenceExtender;
 import com.github.rskupnik.storyteller.core.sceneextend.ColorExtender;
 import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
-import com.github.rskupnik.storyteller.peripheral.Actor;
 import com.github.rskupnik.storyteller.structs.Fragment;
-import com.github.rskupnik.storyteller.wrappers.pairs.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.google.inject.Inject;
 import net.dermetfan.gdx.Typewriter;
 import org.javatuples.Pair;
@@ -29,7 +29,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
     @Inject private TweenManager tweenManager;
 
     private Typewriter typewriter;
-    private Map<Actor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
+    private Map<StatefulActor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
 
     @Override
     public void init(RenderingUnitInitializer initializer) {
@@ -59,14 +59,14 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
          */
         int i = 0;  // Index of the current actor from the actor list
         int currentlyProcessedActorIndex = -1;  // Index of the actor that is currently processed
-        for (Pair<Actor, List<Fragment>> actorToDataPair : data.getData()) {
-            Actor actor = actorToDataPair.getValue0();
+        for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {
+            StatefulActor actor = actorToDataPair.getValue0();
             if (currentlyProcessedActorIndex == -1) {   // If no actor is being processed, set it to this one
                 currentlyProcessedActorIndex = i;
             }
 
             // If actor is not yet processed and is not the one currently processed, ignore
-            if (!actor.getInternalActor().isProcessed() && i != currentlyProcessedActorIndex) {
+            if (!actor.state().isProcessed() && i != currentlyProcessedActorIndex) {
                 i++;
                 continue;
             }
@@ -90,7 +90,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
                 commons.font.setColor(color != null ? color : prevColor);
 
                 if (isProcessed(actor, j)) {    // If this fragment is already processed, draw it as is
-                    commons.font.draw(commons.batch, str, position.x, position.y + actor.getInternalActor().getYOffset());
+                    commons.font.draw(commons.batch, str, position.x, position.y + actor.state().getYOffset());
                     j++;
                     continue;
                 } else {
@@ -105,7 +105,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
                     }
 
                     CharSequence cs = typewriter.updateAndType(str, delta);
-                    commons.font.draw(commons.batch, cs, position.x, position.y + actor.getInternalActor().getYOffset());
+                    commons.font.draw(commons.batch, cs, position.x, position.y + actor.state().getYOffset());
 
                     if (cs.length() == str.length()) {  // Check if processing of the fragment is finished
                         List<Integer> actorsProcessedIndices = processingMap.get(actor);
@@ -126,7 +126,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
             }
 
             if (allFragmentsProcessed) {    // If all fragments for the actor are processed, reset the pointer to find the next one to process
-                actor.getInternalActor().setProcessed(true);
+                actor.state().setProcessed(true);
                 currentlyProcessedActorIndex = -1;
             }
 
@@ -134,7 +134,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
         }
     }
 
-    private boolean isProcessed(Actor actor, int index) {
+    private boolean isProcessed(StatefulActor actor, int index) {
         List<Integer> actorsProcessedIndices = processingMap.get(actor);
         if (actorsProcessedIndices == null) {
             actorsProcessedIndices = new ArrayList<>();

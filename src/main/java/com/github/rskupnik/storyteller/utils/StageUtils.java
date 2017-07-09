@@ -1,6 +1,6 @@
 package com.github.rskupnik.storyteller.utils;
 
-import com.github.rskupnik.storyteller.peripheral.Stage;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
 
 public final class StageUtils {
 

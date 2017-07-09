@@ -1,7 +1,7 @@
 package com.github.rskupnik.storyteller.effects.click;
 
 import aurelienribon.tweenengine.Tween;
-import com.github.rskupnik.storyteller.peripheral.internals.InternalActor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 
 public abstract class ClickEffect {
 
@@ -15,7 +15,7 @@ public abstract class ClickEffect {
         this.target = target;
     }
 
-    public Tween produceTween(InternalActor actor) {
+    public Tween produceTween(StatefulActor actor) {
         return Tween.to(actor, effectType, duration).target(target);
     }
 }

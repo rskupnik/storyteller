@@ -1,4 +1,7 @@
-package com.github.rskupnik.storyteller.peripheral;
+package com.github.rskupnik.storyteller.statefulobjects.objects;
+
+import com.github.rskupnik.storyteller.statefulobjects.states.ActorState;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -7,7 +10,7 @@ import java.util.List;
 public final class Scene {
 
     private String id;
-    private final List<Actor> actors = new LinkedList<Actor>();
+    private final List<StatefulActor> actors = new LinkedList<>();
     private boolean dirty = true;
 
     private Scene(String id) {
@@ -15,15 +18,15 @@ public final class Scene {
     }
 
     private void addActor(Actor actor) {
-        actors.add(actor);
+        actors.add(new StatefulActor(actor, new ActorState()));
     }
 
     public void append(Actor actor) {
-        actors.add(actor);
+        actors.add(new StatefulActor(actor, new ActorState()));
         dirty = true;
     }
 
-    public List<Actor> getActors() {
+    public List<StatefulActor> getActors() {
         return Collections.unmodifiableList(actors);
     }
 

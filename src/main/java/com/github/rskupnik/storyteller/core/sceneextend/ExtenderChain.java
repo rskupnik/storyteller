@@ -2,7 +2,7 @@ package com.github.rskupnik.storyteller.core.sceneextend;
 
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
-import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ public class ExtenderChain extends ArrayList<SceneExtender> {
             extender.extend(scene);
         }
 
-        for (Pair<Actor, List<Fragment>> pair : scene.getData()) {
-            pair.getValue0().getInternalActor().setExtended(true);
+        for (Pair<StatefulActor, List<Fragment>> pair : scene.getData()) {
+            pair.getValue0().state().setExtended(true);
         }
     }
 }

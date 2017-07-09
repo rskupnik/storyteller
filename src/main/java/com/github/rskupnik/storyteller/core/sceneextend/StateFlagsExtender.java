@@ -2,7 +2,7 @@ package com.github.rskupnik.storyteller.core.sceneextend;
 
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
-import com.github.rskupnik.storyteller.peripheral.Actor;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import org.javatuples.Pair;
 
 import java.util.HashMap;
@@ -12,9 +12,9 @@ public class StateFlagsExtender implements SceneExtender {
 
     @Override
     public void extend(TransformedScene scene) {
-        for (Pair<Actor, List<Fragment>> actorToDataPair : scene.getData()) {
-            Actor actor = actorToDataPair.getValue0();
-            if (actor.getInternalActor().isExtended())
+        for (Pair<StatefulActor, List<Fragment>> actorToDataPair : scene.getData()) {
+            StatefulActor actor = actorToDataPair.getValue0();
+            if (actor.state().isExtended())
                 continue;
 
             for (Fragment fragment : actorToDataPair.getValue1()) {
