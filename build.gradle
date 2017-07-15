@@ -1,3 +1,7 @@
+plugins {
+    id "net.ltgt.apt" version "0.10"
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -18,7 +22,9 @@ repositories {
 dependencies {
     compile group: 'com.github.arcnor', name: 'universal-tween-engine', version:'6.3.4'
     compileOnly group: 'com.badlogicgames.gdx', name: 'gdx', version:'1.9.6'
-    compile group: 'com.google.inject', name: 'guice', version: '3.0'
+    apt group: 'com.google.dagger', name: 'dagger-compiler', version: '2.11'
+    compile group: 'com.google.dagger', name: 'dagger', version: '2.11'
+
     compile 'org.javatuples:javatuples:1.2'
     compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.4"
 }

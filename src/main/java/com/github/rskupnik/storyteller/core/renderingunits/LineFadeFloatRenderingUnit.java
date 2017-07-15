@@ -21,7 +21,7 @@ import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import org.javatuples.Pair;
 
 import java.util.List;
@@ -33,10 +33,10 @@ import java.util.Map;
  */
 public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
-    @Inject private Commons commons;
-    @Inject private TweenManager tweenManager;
-    @Inject private Clickables clickables;
-    @Inject private NamedOffsets namedOffsets;
+    @Inject Commons commons;
+    @Inject TweenManager tweenManager;
+    @Inject Clickables clickables;
+    @Inject NamedOffsets namedOffsets;
     private SceneUtils sceneUtils = new SceneUtils();
 
     private TweenEquation equation;
@@ -56,6 +56,11 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
     private boolean disappearingSuspended = false;              // Same but for disappearing
     private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
     private int lineHeight = 0;
+
+    @Inject
+    public LineFadeFloatRenderingUnit() {
+
+    }
 
     @Override
     public void init(RenderingUnitInitializer initializer) {

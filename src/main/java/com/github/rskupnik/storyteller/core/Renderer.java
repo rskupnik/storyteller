@@ -22,24 +22,32 @@ import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
-import com.google.inject.Inject;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.javatuples.Pair;
 
 import java.util.List;
 
+@Singleton
 public final class Renderer {
 
-    @Inject private InputHandler inputHandler;
-    @Inject private Scenes scenes;
-    @Inject private Stages stages;
-    @Inject private Commons commons;
-    @Inject private Clickables clickables;
-    @Inject private TweenManager tweenManager;
-    @Inject private SceneUtils sceneUtils;
+    @Inject InputHandler inputHandler;
+    @Inject Scenes scenes;
+    @Inject Stages stages;
+    @Inject Commons commons;
+    @Inject Clickables clickables;
+    @Inject TweenManager tweenManager;
+    @Inject SceneUtils sceneUtils;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Viewport viewport;
+
+    @Inject
+    public Renderer() {
+
+    }
 
     public void init() {
         //commons.font.getData().markupEnabled = true;

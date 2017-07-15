@@ -15,6 +15,7 @@ import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
 import com.github.rskupnik.storyteller.core.renderingunits.factory.IRenderingUnitFactory;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
+import com.github.rskupnik.storyteller.injection.StorytellerInjector;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
@@ -23,27 +24,32 @@ import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
+
+import javax.inject.Inject;
 
 
 public final class TextEngineImpl implements TextEngine {
 
-    private Injector injector;
+    private StorytellerInjector injector;
 
-    @Inject private Renderer renderer;
-    @Inject private InputHandler inputHandler;
-    @Inject private Listeners listeners;
-    @Inject private TextEffects textEffects;
-    @Inject private TweenManager tweenManager;
-    @Inject private Scenes scenes;
-    @Inject private Stages stages;
-    @Inject private Commons commons;
-    @Inject private Clickables clickables;
-    @Inject private SceneUtils sceneUtils;
-    @Inject private IRenderingUnitFactory renderingUnitFactory;
+    @Inject Renderer renderer;
+    @Inject InputHandler inputHandler;
+    @Inject Listeners listeners;
+    @Inject TextEffects textEffects;
+    @Inject TweenManager tweenManager;
+    @Inject Scenes scenes;
+    @Inject Stages stages;
+    @Inject Commons commons;
+    @Inject Clickables clickables;
+    @Inject SceneUtils sceneUtils;
+    @Inject IRenderingUnitFactory renderingUnitFactory;
 
-    void init(Injector injector, Stage stage, BitmapFont font) {
+    @Inject
+    public TextEngineImpl() {
+
+    }
+
+    void init(StorytellerInjector injector, Stage stage, BitmapFont font) {
         this.injector = injector;
         commons.font = font;
 

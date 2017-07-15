@@ -6,12 +6,20 @@ import com.github.rskupnik.storyteller.structs.Clickable;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+@Singleton
 public class Clickables extends HashMap<StatefulScene, List<Clickable>> {
+
+    @Inject
+    public Clickables() {
+
+    }
 
     public void addClickable(StatefulScene scene, Rectangle rectangle, StatefulActor actor, GlyphLayout GL) {
         List<Clickable> clickablesPerScene = this.get(scene);

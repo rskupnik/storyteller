@@ -8,14 +8,22 @@ import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
-import com.google.inject.Inject;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.javatuples.Pair;
 
 import java.util.List;
 
+@Singleton
 public class SceneUtils {
 
-    @Inject private SceneTransformer sceneTransformer;
+    @Inject SceneTransformer sceneTransformer;
+
+    @Inject
+    public SceneUtils() {
+
+    }
 
     public void transform(StatefulScene statefulScene) {
         StatefulStage statefulStage = statefulScene.state().getAttachedStage();

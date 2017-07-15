@@ -14,7 +14,7 @@ import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import net.dermetfan.gdx.Typewriter;
 import org.javatuples.Pair;
 
@@ -25,11 +25,16 @@ import java.util.Map;
 
 public final class TypewriterRenderingUnit extends RenderingUnit {
 
-    @Inject private Commons commons;
-    @Inject private TweenManager tweenManager;
+    @Inject Commons commons;
+    @Inject TweenManager tweenManager;
 
     private Typewriter typewriter;
     private Map<StatefulActor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
+
+    @Inject
+    public TypewriterRenderingUnit() {
+
+    }
 
     @Override
     public void init(RenderingUnitInitializer initializer) {

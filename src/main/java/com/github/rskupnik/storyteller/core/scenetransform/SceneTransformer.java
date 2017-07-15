@@ -15,18 +15,25 @@ import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
-import com.google.inject.Inject;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public final class SceneTransformer {
 
-    @Inject private Commons commons;
-    @Inject private Clickables clickables;
+    @Inject Commons commons;
+    @Inject Clickables clickables;
 
     private int x, y;
     private boolean firstLine;
+
+    @Inject
+    public SceneTransformer() {
+
+    }
 
     public TransformedScene transform(StatefulScene statefulScene) {
         return transform(new TransformedScene(), statefulScene);

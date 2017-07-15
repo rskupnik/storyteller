@@ -15,7 +15,8 @@ import com.github.rskupnik.storyteller.structs.State;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
-import com.google.inject.Inject;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import java.util.List;
 import java.util.Map;
@@ -23,15 +24,21 @@ import java.util.Map;
 /**
  * Handles input and triggers effects on actors.
  */
+@Singleton
 public final class InputHandler implements com.badlogic.gdx.InputProcessor {
 
-    @Inject private Listeners listeners;
-    @Inject private Clickables clickables;
-    @Inject private TextEffects textEffects;
-    @Inject private TweenManager tweenManager;
-    @Inject private NamedOffsets namedOffsets;
+    @Inject Listeners listeners;
+    @Inject Clickables clickables;
+    @Inject TextEffects textEffects;
+    @Inject TweenManager tweenManager;
+    @Inject NamedOffsets namedOffsets;
 
     private Camera camera;
+
+    @Inject
+    public InputHandler() {
+
+    }
 
     public void init(Camera camera) {
         this.camera = camera;
