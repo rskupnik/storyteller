@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.accessors.ActorAccessor;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.RectangleAccessor;
@@ -49,9 +50,10 @@ public final class TextEngineImpl implements TextEngine {
 
     }
 
-    void init(StorytellerInjector injector, Stage stage, BitmapFont font) {
+    void init(StorytellerInjector injector, Stage stage, BitmapFont font, Viewport viewport) {
         this.injector = injector;
         commons.font = font;
+        commons.viewport = viewport;
 
         addStage(stage);
 

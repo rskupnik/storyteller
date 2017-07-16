@@ -55,7 +55,8 @@ public final class Renderer {
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        viewport = commons.viewport;
+        viewport.setCamera(camera);
         viewport.apply(true);
 
         commons.batch = batch;

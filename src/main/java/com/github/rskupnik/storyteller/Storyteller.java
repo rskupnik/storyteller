@@ -1,6 +1,7 @@
 package com.github.rskupnik.storyteller;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.DaggerStorytellerInjector;
 import com.github.rskupnik.storyteller.injection.EngineModule;
@@ -16,7 +17,7 @@ public final class Storyteller {
         this.engine = engine;
     }
 
-    public static Storyteller newEngine(Stage stage, BitmapFont font) {
+    public static Storyteller newEngine(Stage stage, BitmapFont font, Viewport viewport) {
         /**StorytellerInjector injector = Guice.createInjector(new EngineModule());
         TextEngine engine = injector.getInstance(TextEngine.class);
         ((TextEngineImpl) engine).init(injector, stage, font);
@@ -24,7 +25,7 @@ public final class Storyteller {
 
         StorytellerInjector injector = DaggerStorytellerInjector.create();
         TextEngine engine = injector.engine();
-        ((TextEngineImpl) engine).init(injector, stage, font);
+        ((TextEngineImpl) engine).init(injector, stage, font, viewport);
 
         return new Storyteller(engine);
     }
