@@ -2,6 +2,7 @@ package com.github.rskupnik.storyteller.core.renderingunits;
 
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.Commons;
@@ -11,6 +12,7 @@ import com.github.rskupnik.storyteller.core.sceneextend.CharSequenceExtender;
 import com.github.rskupnik.storyteller.core.sceneextend.ColorExtender;
 import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
@@ -50,6 +52,13 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
     public void render(float delta, StatefulScene statefulScene) {
         if (commons.font == null || commons.batch == null)
             return; // Throw exception?
+
+        StatefulStage statefulStage = statefulScene.state().getAttachedStage();
+        if (statefulStage != null && statefulStage.obj().getBackgroundImage() != null) {
+            Texture backgroundImage = statefulStage.obj().getBackgroundImage();
+            Rectangle rect = statefulStage.obj().getRectangle();
+            commons.batch.draw(backgroundImage, rect.x, rect.y, rect.getWidth(), rect.getHeight());
+        }
 
         TransformedScene data = statefulScene.state().getTransformedScene();
         /*

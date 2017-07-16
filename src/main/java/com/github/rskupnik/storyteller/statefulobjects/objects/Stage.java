@@ -1,5 +1,6 @@
 package com.github.rskupnik.storyteller.statefulobjects.objects;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
@@ -10,6 +11,7 @@ public final class Stage {
 
     private String id;
     private Rectangle rectangle;
+    private Texture backgroundImage;
 
     private RenderingUnitInitializer renderingUnitInitializer;
     private TextEffects textEffects = new TextEffects();    // TextEffects can be defined for the whole engine or for a single Stage
@@ -48,6 +50,14 @@ public final class Stage {
         this.renderingUnitInitializer = initializer;
     }
 
+    public Texture getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    private void setBackgroundImage(Texture backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
+
     public TextEffects getTextEffects() {
         return textEffects;
     }
@@ -84,6 +94,11 @@ public final class Stage {
 
         public StageBuilder withClickEffect(ClickEffect clickEffect) {
             stage.getTextEffects().clickEffect = clickEffect;
+            return this;
+        }
+
+        public StageBuilder withBackgroundImage(Texture backgroundImage) {
+            stage.setBackgroundImage(backgroundImage);
             return this;
         }
 
