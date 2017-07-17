@@ -87,7 +87,7 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
                         actor.obj().getClickEffect().produceTween(actor).start(tweenManager);
                     } else {
                         StatefulStage statefulStage = sceneToClickableListEntry.getKey().state().getAttachedStage();
-                        if (statefulStage.notNull() && statefulStage.obj().getTextEffects().clickEffect != null) {    // Use Stage's click effect next
+                        if (!StatefulStage.isNull(statefulStage) && statefulStage.obj().getTextEffects().clickEffect != null) {    // Use Stage's click effect next
                             statefulStage.obj().getTextEffects().clickEffect.produceTween(actor).start(tweenManager);
                         } else if (textEffects.clickEffect != null) {   // Fallback to engine's click effect
                             textEffects.clickEffect.produceTween(actor).start(tweenManager);

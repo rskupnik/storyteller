@@ -1,15 +1,14 @@
 package com.github.rskupnik.storyteller.core;
 
 import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit;
@@ -67,23 +66,34 @@ public final class Renderer {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        drawScenes(delta);
+        drawStages(delta);
         batch.end();
     }
 
-    private void drawScenes(float delta) {
-        for (StatefulScene statefulScene : scenes) {
-            draw(delta, statefulScene);
+    private void drawStages(float delta) {
+        for (StatefulStage statefulStage : stages) {
+            draw(delta, statefulStage);
         }
     }
 
-    private void draw(float delta, StatefulScene statefulScene) {
-        if (!statefulScene.notNull())
+    private void draw(float delta, StatefulStage statefulStage) {
+        if (StatefulStage.isNull(statefulStage))
+            throw new IllegalStateException("Cannot render a scene without a stage. Stage passed: "+statefulStage.obj().getId());
+
+        // Draw the background image
+        if (statefulStage.obj().getBackgroundImage() != null) {
+            Texture backgroundImage = statefulStage.obj().getBackgroundImage();
+            Rectangle rect = statefulStage.obj().getRectangle();
+            commons.batch.draw(backgroundImage, rect.x, rect.y, rect.getWidth(), rect.getHeight());
+        }
+
+        StatefulScene statefulScene = statefulStage.state().getAttachedScene();
+
+        if (StatefulScene.isNull(statefulScene))
             return;
 
         if (statefulScene.obj().isDirty()) {
             sceneUtils.transform(statefulScene);
-            System.out.println("SCENE TRANSFORMED");
         }
 
         TransformedScene data = statefulScene.state().getTransformedScene();
@@ -93,10 +103,6 @@ public final class Renderer {
         BitmapFont font = commons.font;
         if (font == null)
             return;
-
-        StatefulStage statefulStage = statefulScene.state().getAttachedStage();
-        if (!statefulStage.notNull())
-            throw new IllegalStateException("Cannot render a scene without a stage. Scene passed: "+statefulScene.obj().getId());
 
         // If an LineFadeFloatInitializer is defined, use it, otherwise continue to default rendering
         RenderingUnit renderingUnit = statefulStage.state().getRenderingUnit();

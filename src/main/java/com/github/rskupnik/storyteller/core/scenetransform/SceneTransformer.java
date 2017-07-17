@@ -42,7 +42,7 @@ public final class SceneTransformer {
     public TransformedScene transform(TransformedScene output, StatefulScene statefulScene) {
         BitmapFont font = commons.font;
         StatefulStage statefulStage = statefulScene.state().getAttachedStage();
-        if (!statefulScene.notNull() || font == null || !statefulStage.notNull())
+        if (StatefulScene.isNull(statefulScene) || font == null || StatefulStage.isNull(statefulStage))
             return null;    // TODO: throw an exception here?
 
         Stage stage = statefulStage.obj();

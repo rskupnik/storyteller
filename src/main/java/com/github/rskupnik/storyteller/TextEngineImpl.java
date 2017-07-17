@@ -127,7 +127,8 @@ public final class TextEngineImpl implements TextEngine {
     @Override
     public void addStage(Stage stage) {
         StageState state = new StageState();
-        state.setRenderingUnit(renderingUnitFactory.create(injector, stage.getRenderingUnitInitializer()));
+        if (stage.getRenderingUnitInitializer() != null)
+            state.setRenderingUnit(renderingUnitFactory.create(injector, stage.getRenderingUnitInitializer()));
         stages.add(new StatefulStage(stage, state));
     }
 

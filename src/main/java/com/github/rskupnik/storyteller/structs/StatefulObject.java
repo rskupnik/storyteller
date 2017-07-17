@@ -22,8 +22,8 @@ public abstract class StatefulObject<O extends Object, S extends State> {
         return state;
     }
 
-    public boolean notNull() {
-        return object != null && state != null;
+    public static boolean isNull(StatefulObject obj) {
+        return obj == null || obj.obj() == null || obj.state() == null;
     }
 
     @Override

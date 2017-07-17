@@ -53,13 +53,6 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
         if (commons.font == null || commons.batch == null)
             return; // Throw exception?
 
-        StatefulStage statefulStage = statefulScene.state().getAttachedStage();
-        if (statefulStage != null && statefulStage.obj().getBackgroundImage() != null) {
-            Texture backgroundImage = statefulStage.obj().getBackgroundImage();
-            Rectangle rect = statefulStage.obj().getRectangle();
-            commons.batch.draw(backgroundImage, rect.x, rect.y, rect.getWidth(), rect.getHeight());
-        }
-
         TransformedScene data = statefulScene.state().getTransformedScene();
         /*
             The algorithm here is as follows:
