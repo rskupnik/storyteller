@@ -1,9 +1,9 @@
-package com.github.rskupnik.storyteller.core.renderingunits.factory;
+package com.github.rskupnik.storyteller.core.renderingunits.text.factory;
 
-import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit;
-import com.github.rskupnik.storyteller.core.renderingunits.initializers.LineFadeFloatInitializer;
-import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
-import com.github.rskupnik.storyteller.core.renderingunits.initializers.TypewriterInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.text.RenderingUnit;
+import com.github.rskupnik.storyteller.core.renderingunits.text.initializers.LineFadeFloatInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.text.initializers.TypewriterInitializer;
 import com.github.rskupnik.storyteller.injection.StorytellerInjector;
 
 import javax.inject.Inject;

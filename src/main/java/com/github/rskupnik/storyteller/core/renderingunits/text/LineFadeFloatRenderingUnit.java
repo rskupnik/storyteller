@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.core.renderingunits;
+package com.github.rskupnik.storyteller.core.renderingunits.text;
 
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -13,8 +13,8 @@ import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.NamedOffsets;
-import com.github.rskupnik.storyteller.core.renderingunits.initializers.LineFadeFloatInitializer;
-import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.text.initializers.LineFadeFloatInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.*;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.structs.Fragment;

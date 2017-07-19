@@ -1,4 +1,6 @@
-package com.github.rskupnik.storyteller.core.renderingunits.initializers;
+package com.github.rskupnik.storyteller.core.renderingunits.text.initializers;
+
+import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 
 public class TypewriterInitializer implements RenderingUnitInitializer {
 

@@ -1,6 +1,7 @@
-package com.github.rskupnik.storyteller.core.renderingunits.initializers;
+package com.github.rskupnik.storyteller.core.renderingunits.text.initializers;
 
 import aurelienribon.tweenengine.TweenEquation;
+import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 
 public class LineFadeFloatInitializer implements RenderingUnitInitializer {
 

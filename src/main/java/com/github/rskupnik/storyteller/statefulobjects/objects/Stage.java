@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
-import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 
 public final class Stage {
@@ -14,6 +14,7 @@ public final class Stage {
     private Texture backgroundImage;
 
     private RenderingUnitInitializer renderingUnitInitializer;
+    private RenderingUnitInitializer backgroundRenderingUnitInitializer;
     private TextEffects textEffects = new TextEffects();    // TextEffects can be defined for the whole engine or for a single Stage
 
     private Vector2 topLeft;
@@ -48,6 +49,14 @@ public final class Stage {
 
     private void setRenderingUnitInitializer(RenderingUnitInitializer initializer) {
         this.renderingUnitInitializer = initializer;
+    }
+
+    public RenderingUnitInitializer getBackgroundRenderingUnitInitializer() {
+        return backgroundRenderingUnitInitializer;
+    }
+
+    private void setBackgroundRenderingUnitInitializer(RenderingUnitInitializer initializer) {
+        this.backgroundRenderingUnitInitializer = initializer;
     }
 
     public Texture getBackgroundImage() {
@@ -89,6 +98,11 @@ public final class Stage {
 
         public StageBuilder withRenderingUnit(RenderingUnitInitializer initializer) {
             stage.setRenderingUnitInitializer(initializer);
+            return this;
+        }
+
+        public StageBuilder withBackgroundRenderingUnit(RenderingUnitInitializer initializer) {
+            stage.setBackgroundRenderingUnitInitializer(initializer);
             return this;
         }
 

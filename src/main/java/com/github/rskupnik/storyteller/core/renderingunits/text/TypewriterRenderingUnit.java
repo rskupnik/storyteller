@@ -1,18 +1,16 @@
-package com.github.rskupnik.storyteller.core.renderingunits;
+package com.github.rskupnik.storyteller.core.renderingunits.text;
 
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.Commons;
-import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
-import com.github.rskupnik.storyteller.core.renderingunits.initializers.TypewriterInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.text.initializers.TypewriterInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.CharSequenceExtender;
 import com.github.rskupnik.storyteller.core.sceneextend.ColorExtender;
 import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
-import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;

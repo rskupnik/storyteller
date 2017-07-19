@@ -11,7 +11,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
-import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnit;
+import com.github.rskupnik.storyteller.core.renderingunits.background.BackgroundRenderingUnit;
+import com.github.rskupnik.storyteller.core.renderingunits.text.RenderingUnit;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.aggregates.Commons;
@@ -81,10 +82,15 @@ public final class Renderer {
             throw new IllegalStateException("Cannot render a scene without a stage. Stage passed: "+statefulStage.obj().getId());
 
         // Draw the background image
-        if (statefulStage.obj().getBackgroundImage() != null) {
+        /*if (statefulStage.obj().getBackgroundImage() != null) {
             Texture backgroundImage = statefulStage.obj().getBackgroundImage();
             Rectangle rect = statefulStage.obj().getRectangle();
             commons.batch.draw(backgroundImage, rect.x, rect.y, rect.getWidth(), rect.getHeight());
+        }*/
+        BackgroundRenderingUnit backgroundRenderingUnit = statefulStage.state().getBackgroundRenderingUnit();
+        if (backgroundRenderingUnit != null) {
+            backgroundRenderingUnit.render(delta, statefulStage);
+            return;
         }
 
         StatefulScene statefulScene = statefulStage.state().getAttachedScene();

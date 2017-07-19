@@ -1,15 +1,10 @@
 package com.github.rskupnik.storyteller.injection;
 
 import aurelienribon.tweenengine.TweenManager;
-import com.github.rskupnik.storyteller.TextEngine;
-import com.github.rskupnik.storyteller.TextEngineImpl;
-import com.github.rskupnik.storyteller.aggregates.*;
-import com.github.rskupnik.storyteller.core.InputHandler;
-import com.github.rskupnik.storyteller.core.Renderer;
-import com.github.rskupnik.storyteller.core.renderingunits.factory.IRenderingUnitFactory;
-import com.github.rskupnik.storyteller.core.renderingunits.factory.RenderingUnitFactory;
-import com.github.rskupnik.storyteller.core.scenetransform.SceneTransformer;
-import com.github.rskupnik.storyteller.utils.SceneUtils;
+import com.github.rskupnik.storyteller.core.renderingunits.background.factory.BackgroundRenderingUnitFactory;
+import com.github.rskupnik.storyteller.core.renderingunits.background.factory.IBackgroundRenderingUnitFactory;
+import com.github.rskupnik.storyteller.core.renderingunits.text.factory.IRenderingUnitFactory;
+import com.github.rskupnik.storyteller.core.renderingunits.text.factory.RenderingUnitFactory;
 import dagger.Module;
 import dagger.Provides;
 
@@ -21,6 +16,11 @@ public class EngineModule {
     @Provides
     static IRenderingUnitFactory renderingUnitFactory() {
         return new RenderingUnitFactory();
+    }
+
+    @Provides
+    static IBackgroundRenderingUnitFactory backgroundRenderingUnitFactory() {
+        return new BackgroundRenderingUnitFactory();
     }
 
     @Provides

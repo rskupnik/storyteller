@@ -1,6 +1,6 @@
-package com.github.rskupnik.storyteller.core.renderingunits;
+package com.github.rskupnik.storyteller.core.renderingunits.text;
 
-import com.github.rskupnik.storyteller.core.renderingunits.initializers.RenderingUnitInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.ExtenderChain;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 

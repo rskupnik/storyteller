@@ -14,7 +14,8 @@ import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
-import com.github.rskupnik.storyteller.core.renderingunits.factory.IRenderingUnitFactory;
+import com.github.rskupnik.storyteller.core.renderingunits.background.factory.IBackgroundRenderingUnitFactory;
+import com.github.rskupnik.storyteller.core.renderingunits.text.factory.IRenderingUnitFactory;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.StorytellerInjector;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
@@ -44,6 +45,7 @@ public final class TextEngineImpl implements TextEngine {
     @Inject Clickables clickables;
     @Inject SceneUtils sceneUtils;
     @Inject IRenderingUnitFactory renderingUnitFactory;
+    @Inject IBackgroundRenderingUnitFactory backgroundRenderingUnitFactory;
 
     @Inject
     public TextEngineImpl() {
@@ -129,6 +131,8 @@ public final class TextEngineImpl implements TextEngine {
         StageState state = new StageState();
         if (stage.getRenderingUnitInitializer() != null)
             state.setRenderingUnit(renderingUnitFactory.create(injector, stage.getRenderingUnitInitializer()));
+        if (stage.getBackgroundRenderingUnitInitializer() != null)
+            state.setBackgroundRenderingUnit(backgroundRenderingUnitFactory.create(injector, stage.getBackgroundRenderingUnitInitializer()));
         stages.add(new StatefulStage(stage, state));
     }
 
