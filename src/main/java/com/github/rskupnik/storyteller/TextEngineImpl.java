@@ -19,13 +19,14 @@ import com.github.rskupnik.storyteller.core.renderingunits.text.factory.IRenderi
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.StorytellerInjector;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
-import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
-import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
-import com.github.rskupnik.storyteller.statefulobjects.states.*;
-import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
+import com.github.rskupnik.storyteller.statefulobjects.states.SceneState;
+import com.github.rskupnik.storyteller.statefulobjects.states.StageState;
+import com.github.rskupnik.storyteller.utils.SceneUtils;
 
 import javax.inject.Inject;
 

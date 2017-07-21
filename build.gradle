@@ -24,7 +24,6 @@ dependencies {
     compileOnly group: 'com.badlogicgames.gdx', name: 'gdx', version:'1.9.6'
     apt group: 'com.google.dagger', name: 'dagger-compiler', version: '2.11'
     compile group: 'com.google.dagger', name: 'dagger', version: '2.11'
-
     compile 'org.javatuples:javatuples:1.2'
     compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.4"
 }

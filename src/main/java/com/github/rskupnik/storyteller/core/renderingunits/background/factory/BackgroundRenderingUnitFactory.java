@@ -3,6 +3,7 @@ package com.github.rskupnik.storyteller.core.renderingunits.background.factory;
 import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.renderingunits.background.BackgroundRenderingUnit;
 import com.github.rskupnik.storyteller.core.renderingunits.background.initializers.BasicBackgroundInitializer;
+import com.github.rskupnik.storyteller.core.renderingunits.background.initializers.NormalMappedBackgroundInitializer;
 import com.github.rskupnik.storyteller.injection.StorytellerInjector;
 
 import javax.inject.Inject;
@@ -19,7 +20,9 @@ public class BackgroundRenderingUnitFactory implements IBackgroundRenderingUnitF
         BackgroundRenderingUnit ru = null;
         if (initializer instanceof BasicBackgroundInitializer)
             ru = injector.basicBgRU();
-        else
+        else if (initializer instanceof NormalMappedBackgroundInitializer) {
+            ru = injector.normalMappedBgRU();
+        } else
             throw new IllegalArgumentException("Unknown RenderingUnitInitializer passed: "+initializer.getClass());
 
         if (ru != null)
