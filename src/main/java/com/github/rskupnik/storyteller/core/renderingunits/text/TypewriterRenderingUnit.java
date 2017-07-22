@@ -51,6 +51,8 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
         if (commons.font == null || commons.batch == null)
             return; // Throw exception?
 
+        commons.batch.begin();
+
         TransformedScene data = statefulScene.state().getTransformedScene();
         /*
             The algorithm here is as follows:
@@ -137,6 +139,8 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
 
             i++;
         }
+
+        commons.batch.end();
     }
 
     private boolean isProcessed(StatefulActor actor, int index) {

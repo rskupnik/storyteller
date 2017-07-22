@@ -1,7 +1,9 @@
 package com.github.rskupnik.storyteller.core;
 
 import aurelienribon.tweenengine.TweenManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -66,9 +68,7 @@ public final class Renderer {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
-        batch.begin();
         drawStages(delta);
-        batch.end();
     }
 
     private void drawStages(float delta) {
@@ -121,6 +121,7 @@ public final class Renderer {
 
         // This is the default rendering used if no LineFadeFloatInitializer is defined
         // TODO: Pull this out to a BasicRenderer class or sth to be consistent
+        batch.begin();
         for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {
             StatefulActor actor = actorToDataPair.getValue0();
             for (Fragment fragment : actorToDataPair.getValue1()) {
@@ -138,6 +139,8 @@ public final class Renderer {
         }
         statefulScene.obj().setDirty(false);
         statefulScene.state().wasDrawn();
+
+        batch.end();
     }
 
     public void resize(int width, int height) {

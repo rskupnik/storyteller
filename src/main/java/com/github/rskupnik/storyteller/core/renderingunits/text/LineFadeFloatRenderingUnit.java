@@ -107,6 +107,8 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         if (namedOffsets.get("LFF-offset-"+scenePair.obj().getId()) == null)
             namedOffsets.put("LFF-offset-"+scenePair.obj().getId(), offset);
 
+        commons.batch.begin();
+
         boolean isAppearingInternal = false;    // These are set if at least one fragment is processed, based on those the larger flags are set later
         boolean isDisappearingInternal = false;
         for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {
@@ -211,5 +213,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
             timestampAppear = System.currentTimeMillis() + appearInterval;
         }
         //endregion
+
+        commons.batch.end();
     }
 }

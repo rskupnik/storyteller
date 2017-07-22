@@ -26,9 +26,11 @@ public final class BasicBackgroundRenderingUnit extends BackgroundRenderingUnit 
     @Override
     public void render(float delta, StatefulStage statefulStage) {
         if (statefulStage.obj().getBackgroundImage() != null) {
+            commons.batch.begin();
             Texture backgroundImage = statefulStage.obj().getBackgroundImage();
             Rectangle rect = statefulStage.obj().getRectangle();
             commons.batch.draw(backgroundImage, rect.x, rect.y, rect.getWidth(), rect.getHeight());
+            commons.batch.end();
         }
     }
 }
