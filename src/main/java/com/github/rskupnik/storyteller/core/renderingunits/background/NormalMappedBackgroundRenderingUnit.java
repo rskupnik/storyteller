@@ -13,6 +13,7 @@ import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.renderingunits.background.initializers.NormalMappedBackgroundInitializer;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
+import com.github.rskupnik.storyteller.utils.FileUtils;
 
 import javax.inject.Inject;
 import java.io.*;
@@ -47,10 +48,10 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         this.normalMap = NMBInitializer.getNormalMap();
 
         InputStream fragFile = getClass().getClassLoader().getResourceAsStream("normalMapWithLight.frag");
-        String fragFileContents = getFileContents(fragFile);
+        String fragFileContents = FileUtils.getFileContents(fragFile);
 
         InputStream vertFile = getClass().getClassLoader().getResourceAsStream("basic.vert");
-        String vertFileContents = getFileContents(vertFile);
+        String vertFileContents = FileUtils.getFileContents(vertFile);
 
         ShaderProgram.pedantic = false;
         shader = new ShaderProgram(vertFileContents, fragFileContents);
@@ -68,7 +69,7 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         // Setup default uniforms
         shader.begin();
         shader.setUniformi("u_normals", 1); // GL_TEXTURE1 - normal map
-        shader.setUniformf("Resolution", 800, 600);
+        shader.setUniformf("Resolution", 800, 600); // TODO: De-hardcode this
         shader.end();
     }
 
@@ -87,6 +88,7 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         batch.begin();
 
         // Update light position
+        // TODO: Update the light position only in a single place
         if (light.isAttached()) {
             float x = (float) Gdx.input.getX() / (float) Gdx.graphics.getWidth();
             float y = ((float) Gdx.graphics.getHeight() - (float) Gdx.input.getY()) / (float) Gdx.graphics.getHeight();
@@ -121,20 +123,5 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
             shader.setUniformf("AmbientColor", ambientLight.getColor().x, ambientLight.getColor().y, ambientLight.getColor().z, ambientLight.getIntensity());
         shader.setUniformf("Falloff", light.getFalloff());
         shader.end();
-    }
-
-    private String getFileContents(InputStream file) {
-        StringBuilder result = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(file))) {
-
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                result.append(line).append("\n");
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result.toString();
     }
 }
