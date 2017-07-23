@@ -1,6 +1,8 @@
 package com.github.rskupnik.storyteller;
 
 import com.badlogic.gdx.InputProcessor;
+import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
+import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
@@ -18,6 +20,9 @@ public interface TextEngine {
     void removeScene(Scene scene);
 
     void addStage(Stage stage);
+
+    void setAmbientLight(AmbientLight light);
+    void addLight(Light light);
 
     InputProcessor getInputProcessor();
 }

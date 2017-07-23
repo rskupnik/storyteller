@@ -8,6 +8,7 @@ public final class Light {
     private Vector3 color = new Vector3(1, 1, 1);
     private Vector3 falloff = new Vector3(.4f, 3f, 20f);
     private float intensity = 1;
+    private boolean attached = false;
 
     private Light() {
 
@@ -33,6 +34,10 @@ public final class Light {
         return intensity;
     }
 
+    public boolean isAttached() {
+        return attached;
+    }
+
     private void setPosition(Vector3 position) {
         this.position = position;
     }
@@ -47,6 +52,10 @@ public final class Light {
 
     private void setIntensity(float intensity) {
         this.intensity = intensity;
+    }
+
+    private void setAttached(boolean attached) {
+        this.attached = attached;
     }
 
     public static final class Builder {
@@ -78,6 +87,11 @@ public final class Light {
 
         public Builder intensity(float intensity) {
             light.setIntensity(intensity);
+            return this;
+        }
+
+        public Builder attached() {
+            light.setAttached(true);
             return this;
         }
     }

@@ -14,6 +14,8 @@ import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
+import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
+import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.core.renderingunits.background.factory.IBackgroundRenderingUnitFactory;
 import com.github.rskupnik.storyteller.core.renderingunits.text.factory.IRenderingUnitFactory;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
@@ -43,6 +45,7 @@ public final class TextEngineImpl implements TextEngine {
     @Inject Scenes scenes;
     @Inject Stages stages;
     @Inject Commons commons;
+    @Inject Lights lights;
     @Inject Clickables clickables;
     @Inject SceneUtils sceneUtils;
     @Inject IRenderingUnitFactory renderingUnitFactory;
@@ -135,6 +138,16 @@ public final class TextEngineImpl implements TextEngine {
         if (stage.getBackgroundRenderingUnitInitializer() != null)
             state.setBackgroundRenderingUnit(backgroundRenderingUnitFactory.create(injector, stage.getBackgroundRenderingUnitInitializer()));
         stages.add(new StatefulStage(stage, state));
+    }
+
+    @Override
+    public void setAmbientLight(AmbientLight light) {
+        commons.ambientLight = light;
+    }
+
+    @Override
+    public void addLight(Light light) {
+        lights.add(light);
     }
 
     @Override

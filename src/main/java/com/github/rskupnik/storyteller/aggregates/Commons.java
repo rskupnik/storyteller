@@ -3,6 +3,7 @@ package com.github.rskupnik.storyteller.aggregates;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -18,4 +19,5 @@ public final class Commons {
     public BitmapFont font;
     public SpriteBatch batch;
     public Viewport viewport;
+    public AmbientLight ambientLight;
 }
