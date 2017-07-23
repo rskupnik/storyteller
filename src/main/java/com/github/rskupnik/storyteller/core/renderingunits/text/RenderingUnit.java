@@ -10,10 +10,18 @@ import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 public abstract class RenderingUnit {
 
     private ExtenderChain chain;
+    private boolean firstRender = true;
 
     public abstract void init(RenderingUnitInitializer initializer);
 
-    public abstract void render(float delta, StatefulScene scenePair);
+    public void render(float delta, StatefulScene scenePair) {
+        if (firstRender) {
+            firstRender = false;
+            preFirstRender(scenePair);
+        }
+    }
+
+    public abstract void preFirstRender(StatefulScene statefulScene);
 
     protected void setChain(ExtenderChain chain) {
         this.chain = chain;

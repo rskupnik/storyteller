@@ -76,6 +76,8 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
     @Override
     public void render(float delta, StatefulScene scenePair) {
+        super.render(delta, scenePair);
+
         if (commons.font == null || commons.batch == null)
             return; // Throw exception?
 
@@ -215,5 +217,10 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         //endregion
 
         commons.batch.end();
+    }
+
+    @Override
+    public void preFirstRender(StatefulScene statefulScene) {
+
     }
 }

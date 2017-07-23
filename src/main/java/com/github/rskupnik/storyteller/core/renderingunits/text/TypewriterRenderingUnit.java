@@ -48,6 +48,8 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
 
     @Override
     public void render(float delta, StatefulScene statefulScene) {
+        super.render(delta, statefulScene);
+
         if (commons.font == null || commons.batch == null)
             return; // Throw exception?
 
@@ -141,6 +143,11 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
         }
 
         commons.batch.end();
+    }
+
+    @Override
+    public void preFirstRender(StatefulScene statefulScene) {
+
     }
 
     private boolean isProcessed(StatefulActor actor, int index) {

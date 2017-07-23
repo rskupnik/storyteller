@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Lights;
@@ -17,7 +16,6 @@ import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 
 import javax.inject.Inject;
 import java.io.*;
-import java.util.Scanner;
 
 public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit {
 
@@ -48,10 +46,10 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         NormalMappedBackgroundInitializer NMBInitializer = (NormalMappedBackgroundInitializer) initializer;
         this.normalMap = NMBInitializer.getNormalMap();
 
-        InputStream fragFile = getClass().getClassLoader().getResourceAsStream("normalMapShader.frag");
+        InputStream fragFile = getClass().getClassLoader().getResourceAsStream("normalMapWithLight.frag");
         String fragFileContents = getFileContents(fragFile);
 
-        InputStream vertFile = getClass().getClassLoader().getResourceAsStream("normalMapShader.vert");
+        InputStream vertFile = getClass().getClassLoader().getResourceAsStream("basic.vert");
         String vertFileContents = getFileContents(vertFile);
 
         ShaderProgram.pedantic = false;
