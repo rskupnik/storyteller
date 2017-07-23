@@ -5,7 +5,16 @@ import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 
 public abstract class BackgroundRenderingUnit {
 
+    private boolean firstRender = true;
+
     public abstract void init(RenderingUnitInitializer initializer);
 
-    public abstract void render(float delta, StatefulStage statefulStage);
+    public void render(float delta, StatefulStage statefulStage) {
+        if (firstRender) {
+            firstRender = false;
+            preFirstRender(statefulStage);
+        }
+    }
+
+    public abstract void preFirstRender(StatefulStage statefulStage);
 }

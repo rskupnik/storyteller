@@ -58,6 +58,10 @@ public final class Light {
         this.attached = attached;
     }
 
+    public void setPosition(float x, float y) {
+        position.set(x, y, position.z);
+    }
+
     public static final class Builder {
 
         private Light light;

@@ -25,6 +25,8 @@ public final class BasicBackgroundRenderingUnit extends BackgroundRenderingUnit 
 
     @Override
     public void render(float delta, StatefulStage statefulStage) {
+        super.render(delta, statefulStage);
+
         if (statefulStage.obj().getBackgroundImage() != null) {
             commons.batch.begin();
             Texture backgroundImage = statefulStage.obj().getBackgroundImage();
@@ -32,5 +34,10 @@ public final class BasicBackgroundRenderingUnit extends BackgroundRenderingUnit 
             commons.batch.draw(backgroundImage, rect.x, rect.y, rect.getWidth(), rect.getHeight());
             commons.batch.end();
         }
+    }
+
+    @Override
+    public void preFirstRender(StatefulStage statefulStage) {
+        // Does nothing in this case
     }
 }
