@@ -4,26 +4,34 @@ import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
+import com.github.rskupnik.storyteller.aggregates.Lights;
 import com.github.rskupnik.storyteller.aggregates.NamedOffsets;
+import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
+import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.core.renderingunits.text.initializers.LineFadeFloatInitializer;
 import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.core.sceneextend.*;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.structs.Fragment;
+import com.github.rskupnik.storyteller.utils.FileUtils;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import javax.inject.Inject;
 import org.javatuples.Pair;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +42,7 @@ import java.util.Map;
 public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
     @Inject Commons commons;
+    @Inject Lights lights;
     @Inject TweenManager tweenManager;
     @Inject Clickables clickables;
     @Inject NamedOffsets namedOffsets;
@@ -57,6 +66,12 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
     private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
     private int lineHeight = 0;
 
+    // TODO: Extract light logic to a common superclass
+    private boolean affectedByLight;
+    private ShaderProgram shader;
+    private ShaderProgram defaultShader;
+    private Light light;
+
     @Inject
     public LineFadeFloatRenderingUnit() {
 
@@ -72,6 +87,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         this.appearInterval = initializerLFF.getAppearInterval();
         this.disappearInterval = initializerLFF.getDisappearInterval();
         this.disappearEnabled = disappearInterval > 0;
+        this.affectedByLight = initializerLFF.isAffectedByLight();
     }
 
     @Override
@@ -109,7 +125,23 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         if (namedOffsets.get("LFF-offset-"+scenePair.obj().getId()) == null)
             namedOffsets.put("LFF-offset-"+scenePair.obj().getId(), offset);
 
+        if (affectedByLight && shader != null)
+            commons.batch.setShader(shader);
+
         commons.batch.begin();
+
+        if (affectedByLight) {
+            // Update light position
+            // TODO: Update the light position only in a single place
+            if (light.isAttached()) {
+                float x = (float) Gdx.input.getX() / (float) Gdx.graphics.getWidth();
+                float y = ((float) Gdx.graphics.getHeight() - (float) Gdx.input.getY()) / (float) Gdx.graphics.getHeight();
+
+                light.setPosition(x, y);
+            }
+
+            shader.setUniformf("LightPos", light.getPosition());
+        }
 
         boolean isAppearingInternal = false;    // These are set if at least one fragment is processed, based on those the larger flags are set later
         boolean isDisappearingInternal = false;
@@ -217,10 +249,53 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         //endregion
 
         commons.batch.end();
+
+        if (affectedByLight && shader != null)
+            commons.batch.setShader(defaultShader);
     }
 
     @Override
     public void preFirstRender(StatefulScene statefulScene) {
+        if (affectedByLight) {
+            // TODO: Extract shader loading logic into a single place
+            InputStream fragFile = getClass().getClassLoader().getResourceAsStream("singleLight.frag");
+            String fragFileContents = FileUtils.getFileContents(fragFile);
 
+            InputStream vertFile = getClass().getClassLoader().getResourceAsStream("basic.vert");
+            String vertFileContents = FileUtils.getFileContents(vertFile);
+
+            ShaderProgram.pedantic = false;
+            shader = new ShaderProgram(vertFileContents, fragFileContents);
+
+            defaultShader = commons.batch.createDefaultShader();    // TODO: Create this shader only once at start and store it in commons
+
+            // Ensure it compiled
+            if (!shader.isCompiled())
+                throw new GdxRuntimeException("Could not compile shader: "+shader.getLog());
+
+            // Print any warnings
+            if (shader.getLog().length() != 0)
+                System.out.println(shader.getLog());
+
+            // TODO: Extract the shader setup into a single place?
+
+            // Get the first light
+            // TODO: Make this use all the lights
+            light = lights.get(0);
+
+            // TODO: Throw exception or draw a black blackground?
+            if (light == null)
+                throw new GdxRuntimeException("Cannot use affected by light text rendering without a light attached");
+
+            AmbientLight ambientLight = commons.ambientLight;
+
+            shader.begin();
+            shader.setUniformf("LightColor", light.getColor().x, light.getColor().y, light.getColor().z, light.getIntensity());
+            if (ambientLight != null)   // TODO: Throw exception if missing instead?
+                shader.setUniformf("AmbientColor", ambientLight.getColor().x, ambientLight.getColor().y, ambientLight.getColor().z, ambientLight.getIntensity());
+            shader.setUniformf("Falloff", light.getFalloff());
+            shader.setUniformf("Resolution", 800, 600); // TODO: De-hardcode this
+            shader.end();
+        }
     }
 }
