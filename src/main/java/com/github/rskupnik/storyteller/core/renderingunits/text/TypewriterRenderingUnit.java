@@ -43,7 +43,6 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
 
     private boolean affectedByLight;
     private ShaderProgram shader;
-    private ShaderProgram defaultShader;
     private Light light;
 
     @Inject
@@ -178,7 +177,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
         commons.batch.end();
 
         if (affectedByLight && shader != null)
-            commons.batch.setShader(defaultShader);
+            commons.batch.setShader(commons.defaultShader);
     }
 
     @Override
@@ -193,8 +192,6 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
 
             ShaderProgram.pedantic = false;
             shader = new ShaderProgram(vertFileContents, fragFileContents);
-
-            defaultShader = commons.batch.createDefaultShader();    // TODO: Create this shader only once at start and store it in commons
 
             // Ensure it compiled
             if (!shader.isCompiled())

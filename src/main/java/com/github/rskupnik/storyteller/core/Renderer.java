@@ -62,6 +62,7 @@ public final class Renderer {
         viewport.apply(true);
 
         commons.batch = batch;
+        commons.defaultShader = SpriteBatch.createDefaultShader();
     }
 
     public void render(float delta) {

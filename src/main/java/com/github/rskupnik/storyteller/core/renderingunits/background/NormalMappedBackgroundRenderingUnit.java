@@ -34,7 +34,6 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
 
     private Texture normalMap;
     private ShaderProgram shader;
-    private ShaderProgram defaultShader;
     private Light light;
 
     @Inject
@@ -63,8 +62,6 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         // Print any warnings
         if (shader.getLog().length() != 0)
             System.out.println(shader.getLog());
-
-        defaultShader = commons.batch.createDefaultShader();
 
         // Setup default uniforms
         shader.begin();
@@ -102,7 +99,7 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         batch.draw(background, stageBounds.x, stageBounds.y, stageBounds.getWidth(), stageBounds.getHeight());
 
         batch.end();
-        batch.setShader(defaultShader);
+        batch.setShader(commons.defaultShader);
     }
 
     @Override
