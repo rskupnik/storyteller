@@ -218,7 +218,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
             if (ambientLight != null)   // TODO: Throw exception if missing instead?
                 shader.setUniformf("AmbientColor", ambientLight.getColor().x, ambientLight.getColor().y, ambientLight.getColor().z, ambientLight.getIntensity());
             shader.setUniformf("Falloff", light.getFalloff());
-            shader.setUniformf("Resolution", 800, 600); // TODO: De-hardcode this
+            shader.setUniformf("Resolution", commons.worldDimensions.x, commons.worldDimensions.y);
             shader.end();
         }
     }

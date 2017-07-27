@@ -60,6 +60,7 @@ public final class TextEngineImpl implements TextEngine {
         this.injector = injector;
         commons.font = font;
         commons.viewport = viewport;
+        commons.worldDimensions = new Vector2(viewport.getWorldWidth(), viewport.getWorldHeight());
 
         addStage(stage);
 

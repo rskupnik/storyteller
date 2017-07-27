@@ -66,7 +66,7 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         // Setup default uniforms
         shader.begin();
         shader.setUniformi("u_normals", 1); // GL_TEXTURE1 - normal map
-        shader.setUniformf("Resolution", 800, 600); // TODO: De-hardcode this
+        shader.setUniformf("Resolution", commons.worldDimensions.x, commons.worldDimensions.y);
         shader.end();
     }
 
