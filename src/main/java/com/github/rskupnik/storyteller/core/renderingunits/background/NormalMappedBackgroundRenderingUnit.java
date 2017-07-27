@@ -14,6 +14,7 @@ import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitiali
 import com.github.rskupnik.storyteller.core.renderingunits.background.initializers.NormalMappedBackgroundInitializer;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.utils.FileUtils;
+import com.github.rskupnik.storyteller.utils.LightUtils;
 
 import javax.inject.Inject;
 import java.io.*;
@@ -84,14 +85,8 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         batch.setShader(shader);
         batch.begin();
 
-        // Update light position
-        // TODO: Update the light position only in a single place
-        if (light.isAttached()) {
-            float x = (float) Gdx.input.getX() / (float) Gdx.graphics.getWidth();
-            float y = ((float) Gdx.graphics.getHeight() - (float) Gdx.input.getY()) / (float) Gdx.graphics.getHeight();
-
-            light.setPosition(x, y);
-        }
+        if (light.isAttached())
+            LightUtils.updateLightToMousePosition(light);
 
         shader.setUniformf("LightPos", light.getPosition());
         normalMap.bind(1);

@@ -25,6 +25,7 @@ import com.github.rskupnik.storyteller.core.sceneextend.*;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.utils.FileUtils;
+import com.github.rskupnik.storyteller.utils.LightUtils;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
@@ -130,14 +131,8 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         commons.batch.begin();
 
         if (affectedByLight) {
-            // Update light position
-            // TODO: Update the light position only in a single place
-            if (light.isAttached()) {
-                float x = (float) Gdx.input.getX() / (float) Gdx.graphics.getWidth();
-                float y = ((float) Gdx.graphics.getHeight() - (float) Gdx.input.getY()) / (float) Gdx.graphics.getHeight();
-
-                light.setPosition(x, y);
-            }
+            if (light.isAttached())
+                LightUtils.updateLightToMousePosition(light);
 
             shader.setUniformf("LightPos", light.getPosition());
         }
