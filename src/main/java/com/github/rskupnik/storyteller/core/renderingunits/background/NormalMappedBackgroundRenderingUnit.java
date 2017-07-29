@@ -15,6 +15,7 @@ import com.github.rskupnik.storyteller.core.renderingunits.background.initialize
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.utils.FileUtils;
 import com.github.rskupnik.storyteller.utils.LightUtils;
+import com.github.rskupnik.storyteller.utils.ShaderUtils;
 
 import javax.inject.Inject;
 import java.io.*;
@@ -47,22 +48,7 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         NormalMappedBackgroundInitializer NMBInitializer = (NormalMappedBackgroundInitializer) initializer;
         this.normalMap = NMBInitializer.getNormalMap();
 
-        InputStream fragFile = getClass().getClassLoader().getResourceAsStream("normalMapWithLight.frag");
-        String fragFileContents = FileUtils.getFileContents(fragFile);
-
-        InputStream vertFile = getClass().getClassLoader().getResourceAsStream("basic.vert");
-        String vertFileContents = FileUtils.getFileContents(vertFile);
-
-        ShaderProgram.pedantic = false;
-        shader = new ShaderProgram(vertFileContents, fragFileContents);
-
-        // Ensure it compiled
-        if (!shader.isCompiled())
-            throw new GdxRuntimeException("Could not compile shader: "+shader.getLog());
-
-        // Print any warnings
-        if (shader.getLog().length() != 0)
-            System.out.println(shader.getLog());
+        shader = ShaderUtils.loadShader("normalMapWithLight.frag", "basic.vert");
 
         // Setup default uniforms
         shader.begin();
@@ -103,7 +89,6 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
         // TODO: Make this use all the lights
         light = lights.get(0);
 
-        // TODO: Throw exception or draw a black blackground?
         if (light == null)
             throw new GdxRuntimeException("Cannot use NormalMappedBackground without a light being set up!");
 
@@ -111,7 +96,7 @@ public class NormalMappedBackgroundRenderingUnit extends BackgroundRenderingUnit
 
         shader.begin();
         shader.setUniformf("LightColor", light.getColor().x, light.getColor().y, light.getColor().z, light.getIntensity());
-        if (ambientLight != null)   // TODO: Throw exception if missing instead?
+        if (ambientLight != null)
             shader.setUniformf("AmbientColor", ambientLight.getColor().x, ambientLight.getColor().y, ambientLight.getColor().z, ambientLight.getIntensity());
         shader.setUniformf("Falloff", light.getFalloff());
         shader.end();

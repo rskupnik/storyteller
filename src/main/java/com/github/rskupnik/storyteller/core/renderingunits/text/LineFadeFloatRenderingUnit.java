@@ -30,6 +30,8 @@ import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import javax.inject.Inject;
+
+import com.github.rskupnik.storyteller.utils.ShaderUtils;
 import org.javatuples.Pair;
 
 import java.io.InputStream;
@@ -67,7 +69,6 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
     private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
     private int lineHeight = 0;
 
-    // TODO: Extract light logic to a common superclass
     private boolean affectedByLight;
     private ShaderProgram shader;
     private Light light;
@@ -251,31 +252,12 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
     @Override
     public void preFirstRender(StatefulScene statefulScene) {
         if (affectedByLight) {
-            // TODO: Extract shader loading logic into a single place
-            InputStream fragFile = getClass().getClassLoader().getResourceAsStream("singleLight.frag");
-            String fragFileContents = FileUtils.getFileContents(fragFile);
-
-            InputStream vertFile = getClass().getClassLoader().getResourceAsStream("basic.vert");
-            String vertFileContents = FileUtils.getFileContents(vertFile);
-
-            ShaderProgram.pedantic = false;
-            shader = new ShaderProgram(vertFileContents, fragFileContents);
-
-            // Ensure it compiled
-            if (!shader.isCompiled())
-                throw new GdxRuntimeException("Could not compile shader: "+shader.getLog());
-
-            // Print any warnings
-            if (shader.getLog().length() != 0)
-                System.out.println(shader.getLog());
-
-            // TODO: Extract the shader setup into a single place?
+            shader = ShaderUtils.loadShader("singleLight.frag", "basic.vert");
 
             // Get the first light
             // TODO: Make this use all the lights
             light = lights.get(0);
 
-            // TODO: Throw exception or draw a black blackground?
             if (light == null)
                 throw new GdxRuntimeException("Cannot use affected by light text rendering without a light attached");
 
@@ -283,7 +265,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
             shader.begin();
             shader.setUniformf("LightColor", light.getColor().x, light.getColor().y, light.getColor().z, light.getIntensity());
-            if (ambientLight != null)   // TODO: Throw exception if missing instead?
+            if (ambientLight != null)
                 shader.setUniformf("AmbientColor", ambientLight.getColor().x, ambientLight.getColor().y, ambientLight.getColor().z, ambientLight.getIntensity());
             shader.setUniformf("Falloff", light.getFalloff());
             shader.setUniformf("Resolution", commons.worldDimensions.x, commons.worldDimensions.y);
