@@ -11,6 +11,7 @@ import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
 import com.github.rskupnik.storyteller.structs.Fragment;
+import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
@@ -75,7 +76,7 @@ public final class SceneTransformer {
         // Handle a newline - simply adjust placement markers and set the actor as processed
         if (actor.obj().getText().equals("\n")) {
             x = (int) stage.getTopLeft().x;
-            y -= commons.font.getData().lineHeight;
+            y -= SceneUtils.extractLineHeightFromFont(commons.font);
             actor.state().setTransformed(true);
             return;
         }
@@ -126,7 +127,7 @@ public final class SceneTransformer {
 
             // Adjust x and y after the fragmented line to continue with the rest of the text
             x = (int) stage.getTopLeft().x;
-            y -= (int) GL_fragLine.height + GR_fragLine.glyphs.get(0).height;
+            y -= SceneUtils.extractLineHeightFromFont(commons.font); //(int) GL_fragLine.height + GR_fragLine.glyphs.get(0).height;
 
             // Combine the rest of the GlyphLayout to a String
             StringBuilder sb = new StringBuilder();
@@ -202,7 +203,7 @@ public final class SceneTransformer {
             if (firstLine) {    // This is compensating for the fact we start from top-left of the scene but text draws from bottom-left of each line
                 firstLine = false;
                 // TODO: BUG - if the first glyph is a space, this won't work correctly - need to handle line height extraction in a better way
-                y += GR_last.glyphs.get(0).height;
+                y += SceneUtils.extractLineHeightFromFont(commons.font); //GR_last.glyphs.get(0).height;
             }
         }
 

@@ -103,7 +103,8 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
             return;
 
         if (lineHeight == 0) {
-            lineHeight = sceneUtils.extractLargestLineHeight(data);
+            //lineHeight = sceneUtils.extractLargestLineHeight(data);
+            lineHeight = SceneUtils.extractLineHeightFromFont(commons.font);
             System.out.println("LINE HEIGHT: "+lineHeight);
         }
 

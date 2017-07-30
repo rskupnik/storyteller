@@ -42,6 +42,10 @@ public class SceneUtils {
         statefulScene.state().setTransformedScene(transformedScene);
     }
 
+    public static int extractLineHeightFromFont(BitmapFont font) {
+        return (int) (font.getData().lineHeight + font.getData().blankLineScale);
+    }
+
     // TODO: This is bad, it's better to use font.fontData.lineHeight + font.fontData.blankLineScale
     public int extractLargestLineHeight(TransformedScene scene) {
         int highest = 0;
