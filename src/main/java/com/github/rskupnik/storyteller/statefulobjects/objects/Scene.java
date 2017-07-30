@@ -26,6 +26,12 @@ public final class Scene {
         dirty = true;
     }
 
+    public void appendLine(Actor actor) {
+        actors.add(new StatefulActor(Actor.newActor("\n").build(), new ActorState()));
+        actors.add(new StatefulActor(actor, new ActorState()));
+        dirty = true;
+    }
+
     public List<StatefulActor> getActors() {
         return Collections.unmodifiableList(actors);
     }
