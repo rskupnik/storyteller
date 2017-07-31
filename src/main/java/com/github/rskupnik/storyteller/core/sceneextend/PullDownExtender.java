@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.structs.ids.FragmentId;
 import org.javatuples.Pair;
 
 import java.util.List;
@@ -19,8 +20,8 @@ public class PullDownExtender implements SceneExtender {
                 continue;
 
             for (Fragment fragment : actorToDataPair.getValue1()) {
-                GlyphLayout GL = (GlyphLayout) fragment.get("glyphLayout");
-                Vector2 pos = (Vector2) fragment.get("position");
+                GlyphLayout GL = (GlyphLayout) fragment.get(FragmentId.GLYPH_LAYOUT);
+                Vector2 pos = (Vector2) fragment.get(FragmentId.POSITION);
                 pos.y -= 5;
             }
         }

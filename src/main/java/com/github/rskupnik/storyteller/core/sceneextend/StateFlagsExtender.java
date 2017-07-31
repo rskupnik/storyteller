@@ -3,6 +3,7 @@ package com.github.rskupnik.storyteller.core.sceneextend;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.structs.ids.FragmentId;
 import org.javatuples.Pair;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ public class StateFlagsExtender implements SceneExtender {
                 continue;
 
             for (Fragment fragment : actorToDataPair.getValue1()) {
-                fragment.put("stateFlags", new HashMap<String, Boolean>());
+                fragment.put(FragmentId.STATE_FLAGS, new HashMap<String, Boolean>());
             }
         }
     }

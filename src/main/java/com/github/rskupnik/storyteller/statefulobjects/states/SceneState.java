@@ -4,11 +4,15 @@ import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.structs.State;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 
-public final class SceneState extends State {
+import static com.github.rskupnik.storyteller.statefulobjects.states.SceneState.ID.*;
 
-    private static final String FIRST_DRAW = "firstDraw";
-    private static final String ATTACHED_STAGE = "attachedStage";
-    private static final String TRANSFORMED_SCENE = "transformedScene";
+public final class SceneState extends State<SceneState.ID> {
+
+    protected enum ID {
+        FIRST_DRAW,
+        ATTACHED_STAGE,
+        TRANSFORMED_SCENE
+    }
 
     public boolean isFirstDraw() {
         return (boolean) get(FIRST_DRAW);

@@ -1,4 +1,4 @@
 package com.github.rskupnik.storyteller.structs;
 
-public class State extends DataBank<Object> {
+public class State<E extends Enum> extends Vault<E, Object> {
 }

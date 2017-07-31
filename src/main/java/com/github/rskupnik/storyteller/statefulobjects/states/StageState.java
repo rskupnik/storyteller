@@ -5,11 +5,15 @@ import com.github.rskupnik.storyteller.core.renderingunits.text.RenderingUnit;
 import com.github.rskupnik.storyteller.structs.State;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 
-public final class StageState extends State {
+import static com.github.rskupnik.storyteller.statefulobjects.states.StageState.ID.*;
 
-    private static final String ATTACHED_SCENE = "attachedScene";
-    private static final String RENDERING_UNIT = "renderingUnit";
-    private static final String BACKGROUND_RENDERING_UNIT = "backgroundRenderingUnit";
+public final class StageState extends State<StageState.ID> {
+
+    protected enum ID {
+        ATTACHED_SCENE,
+        RENDERING_UNIT,
+        BACKGROUND_RENDERING_UNIT
+    }
 
     public void attachScene(StatefulScene scene) {
         put(ATTACHED_SCENE, scene);

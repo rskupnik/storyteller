@@ -11,6 +11,7 @@ import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.github.rskupnik.storyteller.structs.ids.FragmentId;
 import org.javatuples.Pair;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class SceneUtils {
         int highest = 0;
         for (Pair<StatefulActor, List<Fragment>> pair : scene.getData()) {
             for (Fragment fragment : pair.getValue1()) {
-                GlyphLayout gl = (GlyphLayout) fragment.get("glyphLayout");
+                GlyphLayout gl = (GlyphLayout) fragment.get(FragmentId.GLYPH_LAYOUT);
                 if (gl != null && gl.runs != null) {
                     for (GlyphLayout.GlyphRun gr : gl.runs) {
                         if (gr != null) {

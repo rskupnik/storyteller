@@ -24,6 +24,7 @@ import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitiali
 import com.github.rskupnik.storyteller.core.sceneextend.*;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.structs.Fragment;
+import com.github.rskupnik.storyteller.structs.ids.FragmentId;
 import com.github.rskupnik.storyteller.utils.FileUtils;
 import com.github.rskupnik.storyteller.utils.LightUtils;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
@@ -145,12 +146,12 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
             StatefulActor actor = actorToDataPair.getValue0();
             for (Fragment actorData : actorToDataPair.getValue1()) {
                 // Unpack data
-                GlyphLayout GL = (GlyphLayout) actorData.get("glyphLayout");
-                Rectangle rectangle = (Rectangle) actorData.get("clickableArea");
-                Vector2 position = (Vector2) actorData.get("position");
-                Integer line = (Integer) actorData.get("line");
-                Color color = (Color) actorData.get("color");
-                Map<String, Boolean> stateFlags = (Map<String, Boolean>) actorData.get("stateFlags");
+                GlyphLayout GL = (GlyphLayout) actorData.get(FragmentId.GLYPH_LAYOUT);
+                Rectangle rectangle = (Rectangle) actorData.get(FragmentId.CLICKABLE_AREA);
+                Vector2 position = (Vector2) actorData.get(FragmentId.POSITION);
+                Integer line = (Integer) actorData.get(FragmentId.LINE);
+                Color color = (Color) actorData.get(FragmentId.COLOR);
+                Map<String, Boolean> stateFlags = (Map<String, Boolean>) actorData.get(FragmentId.STATE_FLAGS);
                 boolean processed = stateFlags.get("processed") != null ? stateFlags.get("processed") : false;
 
                 if (GL == null || position == null || line == null || stateFlags == null)

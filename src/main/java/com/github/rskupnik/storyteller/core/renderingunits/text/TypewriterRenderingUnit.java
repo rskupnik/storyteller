@@ -22,6 +22,7 @@ import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import javax.inject.Inject;
 
+import com.github.rskupnik.storyteller.structs.ids.FragmentId;
 import com.github.rskupnik.storyteller.utils.FileUtils;
 import com.github.rskupnik.storyteller.utils.LightUtils;
 import com.github.rskupnik.storyteller.utils.ShaderUtils;
@@ -113,11 +114,11 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
             boolean allFragmentsProcessed = true;   // Set to false if at least one fragment is unprocessed
             for (Fragment actorData : actorToDataPair.getValue1()) {
                 // Unpack data
-                String str = (String) actorData.get("charSequence");
+                String str = (String) actorData.get(FragmentId.CHAR_SEQUENCE);
                 //GlyphLayout GL = actorData.getValue0();
-                Rectangle rectangle = (Rectangle) actorData.get("clickableArea");
-                Vector2 position = (Vector2) actorData.get("position");
-                Color color = (Color) actorData.get("color");
+                Rectangle rectangle = (Rectangle) actorData.get(FragmentId.CLICKABLE_AREA);
+                Vector2 position = (Vector2) actorData.get(FragmentId.POSITION);
+                Color color = (Color) actorData.get(FragmentId.COLOR);
 
                 if (str == null || position == null)
                     continue;

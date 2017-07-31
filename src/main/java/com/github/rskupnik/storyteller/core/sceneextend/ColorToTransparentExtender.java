@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
+import com.github.rskupnik.storyteller.structs.ids.FragmentId;
 import org.javatuples.Pair;
 
 import java.util.List;
@@ -19,12 +20,12 @@ public class ColorToTransparentExtender implements SceneExtender{
                 continue;
 
             for (Fragment fragment : actorToDataPair.getValue1()) {
-                GlyphLayout GL = (GlyphLayout) fragment.get("glyphLayout");
-                Color color = (Color) fragment.get("color");
+                GlyphLayout GL = (GlyphLayout) fragment.get(FragmentId.GLYPH_LAYOUT);
+                Color color = (Color) fragment.get(FragmentId.COLOR);
                 if (color == null)
                     color = GL.runs.get(0).color;
                 color.a = 0;
-                fragment.put("color", color);
+                fragment.put(FragmentId.COLOR, color);
             }
         }
     }

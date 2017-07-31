@@ -2,12 +2,16 @@ package com.github.rskupnik.storyteller.statefulobjects.states;
 
 import com.github.rskupnik.storyteller.structs.State;
 
-public class ActorState extends State {
+import static com.github.rskupnik.storyteller.statefulobjects.states.ActorState.ID.*;
 
-    private static final String Y_OFFSET = "yOffset";
-    private static final String TRANSFORMED = "transformed";
-    private static final String EXTENDED = "extended";
-    private static final String PROCESSED = "processed";
+public class ActorState extends State<ActorState.ID> {
+
+    protected enum ID {
+        Y_OFFSET,
+        TRANSFORMED,
+        EXTENDED,
+        PROCESSED
+    }
 
     public ActorState() {
         put(Y_OFFSET, 0f);

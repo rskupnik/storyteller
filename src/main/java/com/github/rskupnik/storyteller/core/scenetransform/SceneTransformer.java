@@ -11,6 +11,7 @@ import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
 import com.github.rskupnik.storyteller.structs.Fragment;
+import com.github.rskupnik.storyteller.structs.ids.FragmentId;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.utils.StageUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
@@ -120,9 +121,9 @@ public final class SceneTransformer {
             }
 
             fragments.add((Fragment) new Fragment()
-                    .with("glyphLayout", GL_fragLine)
-                    .with("clickableArea", rect)
-                    .with("position", new Vector2(x, y))
+                    .with(FragmentId.GLYPH_LAYOUT, GL_fragLine)
+                    .with(FragmentId.CLICKABLE_AREA, rect)
+                    .with(FragmentId.POSITION, new Vector2(x, y))
             );
 
             // Adjust x and y after the fragmented line to continue with the rest of the text
@@ -175,9 +176,9 @@ public final class SceneTransformer {
                 clickables.addClickable(statefulScene, rect, actor, GL_tail);
 
                 tailFragment = (Fragment) new Fragment()
-                        .with("glyphLayout", GL_tail)
-                        .with("clickableArea", rect)
-                        .with("position", new Vector2(rect.x, rect.y)
+                        .with(FragmentId.GLYPH_LAYOUT, GL_tail)
+                        .with(FragmentId.CLICKABLE_AREA, rect)
+                        .with(FragmentId.POSITION, new Vector2(rect.x, rect.y)
                 );
 
                 GL_body.runs.removeIndex(GL_body.runs.size-1);  // Remove the tail from the body
@@ -188,9 +189,9 @@ public final class SceneTransformer {
         }
 
         fragments.add((Fragment) new Fragment()
-                .with("glyphLayout", GL_body)
-                .with("clickableArea", rect)
-                .with("position", new Vector2(x, y))
+                .with(FragmentId.GLYPH_LAYOUT, GL_body)
+                .with(FragmentId.CLICKABLE_AREA, rect)
+                .with(FragmentId.POSITION, new Vector2(x, y))
         );
 
         if (tailFragment != null)
