@@ -21,6 +21,8 @@ public abstract class RenderingUnit {
         }
     }
 
+    public abstract void reset();
+
     public abstract void preFirstRender(StatefulScene statefulScene);
 
     protected void setChain(ExtenderChain chain) {

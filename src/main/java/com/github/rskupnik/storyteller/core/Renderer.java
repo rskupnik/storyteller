@@ -12,14 +12,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.rskupnik.storyteller.aggregates.Clickables;
+import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.renderingunits.background.BackgroundRenderingUnit;
 import com.github.rskupnik.storyteller.core.renderingunits.text.RenderingUnit;
+import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
-import com.github.rskupnik.storyteller.aggregates.Commons;
-import com.github.rskupnik.storyteller.aggregates.Scenes;
-import com.github.rskupnik.storyteller.aggregates.Stages;
 import com.github.rskupnik.storyteller.structs.ids.FragmentId;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
@@ -42,6 +40,8 @@ public final class Renderer {
     @Inject Clickables clickables;
     @Inject TweenManager tweenManager;
     @Inject SceneUtils sceneUtils;
+    @Inject SceneSwaps sceneSwaps;
+    @Inject SceneHandler sceneHandler;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -83,22 +83,28 @@ public final class Renderer {
         if (StatefulStage.isNull(statefulStage))
             throw new IllegalStateException("Cannot render a scene without a stage. Stage passed: "+statefulStage.obj().getId());
 
+        StatefulScene statefulScene = statefulStage.state().getAttachedScene();
+
+        if (StatefulScene.isNull(statefulScene))
+            return;
+
+        // Handle Scene Swap process
+        if (sceneSwaps.containsKey(statefulStage)) {
+            if (statefulScene.state().isExitSequenceFinished()) {
+                StatefulScene newScene = sceneSwaps.get(statefulStage);
+                sceneHandler.removeScene(statefulScene.obj());
+                sceneSwaps.remove(statefulStage);
+                statefulScene = sceneHandler.activateScene(statefulStage, newScene);
+                System.out.println("SWAP EXECUTED");
+            }
+        }
+
         // Draw the background image
-        /*if (statefulStage.obj().getBackgroundImage() != null) {
-            Texture backgroundImage = statefulStage.obj().getBackgroundImage();
-            Rectangle rect = statefulStage.obj().getRectangle();
-            commons.batch.draw(backgroundImage, rect.x, rect.y, rect.getWidth(), rect.getHeight());
-        }*/
         BackgroundRenderingUnit backgroundRenderingUnit = statefulStage.state().getBackgroundRenderingUnit();
         if (backgroundRenderingUnit != null) {
             backgroundRenderingUnit.render(delta, statefulStage);
             return;
         }
-
-        StatefulScene statefulScene = statefulStage.state().getAttachedScene();
-
-        if (StatefulScene.isNull(statefulScene))
-            return;
 
         if (statefulScene.obj().isDirty()) {
             sceneUtils.transform(statefulScene);
@@ -112,7 +118,7 @@ public final class Renderer {
         if (font == null)
             return;
 
-        // If an LineFadeFloatInitializer is defined, use it, otherwise continue to default rendering
+        // If a RenderingUnit is defined, use it, otherwise continue to default rendering
         RenderingUnit renderingUnit = statefulStage.state().getRenderingUnit();
         if (renderingUnit != null) {
             renderingUnit.render(delta, statefulScene);
@@ -121,7 +127,7 @@ public final class Renderer {
             return;
         }
 
-        // This is the default rendering used if no LineFadeFloatInitializer is defined
+        // This is the default rendering used if no RenderingUnit is defined
         // TODO: Pull this out to a BasicRenderer class or sth to be consistent
         batch.begin();
         for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {

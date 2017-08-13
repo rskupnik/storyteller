@@ -69,10 +69,14 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
     private boolean disappearingSuspended = false;              // Same but for disappearing
     private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
     private int lineHeight = 0;
+    private boolean exitInProgress = false;
 
     private boolean affectedByLight;
     private ShaderProgram shader;
     private Light light;
+
+    private int disappearInterval_persisted;
+    private boolean disappearEnabled_persisted;
 
     @Inject
     public LineFadeFloatRenderingUnit() {
@@ -88,8 +92,29 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         this.duration = initializerLFF.getDuration();
         this.appearInterval = initializerLFF.getAppearInterval();
         this.disappearInterval = initializerLFF.getDisappearInterval();
+        this.disappearInterval_persisted = disappearInterval;
         this.disappearEnabled = disappearInterval > 0;
+        this.disappearEnabled_persisted = disappearEnabled;
         this.affectedByLight = initializerLFF.isAffectedByLight();
+    }
+
+    @Override
+    public void reset() {
+        currentlyProcessedLine_Appear = 1;
+        currentlyProcessedLine_Disappear = -1;
+        timestampAppear = 0;
+        timestampDisappear = 0;
+        isAppearing = false;
+        isDisappearing = false;
+        highestLine = 0;
+        appearingSuspended = false;
+        disappearingSuspended = false;
+        offset = new Vector2(0, 0);
+        lineHeight = 0;
+        exitInProgress = false;
+
+        disappearInterval = disappearInterval_persisted;
+        disappearEnabled = disappearEnabled_persisted;
     }
 
     @Override
@@ -104,13 +129,20 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
             return;
 
         if (lineHeight == 0) {
-            //lineHeight = sceneUtils.extractLargestLineHeight(data);
             lineHeight = SceneUtils.extractLineHeightFromFont(commons.font);
-            System.out.println("LINE HEIGHT: "+lineHeight);
+        }
+
+        if (!exitInProgress) {  // Check if we should start the exit process
+            if (scenePair.state().isExitSequenceStarted()) {
+                exitInProgress = true;
+                appearingSuspended = true;
+                disappearEnabled = true;
+                disappearInterval = 200;
+            }
         }
 
         //region Handle Dirty Scene
-        if (scenePair.obj().isDirty()) {  // When the scene is dirty, need to un-suspend the algorithm.
+        if (scenePair.obj().isDirty() && !exitInProgress) {  // When the scene is dirty, need to un-suspend the algorithm.
             if (appearingSuspended)
                 appearingSuspended = false;
 
@@ -224,8 +256,15 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
                             .ease(equation)
                             .start(tweenManager);
                 }
-            } else
+            } else {
                 disappearingSuspended = true;
+                if (exitInProgress) {
+                    scenePair.state().setExitSequenceFinished(true);
+                    reset();
+                    finalizeRender();
+                    return;
+                }
+            }
 
             isDisappearing = false;
             timestampDisappear = System.currentTimeMillis() + disappearInterval;
@@ -245,6 +284,10 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
         }
         //endregion
 
+        finalizeRender();
+    }
+
+    private void finalizeRender() {
         commons.batch.end();
 
         if (affectedByLight && shader != null)

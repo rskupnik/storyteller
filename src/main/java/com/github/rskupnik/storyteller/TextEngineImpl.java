@@ -14,6 +14,7 @@ import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
 import com.github.rskupnik.storyteller.core.Renderer;
+import com.github.rskupnik.storyteller.core.SceneHandler;
 import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
 import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.core.renderingunits.background.factory.IBackgroundRenderingUnitFactory;
@@ -22,13 +23,10 @@ import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.StorytellerInjector;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
-import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
-import com.github.rskupnik.storyteller.statefulobjects.states.SceneState;
 import com.github.rskupnik.storyteller.statefulobjects.states.StageState;
-import com.github.rskupnik.storyteller.utils.SceneUtils;
 
 import javax.inject.Inject;
 
@@ -42,12 +40,10 @@ public final class TextEngineImpl implements TextEngine {
     @Inject Listeners listeners;
     @Inject TextEffects textEffects;
     @Inject TweenManager tweenManager;
-    @Inject Scenes scenes;
     @Inject Stages stages;
     @Inject Commons commons;
     @Inject Lights lights;
-    @Inject Clickables clickables;
-    @Inject SceneUtils sceneUtils;
+    @Inject SceneHandler sceneHandler;
     @Inject IRenderingUnitFactory renderingUnitFactory;
     @Inject IBackgroundRenderingUnitFactory backgroundRenderingUnitFactory;
 
@@ -96,39 +92,17 @@ public final class TextEngineImpl implements TextEngine {
 
     @Override
     public void attachScene(String stageId, Scene scene) {
-        StatefulScene statefulScene = new StatefulScene(scene, new SceneState());
-        scenes.add(statefulScene);
-
-        StatefulStage statefulStage = stages.find(stageId);
-        if (statefulStage == null)
-            throw new IllegalStateException("Cannot attach to stage "+stageId+" as it doesn't exist");
-
-        if (statefulStage.state().getAttachedScene() != null)
-            removeScene(statefulStage.state().getAttachedScene().obj());
-
-        statefulStage.state().attachScene(statefulScene);
-        statefulScene.state().attachStage(statefulStage);
-
-        sceneUtils.transform(statefulScene);
+        sceneHandler.attachScene(stageId, scene);
     }
 
     @Override
     public void removeScene(Scene scene) {
-        removeScene(scene.getId());
+        sceneHandler.removeScene(scene);
     }
 
     @Override
     public void removeScene(String id) {
-        StatefulScene statefulScene = scenes.find(id);
-
-        if (statefulScene != null) {
-            clickables.removeScene(statefulScene);
-            scenes.remove(statefulScene);
-
-            StatefulStage stagePair = statefulScene.state().getAttachedStage();
-            stagePair.state().attachScene(null);
-            statefulScene.state().attachStage(null);
-        }
+        sceneHandler.removeScene(id);
     }
 
     @Override

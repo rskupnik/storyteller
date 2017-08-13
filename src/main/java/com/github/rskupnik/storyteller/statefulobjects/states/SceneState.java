@@ -11,7 +11,14 @@ public final class SceneState extends State<SceneState.ID> {
     protected enum ID {
         FIRST_DRAW,
         ATTACHED_STAGE,
-        TRANSFORMED_SCENE
+        TRANSFORMED_SCENE,
+        EXIT_SEQUENCE_STARTED,
+        EXIT_SEQUENCE_FINISHED
+    }
+
+    public SceneState() {
+        put(EXIT_SEQUENCE_STARTED, false);
+        put(EXIT_SEQUENCE_FINISHED, false);
     }
 
     public boolean isFirstDraw() {
@@ -36,5 +43,21 @@ public final class SceneState extends State<SceneState.ID> {
 
     public void setTransformedScene(TransformedScene scene) {
         put(TRANSFORMED_SCENE, scene);
+    }
+
+    public void setExitSequenceStarted(boolean b) {
+        put(EXIT_SEQUENCE_STARTED, b);
+    }
+
+    public boolean isExitSequenceStarted() {
+        return (boolean) get(EXIT_SEQUENCE_STARTED);
+    }
+
+    public void setExitSequenceFinished(boolean b) {
+        put(EXIT_SEQUENCE_FINISHED, b);
+    }
+
+    public boolean isExitSequenceFinished() {
+        return (boolean) get(EXIT_SEQUENCE_FINISHED);
     }
 }

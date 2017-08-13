@@ -1,12 +1,16 @@
 package com.github.rskupnik.storyteller.core.renderingunits.text;
 
+import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Quint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.github.rskupnik.storyteller.accessors.ColorAccessor;
+import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Lights;
 import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
@@ -43,10 +47,16 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
 
     private Typewriter typewriter;
     private Map<StatefulActor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
+    private Vector2 offset = new Vector2(0, 0);
+    private boolean exitInProgress;
+    private long exitTimestamp = 0;
 
     private boolean affectedByLight;
     private ShaderProgram shader;
     private Light light;
+
+    private int charsPerSecond;
+    private float exitDuration = 1.0f;
 
     @Inject
     public TypewriterRenderingUnit() {
@@ -60,9 +70,20 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
         TypewriterInitializer initializerTW = (TypewriterInitializer) initializer;
         typewriter = new Typewriter();
         typewriter.getAppender().set(new CharSequence[] {""}, new float[] {0});
-        typewriter.setCharsPerSecond(initializerTW.getCharsPerSecond());
+        typewriter.setCharsPerSecond(charsPerSecond = initializerTW.getCharsPerSecond());
 
         this.affectedByLight = initializerTW.isAffectedByLight();
+    }
+
+    @Override
+    public void reset() {
+        typewriter = new Typewriter();
+        typewriter.getAppender().set(new CharSequence[] {""}, new float[] {0});
+        typewriter.setCharsPerSecond(charsPerSecond);
+        processingMap.clear();
+        offset = new Vector2(0, 0);
+        exitInProgress = false;
+        exitTimestamp = 0;
     }
 
     @Override
@@ -71,6 +92,17 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
 
         if (commons.font == null || commons.batch == null)
             return; // Throw exception?
+
+        if (statefulScene.state().isExitSequenceStarted() && !exitInProgress) {
+            exitInProgress = true;
+            initExit(statefulScene);
+        }
+
+        if (exitInProgress && System.currentTimeMillis() - exitTimestamp > exitDuration * 1000) {
+            statefulScene.state().setExitSequenceFinished(true);
+            reset();
+            return;
+        }
 
         if (affectedByLight && shader != null)
             commons.batch.setShader(shader);
@@ -128,7 +160,7 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
                 commons.font.setColor(color != null ? color : prevColor);
 
                 if (isProcessed(actor, j)) {    // If this fragment is already processed, draw it as is
-                    commons.font.draw(commons.batch, str, position.x, position.y + actor.state().getYOffset());
+                    commons.font.draw(commons.batch, str, position.x, position.y + actor.state().getYOffset() + offset.y);
                     j++;
                     continue;
                 } else {
@@ -142,8 +174,11 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
                         continue;
                     }
 
-                    CharSequence cs = typewriter.updateAndType(str, delta);
-                    commons.font.draw(commons.batch, cs, position.x, position.y + actor.state().getYOffset());
+                    if (!exitInProgress)
+                        typewriter.update(delta);
+
+                    CharSequence cs = typewriter.type(str);
+                    commons.font.draw(commons.batch, cs, position.x, position.y + actor.state().getYOffset() + offset.y);
 
                     if (cs.length() == str.length()) {  // Check if processing of the fragment is finished
                         List<Integer> actorsProcessedIndices = processingMap.get(actor);
@@ -175,6 +210,27 @@ public final class TypewriterRenderingUnit extends RenderingUnit {
 
         if (affectedByLight && shader != null)
             commons.batch.setShader(commons.defaultShader);
+    }
+
+    private void initExit(StatefulScene scene) {
+        Tween.to(offset, Vector2Accessor.Y, exitDuration)
+                .target(offset.y + commons.font.getData().lineHeight + commons.font.getData().blankLineScale)
+                .ease(Quint.OUT)
+                .start(tweenManager);
+
+        TransformedScene data = scene.state().getTransformedScene();
+        for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {
+            for (Fragment actorData : actorToDataPair.getValue1()) {
+                Color color = (Color) actorData.get(FragmentId.COLOR);
+
+                Tween.to(color, ColorAccessor.ALPHA, exitDuration)
+                        .target(0f)
+                        .ease(Quint.OUT)
+                        .start(tweenManager);
+            }
+        }
+
+        exitTimestamp = System.currentTimeMillis();
     }
 
     @Override
