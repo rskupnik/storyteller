@@ -95,7 +95,6 @@ public final class Renderer {
                 sceneHandler.removeScene(statefulScene.obj());
                 sceneSwaps.remove(statefulStage);
                 statefulScene = sceneHandler.activateScene(statefulStage, newScene);
-                System.out.println("SWAP EXECUTED");
             }
         }
 

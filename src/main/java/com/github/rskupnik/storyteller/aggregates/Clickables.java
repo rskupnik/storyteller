@@ -42,7 +42,6 @@ public class Clickables extends HashMap<StatefulScene, List<Clickable>> {
     }
 
     public void removeRectangle(StatefulScene StatefulScene, Rectangle rectangle) {
-        System.out.println("removeRectangle called");
         List<Clickable> clickablesPerScene = this.get(StatefulScene);
         if (clickablesPerScene == null)
             return;
@@ -51,7 +50,6 @@ public class Clickables extends HashMap<StatefulScene, List<Clickable>> {
             Clickable clickable = it.next();
             if (clickable.rectangle().equals(rectangle)) {
                 it.remove();
-                System.out.println("Removed rectangle: "+rectangle);
             }
         }
     }
