@@ -203,7 +203,6 @@ public final class SceneTransformer {
             y -= (int) GL_body.height;
             if (firstLine) {    // This is compensating for the fact we start from top-left of the scene but text draws from bottom-left of each line
                 firstLine = false;
-                // TODO: BUG - if the first glyph is a space, this won't work correctly - need to handle line height extraction in a better way
                 y += SceneUtils.extractLineHeightFromFont(commons.font); //GR_last.glyphs.get(0).height;
             }
         }

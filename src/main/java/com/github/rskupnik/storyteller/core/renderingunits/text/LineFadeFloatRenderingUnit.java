@@ -4,6 +4,7 @@ import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Quint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -70,6 +71,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
     private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
     private int lineHeight = 0;
     private boolean exitInProgress = false;
+    private long exitTimestamp = 0;
 
     private boolean affectedByLight;
     private ShaderProgram shader;
@@ -77,6 +79,7 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
     private int disappearInterval_persisted;
     private boolean disappearEnabled_persisted;
+    private float exitDuration = 1.0f;
 
     @Inject
     public LineFadeFloatRenderingUnit() {
@@ -132,14 +135,20 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
             lineHeight = SceneUtils.extractLineHeightFromFont(commons.font);
         }
 
-        if (!exitInProgress) {  // Check if we should start the exit process
-            if (scenePair.state().isExitSequenceStarted()) {
-                exitInProgress = true;
-                appearingSuspended = true;
-                disappearEnabled = true;
-                disappearInterval = 200;
-            }
+        //region Exit Sequence
+        if (scenePair.state().isExitSequenceStarted() && !exitInProgress) {
+            exitInProgress = true;
+            appearingSuspended = true;
+            disappearingSuspended = true;
+            initExit(scenePair);
         }
+
+        if (exitInProgress && System.currentTimeMillis() - exitTimestamp > exitDuration * 1000) {
+            scenePair.state().setExitSequenceFinished(true);
+            reset();
+            return;
+        }
+        //endregion
 
         //region Handle Dirty Scene
         if (scenePair.obj().isDirty() && !exitInProgress) {  // When the scene is dirty, need to un-suspend the algorithm.
@@ -292,6 +301,27 @@ public final class LineFadeFloatRenderingUnit extends RenderingUnit {
 
         if (affectedByLight && shader != null)
             commons.batch.setShader(commons.defaultShader);
+    }
+
+    private void initExit(StatefulScene scene) {
+        Tween.to(offset, Vector2Accessor.Y, exitDuration)
+                .target(offset.y + commons.font.getData().lineHeight + commons.font.getData().blankLineScale)
+                .ease(Quint.OUT)
+                .start(tweenManager);
+
+        TransformedScene data = scene.state().getTransformedScene();
+        for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {
+            for (Fragment actorData : actorToDataPair.getValue1()) {
+                Color color = (Color) actorData.get(FragmentId.COLOR);
+
+                Tween.to(color, ColorAccessor.ALPHA, exitDuration)
+                        .target(0f)
+                        .ease(Quint.OUT)
+                        .start(tweenManager);
+            }
+        }
+
+        exitTimestamp = System.currentTimeMillis();
     }
 
     @Override
