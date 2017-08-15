@@ -30,7 +30,7 @@ public final class SceneTransformer {
     @Inject Clickables clickables;
 
     private int x, y;
-    private boolean firstLine;
+    private boolean firstLine, newLine;
 
     @Inject
     public SceneTransformer() {
@@ -56,7 +56,7 @@ public final class SceneTransformer {
             y = (int) cursor.y;
         } else {
             x = (int) stage.getTopLeft().x;
-            y = (int) stage.getTopLeft().y;// - (int) commons.font.getData().lineHeight;
+            y = (int) stage.getTopLeft().y;
         }
         firstLine = savedIsFirstLine != null ? savedIsFirstLine : true;
 
@@ -64,7 +64,7 @@ public final class SceneTransformer {
             if (actor.state().isTransformed())
                 continue;
 
-            trn(output, actor, statefulScene, font, stage);
+            transformActor(output, actor, statefulScene, font, stage);
         }
 
         output.setSavedCursorPosition(new Vector2(x, y));
@@ -73,11 +73,10 @@ public final class SceneTransformer {
         return output;
     }
 
-    private void trn(TransformedScene output, StatefulActor actor, StatefulScene statefulScene, BitmapFont font, Stage stage) {
+    private void transformActor(TransformedScene output, StatefulActor actor, StatefulScene statefulScene, BitmapFont font, Stage stage) {
         // Handle a newline - simply adjust placement markers and set the actor as processed
         if (actor.obj().getText().equals("\n")) {
-            x = (int) stage.getTopLeft().x;
-            y -= SceneUtils.extractLineHeightFromFont(commons.font);
+            adjustCursorToNewLine((int) stage.getTopLeft().x);
             actor.state().setTransformed(true);
             return;
         }
@@ -85,7 +84,7 @@ public final class SceneTransformer {
         List<Fragment> fragments = new ArrayList<>();
 
         // We need to produce the whole text first to see how LibGDX plans to structure it and do some adjusting if needed
-        GlyphLayout GL_wholeText = new GlyphLayout(
+        GlyphLayout glyphLayoutWhole = new GlyphLayout(
                 font,
                 actor.obj().getText(),
                 actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
@@ -94,124 +93,124 @@ public final class SceneTransformer {
                 true
         );
 
+        // If GlyphLayout has multiple lines, handle the first one independently
+        if (glyphLayoutWhole.runs.size > 1) {
+            // This needs to be done because this first line might only take a fragment of
+            // the remaining width but we want the rest of the lines to be re-calculated
+            // with the whole available width. So we need to handle this line individually,
+            // rebuild glyphLayoutWhole without it and let it carry on.
 
-        GlyphLayout GL_body = GL_wholeText; // The main body of the text (without the adjustments below), used to extract x and y
+            GlyphLayout.GlyphRun line = glyphLayoutWhole.runs.get(0);
 
-        /* If we don't start rendering from a new line and the produced GL spans multiple lines we need to
-           handle the first, fragmented line individually and then the rest of the text body. If we didn't, we'd get
-           a text that only uses the remaining width even for new lines. */
-        if (StageUtils.notStartOfLine(stage, x) && multilineGL(GL_wholeText)) {
-            // Need to deal individually with the first, fragmented line and then continue with the rest of the body as usual
-            GlyphLayout.GlyphRun GR_fragLine = GL_wholeText.runs.get(0);
-            String lineEndText = glyphsToText(new StringBuilder(GR_fragLine.glyphs.size), GR_fragLine).toString();
-            GlyphLayout GL_fragLine = new GlyphLayout(
-                    font,
-                    lineEndText,
-                    actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
-                    StageUtils.calcRemainingWidth(stage, x),
-                    Align.left,
-                    true
-            );
+            // Process the first line and add the resulting Fragment into the final list
+            Fragment fragment = transformLine(line, font, actor, stage, statefulScene);
+            fragments.add(fragment);
 
-            // If it's clickable, produce a Rectangle
-            Rectangle rect = null;
-            if (actor.obj().isClickable()) {
-                rect = new Rectangle(x, y, GL_fragLine.width, GL_fragLine.height);
-                clickables.addClickable(statefulScene, rect, actor, GL_fragLine);
-            }
+            // Rebuild the GlyphLayout without the first line as we just processed it
+            glyphLayoutWhole = rebuildGLWithoutFirstLine(glyphLayoutWhole, font, actor, stage);
 
-            fragments.add((Fragment) new Fragment()
-                    .with(FragmentId.GLYPH_LAYOUT, GL_fragLine)
-                    .with(FragmentId.CLICKABLE_AREA, rect)
-                    .with(FragmentId.POSITION, new Vector2(x, y))
-            );
-
-            // Adjust x and y after the fragmented line to continue with the rest of the text
-            x = (int) stage.getTopLeft().x;
-            y -= SceneUtils.extractLineHeightFromFont(commons.font); //(int) GL_fragLine.height + GR_fragLine.glyphs.get(0).height;
-
-            // Combine the rest of the GlyphLayout to a String
-            StringBuilder sb = new StringBuilder();
-            for (int i = 1; i < GL_wholeText.runs.size; i++) {
-                GlyphLayout.GlyphRun glyphRun = GL_wholeText.runs.get(i);
-                glyphsToText(sb, glyphRun);
-            }
-            String restText = sb.toString();
-
-            // Produce a new GlyphLayout with the proper width this time
-            GL_body = new GlyphLayout(
-                    font,
-                    restText,
-                    actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
-                    stage.getWidth(),
-                    Align.left,
-                    true
-            );
-
+            // Reset the cursor to point to a new line
+            adjustCursorToNewLine((int) stage.getTopLeft().x);
         }
 
-        // The last run (line) of glyphs, used to extract new x and y for further rendering
-        GlyphLayout.GlyphRun GR_last = GL_body.runs.get(GL_body.runs.size-1);
-
-        // If it's clickable, produce a Rectangle
-        Rectangle rect = null;
-        Fragment tailFragment = null;
-        int GLBodyLines = GL_body.runs.size;    // Save the no of lines because we remove the last line but we need the pre-removal size in position adjustement
-        if (actor.obj().isClickable()) {
-            // If the text body spans multiple lines, we need to handle the last line as it might end in the middle of a line
-            GlyphLayout.GlyphRun GR_tail = GR_last;
-            if (multilineGL(GL_body)) {
-                GR_tail = GL_body.runs.get(GL_body.runs.size-1);
-
-                GlyphLayout GL_tail = new GlyphLayout(
-                        font,
-                        glyphsToText(new StringBuilder(GR_tail.glyphs.size), GR_tail).toString(),
-                        actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
-                        GR_tail.width,
-                        Align.left,
-                        true
-                );
-
-                rect = new Rectangle(stage.getTopLeft().x, y - commons.font.getData().lineHeight /*- GL_tail.height*/ /*+ GR_tail.glyphs.get(0).height*/, GR_tail.width, GR_tail.glyphs.get(0).height);
-                clickables.addClickable(statefulScene, rect, actor, GL_tail);
-
-                tailFragment = (Fragment) new Fragment()
-                        .with(FragmentId.GLYPH_LAYOUT, GL_tail)
-                        .with(FragmentId.CLICKABLE_AREA, rect)
-                        .with(FragmentId.POSITION, new Vector2(rect.x, rect.y)
-                );
-
-                GL_body.runs.removeIndex(GL_body.runs.size-1);  // Remove the tail from the body
+        // Main loop - processes each line (excluding the first one if it was treated individually above)
+        int c = 0;
+        for (GlyphLayout.GlyphRun line : glyphLayoutWhole.runs) {
+            if (c > 0) {    // If this is not the first line, reset cursor to point to a new line
+                adjustCursorToNewLine((int) stage.getTopLeft().x);
             }
-            rect = new Rectangle(x, y, (int) GL_body.width, (int) GL_body.height);
-            clickables.addClickable(statefulScene, rect, actor, GL_body);
 
+            // Build the Fragment and add it to the output list
+            Fragment fragment = transformLine(line, font, actor, stage, statefulScene);
+            fragments.add(fragment);
+
+            // After processing a fragment, move the x marker by the fragment's width
+            x += (int) line.width;
+
+            c++;
         }
 
-        fragments.add((Fragment) new Fragment()
-                .with(FragmentId.GLYPH_LAYOUT, GL_body)
-                .with(FragmentId.CLICKABLE_AREA, rect)
-                .with(FragmentId.POSITION, new Vector2(x, y))
-        );
-
-        if (tailFragment != null)
-            fragments.add(tailFragment);
-
-        // Extract new position
-        x += (int) GR_last.width;
-        if (GLBodyLines > 1) {
-            y -= (int) GL_body.height;
-            if (firstLine) {    // This is compensating for the fact we start from top-left of the scene but text draws from bottom-left of each line
-                firstLine = false;
-                y += SceneUtils.extractLineHeightFromFont(commons.font); //GR_last.glyphs.get(0).height;
-            }
-        }
-
+        // Save the actor as transformed and link the produced fragments to it
         actor.state().setTransformed(true);
-
         output.addActor(actor, fragments);
     }
 
+    /**
+     * Transforms a single GlyphRun line into a Fragment by calculating it's position and producing a standalone
+     * GlyphLayout. Also produces a Clickable if required.
+     */
+    private Fragment transformLine(GlyphLayout.GlyphRun line, BitmapFont font, StatefulActor actor, Stage stage, StatefulScene statefulScene) {
+        // Transform the GlyphRun into text
+        String lineText = glyphsToText(new StringBuilder(line.glyphs.size), line).toString();
+
+        // Transform the text into a GlyphLayout
+        GlyphLayout GL_fragLine = new GlyphLayout(
+                font,
+                lineText,
+                actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
+                StageUtils.calcRemainingWidth(stage, x),
+                Align.left,
+                true
+        );
+
+        // If it's clickable, produce a Clickable
+        Rectangle rect = null;
+        if (actor.obj().isClickable())
+            rect = createAndRegisterClickable(GL_fragLine, statefulScene, actor);
+
+        // Create and return a Fragment
+        return (Fragment) new Fragment()
+                .with(FragmentId.GLYPH_LAYOUT, GL_fragLine)
+                .with(FragmentId.CLICKABLE_AREA, rect)
+                .with(FragmentId.POSITION, new Vector2(x, y));
+    }
+
+    /**
+     * Creates a Clickable and returns the covered area as a Rectangle.
+     * Apart from creating, it also immediately register the new Clickable in the clickables aggregate.
+     */
+    private Rectangle createAndRegisterClickable(GlyphLayout glyphLayout, StatefulScene statefulScene, StatefulActor actor) {
+        Rectangle rect = new Rectangle(x, y, glyphLayout.width, glyphLayout.height);
+        clickables.addClickable(statefulScene, rect, actor, glyphLayout);
+
+        return rect;
+    }
+
+    /**
+     * Rebuilds a GlyphLayout but skips the first line.
+     */
+    private GlyphLayout rebuildGLWithoutFirstLine(GlyphLayout glyphLayout, BitmapFont font, StatefulActor actor, Stage stage) {
+        // Combine the rest of the GlyphLayout to a String, skipping the first line
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < glyphLayout.runs.size; i++) {
+            GlyphLayout.GlyphRun glyphRun = glyphLayout.runs.get(i);
+            glyphsToText(sb, glyphRun);
+        }
+        String restText = sb.toString();
+
+        // Produce a new GlyphLayout from the newly created string
+        return new GlyphLayout(
+                font,
+                restText,
+                actor.obj().getColor() != null ? actor.obj().getColor() : Color.WHITE,
+                stage.getWidth(),
+                Align.left,
+                true
+        );
+    }
+
+    /**
+     * Y marker is adjust by line height extract from the font,
+     * X marker is set to the provided parameter.
+     */
+    private void adjustCursorToNewLine(int xpos) {
+        x = xpos;
+        y -= SceneUtils.extractLineHeightFromFont(commons.font);
+    }
+
+    /**
+     * Transforms a GlyphRun into a StringBuilder filled with text of the GlyphRun.
+     */
     private StringBuilder glyphsToText(StringBuilder sb, GlyphLayout.GlyphRun input) {
         StringBuilder buffer = sb;
         Array<BitmapFont.Glyph> glyphs = input.glyphs;
@@ -221,12 +220,5 @@ public final class SceneTransformer {
             buffer.append((char)g.id);
         }
         return buffer;
-    }
-
-    /**
-     * Checks whether the generated GlyphLayout spans multiple lines.
-     */
-    private boolean multilineGL(GlyphLayout GL) {
-        return GL.runs.size > 1;
     }
 }
