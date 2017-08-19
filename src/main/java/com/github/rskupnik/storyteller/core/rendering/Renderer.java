@@ -1,4 +1,4 @@
-package com.github.rskupnik.storyteller.core;
+package com.github.rskupnik.storyteller.core.rendering;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.SceneSwaps;
 import com.github.rskupnik.storyteller.aggregates.Stages;
+import com.github.rskupnik.storyteller.core.SceneHandler;
 import com.github.rskupnik.storyteller.core.rendering.RenderingUnitPicker;
-import com.github.rskupnik.storyteller.core.renderingunits.text.RenderingUnit;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
@@ -35,7 +35,8 @@ public final class Renderer {
     @Inject Commons commons;
     @Inject SceneUtils sceneUtils;
     @Inject SceneSwaps sceneSwaps;
-    @Inject SceneHandler sceneHandler;
+    @Inject
+    SceneHandler sceneHandler;
     @Inject RenderingUnitPicker renderingUnitPicker;
 
     private SpriteBatch batch;

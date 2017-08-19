@@ -13,11 +13,10 @@ import com.github.rskupnik.storyteller.accessors.RectangleAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.InputHandler;
-import com.github.rskupnik.storyteller.core.Renderer;
 import com.github.rskupnik.storyteller.core.SceneHandler;
 import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
 import com.github.rskupnik.storyteller.core.lighting.Light;
-import com.github.rskupnik.storyteller.core.renderingunits.text.factory.IRenderingUnitFactory;
+import com.github.rskupnik.storyteller.core.rendering.Renderer;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.StorytellerInjector;
 import com.github.rskupnik.storyteller.listeners.ClickListener;
@@ -43,7 +42,6 @@ public final class TextEngineImpl implements TextEngine {
     @Inject Commons commons;
     @Inject Lights lights;
     @Inject SceneHandler sceneHandler;
-    @Inject IRenderingUnitFactory renderingUnitFactory;
 
     @Inject
     public TextEngineImpl() {

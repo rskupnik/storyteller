@@ -6,7 +6,6 @@ import com.github.rskupnik.storyteller.core.rendering.background.NormalMappedBac
 import com.github.rskupnik.storyteller.core.rendering.text.LineFadeFloatRenderingUnit;
 import com.github.rskupnik.storyteller.core.rendering.text.TextRenderingUnit;
 import com.github.rskupnik.storyteller.core.rendering.text.TypewriterRenderingUnit;
-import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.structs.backgrounds.Background;
 import com.github.rskupnik.storyteller.structs.backgrounds.BasicBackground;
@@ -35,12 +34,12 @@ public final class RenderingUnitPicker {
         RenderingUnit current = backgroundRenderingUnits.get(stage);
         if (background instanceof BasicBackground) {
             if (current == null || !(current instanceof BasicBackgroundRenderingUnit)) {
-                current = commons.injector.basicBgRU2();
+                current = commons.injector.basicBgRU();
                 backgroundRenderingUnits.put(stage, current);
             }
         } else if (background instanceof NormalMappedBackground) {
             if (current == null || !(current instanceof NormalMappedBackgroundRenderingUnit)) {
-                current = commons.injector.normalMappedBgRU2();
+                current = commons.injector.normalMappedBgRU();
                 backgroundRenderingUnits.put(stage, current);
             }
         }
@@ -51,13 +50,13 @@ public final class RenderingUnitPicker {
         RenderingUnit current = textRenderingUnits.get(stage);
         if (textRenderer instanceof TypewrittenTextRenderer) {
             if (current == null || !(current instanceof TypewriterRenderingUnit)) {
-                current = commons.injector.typewriterRU2();
+                current = commons.injector.typewriterRU();
                 ((TextRenderingUnit) current).init(textRenderer);
                 textRenderingUnits.put(stage, current);
             }
         } else if (textRenderer instanceof LineFadeTextRenderer) {
             if (current == null || !(current instanceof LineFadeFloatRenderingUnit)) {
-                current = commons.injector.lineFFRU2();
+                current = commons.injector.lineFFRU();
                 ((TextRenderingUnit) current).init(textRenderer);
                 textRenderingUnits.put(stage, current);
             }
