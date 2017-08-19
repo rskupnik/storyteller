@@ -6,12 +6,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
+import com.github.rskupnik.storyteller.structs.backgrounds.Background;
 
 public final class Stage {
 
     private String id;
     private Rectangle rectangle;
-    private Texture backgroundImage;
+    private Background background;
+    private Rectangle backgroundArea;
 
     private RenderingUnitInitializer renderingUnitInitializer;
     private TextEffects textEffects = new TextEffects();    // TextEffects can be defined for the whole engine or for a single Stage
@@ -50,16 +52,24 @@ public final class Stage {
         this.renderingUnitInitializer = initializer;
     }
 
-    public Texture getBackgroundImage() {
-        return backgroundImage;
-    }
-
-    private void setBackgroundImage(Texture backgroundImage) {
-        this.backgroundImage = backgroundImage;
-    }
-
     public TextEffects getTextEffects() {
         return textEffects;
+    }
+
+    public Background getBackground() {
+        return background;
+    }
+
+    public void setBackground(Background background) {
+        this.background = background;
+    }
+
+    public Rectangle getBackgroundArea() {
+        return backgroundArea;
+    }
+
+    public void setBackgroundArea(Rectangle backgroundArea) {
+        this.backgroundArea = backgroundArea;
     }
 
     @Override
@@ -97,8 +107,14 @@ public final class Stage {
             return this;
         }
 
-        public StageBuilder withBackgroundImage(Texture backgroundImage) {
-            stage.setBackgroundImage(backgroundImage);
+        public StageBuilder withBackground(Background background) {
+            stage.setBackground(background);
+            return this;
+        }
+
+        public StageBuilder withBackground(Background background, Rectangle area) {
+            stage.setBackground(background);
+            stage.setBackgroundArea(area);
             return this;
         }
 

@@ -77,6 +77,13 @@ public final class Renderer {
         if (StatefulStage.isNull(statefulStage))
             throw new IllegalStateException("Cannot render a scene without a stage. Stage passed: "+statefulStage.obj().getId());
 
+        Background background = statefulStage.obj().getBackground();
+        if (background != null) {
+            com.github.rskupnik.storyteller.core.rendering.RenderingUnit renderingUnit = renderingUnitPicker.pick(background);
+            if (renderingUnit != null)
+                renderingUnit.render(delta, statefulStage);
+        }
+
         StatefulScene statefulScene = statefulStage.state().getAttachedScene();
 
         if (StatefulScene.isNull(statefulScene))
@@ -98,13 +105,6 @@ public final class Renderer {
             backgroundRenderingUnit.render(delta, statefulStage);
             return;
         }**/
-
-        Background background = statefulScene.obj().getBackground();
-        if (background != null) {
-            com.github.rskupnik.storyteller.core.rendering.RenderingUnit renderingUnit = renderingUnitPicker.pick(statefulScene, background);
-            if (renderingUnit != null)
-                renderingUnit.render(delta, statefulScene);
-        }
 
         if (statefulScene.obj().isDirty()) {
             sceneUtils.transform(statefulScene);

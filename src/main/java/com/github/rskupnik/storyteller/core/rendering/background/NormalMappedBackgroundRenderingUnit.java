@@ -11,6 +11,7 @@ import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
 import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.core.rendering.RenderingUnit;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
+import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.structs.backgrounds.Background;
 import com.github.rskupnik.storyteller.structs.backgrounds.NormalMappedBackground;
 import com.github.rskupnik.storyteller.utils.LightUtils;
@@ -33,10 +34,10 @@ public class NormalMappedBackgroundRenderingUnit extends RenderingUnit {
     }
 
     @Override
-    public void render(float delta, StatefulScene scene) {
-        super.render(delta, scene);
+    public void render(float delta, StatefulStage stage) {
+        super.render(delta, stage);
 
-        Background background = scene.obj().getBackground();
+        Background background = stage.obj().getBackground();
         if (background == null)
             return;
 
@@ -52,9 +53,9 @@ public class NormalMappedBackgroundRenderingUnit extends RenderingUnit {
             nmBackground.setInitialized(true);
         }
 
-        Rectangle area = scene.obj().getBackgroundArea();
+        Rectangle area = stage.obj().getBackgroundArea();
         if (area == null)
-            area = scene.state().getAttachedStage().obj().getRectangle();
+            area = stage.obj().getRectangle();
 
         SpriteBatch batch = commons.batch;
         batch.setShader(shader);
@@ -73,7 +74,7 @@ public class NormalMappedBackgroundRenderingUnit extends RenderingUnit {
     }
 
     @Override
-    public void preFirstRender(StatefulScene scene) {
+    public void preFirstRender(StatefulStage stage) {
         // Get the first light
         // TODO: Make this use all the lights
         light = lights.get(0);

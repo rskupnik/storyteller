@@ -24,19 +24,21 @@ public final class RenderingUnitPicker {
 
     }
 
-    public RenderingUnit pick(StatefulScene scene, Background background) {
-        RenderingUnit current = backgroundRenderingUnits.get(scene);
+    public RenderingUnit pick(Background background) {
+        //RenderingUnit current = backgroundRenderingUnits.get(scene);
         if (background instanceof BasicBackground) {
-            if (current == null || !(current instanceof BasicBackgroundRenderingUnit)) {
+            /*if (current == null || !(current instanceof BasicBackgroundRenderingUnit)) {
                 current = commons.injector.basicBgRU2();
                 backgroundRenderingUnits.put(scene, current);
-            }
+            }*/
+            return commons.injector.basicBgRU2();
         } else if (background instanceof NormalMappedBackground) {
-            if (current == null || !(current instanceof NormalMappedBackgroundRenderingUnit)) {
+            /*if (current == null || !(current instanceof NormalMappedBackgroundRenderingUnit)) {
                 current = commons.injector.normalMappedBgRU2();
                 backgroundRenderingUnits.put(scene, current);
-            }
-        }
-        return current;
+            }*/
+            return commons.injector.normalMappedBgRU2();
+        } else return null;
+        //return current;
     }
 }

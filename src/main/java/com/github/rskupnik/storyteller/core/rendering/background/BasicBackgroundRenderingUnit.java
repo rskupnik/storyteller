@@ -20,17 +20,16 @@ public class BasicBackgroundRenderingUnit extends RenderingUnit {
     }
 
     @Override
-    public void render(float delta, StatefulScene scene) {
-        super.render(delta, scene);
+    public void render(float delta, StatefulStage stage) {
+        super.render(delta, stage);
 
-        Background background = scene.obj().getBackground();
-        StatefulStage stage = scene.state().getAttachedStage();
-        if (stage == null || background == null)
+        Background background = stage.obj().getBackground();
+        if (background == null)
             return;
 
         commons.batch.begin();
         Texture backgroundImage = background.getImage();
-        Rectangle rect = scene.obj().getBackgroundArea();
+        Rectangle rect = stage.obj().getBackgroundArea();
         if (rect == null)
             rect = stage.obj().getRectangle();
         commons.batch.draw(backgroundImage, rect.x, rect.y, rect.getWidth(), rect.getHeight());
@@ -38,7 +37,7 @@ public class BasicBackgroundRenderingUnit extends RenderingUnit {
     }
 
     @Override
-    public void preFirstRender(StatefulScene scene) {
+    public void preFirstRender(StatefulStage stage) {
         // Intentionally empty
     }
 }

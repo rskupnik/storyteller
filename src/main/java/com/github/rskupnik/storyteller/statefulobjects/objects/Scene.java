@@ -13,11 +13,8 @@ public final class Scene {
 
     private String id;
     private final List<StatefulActor> actors = new LinkedList<>();
-    private Background background;
-    private Rectangle backgroundArea;
 
     private boolean dirty = true;
-    private boolean backgroundDirty = true;
 
     private Scene(String id) {
         this.id = id;
@@ -52,31 +49,6 @@ public final class Scene {
 
     public boolean isDirty() {
         return dirty;
-    }
-
-    public boolean isBackgroundDirty() {
-        return backgroundDirty;
-    }
-
-    public void setBackgroundDirty(boolean backgroundDirty) {
-        this.backgroundDirty = backgroundDirty;
-    }
-
-    public Background getBackground() {
-        return background;
-    }
-
-    public void setBackground(Background background) {
-        this.background = background;
-        this.backgroundDirty = true;
-    }
-
-    public Rectangle getBackgroundArea() {
-        return backgroundArea;
-    }
-
-    public void setBackgroundArea(Rectangle backgroundArea) {
-        this.backgroundArea = backgroundArea;
     }
 
     public static SceneBuilder newScene(String id) {
@@ -129,16 +101,6 @@ public final class Scene {
 
         public SceneBuilder newLine() {
             scene.addActor(Actor.newActor("\n").build());
-            return this;
-        }
-
-        public SceneBuilder withBackground(Background background) {
-            scene.setBackground(background);
-            return this;
-        }
-
-        public SceneBuilder withBackgroundArea(Rectangle rectangle) {
-            scene.setBackgroundArea(rectangle);
             return this;
         }
     }
