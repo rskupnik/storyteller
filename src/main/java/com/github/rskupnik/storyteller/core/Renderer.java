@@ -20,6 +20,7 @@ import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.structs.backgrounds.Background;
 import com.github.rskupnik.storyteller.structs.ids.FragmentId;
+import com.github.rskupnik.storyteller.structs.textrenderer.TextRenderer;
 import com.github.rskupnik.storyteller.utils.SceneUtils;
 import org.javatuples.Pair;
 
@@ -79,7 +80,7 @@ public final class Renderer {
 
         Background background = statefulStage.obj().getBackground();
         if (background != null) {
-            com.github.rskupnik.storyteller.core.rendering.RenderingUnit renderingUnit = renderingUnitPicker.pick(background);
+            com.github.rskupnik.storyteller.core.rendering.RenderingUnit renderingUnit = renderingUnitPicker.pick(background, statefulStage);
             if (renderingUnit != null)
                 renderingUnit.render(delta, statefulStage);
         }
@@ -119,12 +120,23 @@ public final class Renderer {
             return;
 
         // If a RenderingUnit is defined, use it, otherwise continue to default rendering
-        RenderingUnit renderingUnit = statefulStage.state().getRenderingUnit();
+        /*RenderingUnit renderingUnit = statefulStage.state().getRenderingUnit();
         if (renderingUnit != null) {
             renderingUnit.render(delta, statefulScene);
             statefulScene.obj().setDirty(false);
             statefulScene.state().wasDrawn();
             return;
+        }*/
+
+        TextRenderer textRenderer = statefulStage.obj().getTextRenderer();
+        if (textRenderer != null) {
+            com.github.rskupnik.storyteller.core.rendering.RenderingUnit renderingUnit = renderingUnitPicker.pick(statefulStage.obj().getTextRenderer(), statefulStage);
+            if (renderingUnit != null) {
+                renderingUnit.render(delta, statefulStage);
+                statefulScene.obj().setDirty(false);
+                statefulScene.state().wasDrawn();
+                return;
+            }
         }
 
         // This is the default rendering used if no RenderingUnit is defined

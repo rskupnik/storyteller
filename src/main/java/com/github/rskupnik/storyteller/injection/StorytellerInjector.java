@@ -5,6 +5,8 @@ import com.github.rskupnik.storyteller.core.rendering.background.BasicBackground
 import com.github.rskupnik.storyteller.core.rendering.background.NormalMappedBackgroundRenderingUnit;
 import com.github.rskupnik.storyteller.core.renderingunits.text.LineFadeFloatRenderingUnit;
 import com.github.rskupnik.storyteller.core.renderingunits.text.TypewriterRenderingUnit;
+import com.github.rskupnik.storyteller.structs.textrenderer.LineFadeTextRenderer;
+import com.github.rskupnik.storyteller.structs.textrenderer.TypewrittenTextRenderer;
 import dagger.Component;
 
 import javax.inject.Singleton;
@@ -17,4 +19,6 @@ public interface StorytellerInjector {
     TypewriterRenderingUnit typewriterRU();
     BasicBackgroundRenderingUnit basicBgRU2();
     NormalMappedBackgroundRenderingUnit normalMappedBgRU2();
+    com.github.rskupnik.storyteller.core.rendering.text.TypewriterRenderingUnit typewriterRU2();
+    com.github.rskupnik.storyteller.core.rendering.text.LineFadeFloatRenderingUnit lineFFRU2();
 }

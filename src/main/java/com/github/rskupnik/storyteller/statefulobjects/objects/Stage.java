@@ -1,12 +1,11 @@
 package com.github.rskupnik.storyteller.statefulobjects.objects;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
-import com.github.rskupnik.storyteller.core.renderingunits.RenderingUnitInitializer;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.structs.backgrounds.Background;
+import com.github.rskupnik.storyteller.structs.textrenderer.TextRenderer;
 
 public final class Stage {
 
@@ -15,7 +14,7 @@ public final class Stage {
     private Background background;
     private Rectangle backgroundArea;
 
-    private RenderingUnitInitializer renderingUnitInitializer;
+    private TextRenderer textRenderer;
     private TextEffects textEffects = new TextEffects();    // TextEffects can be defined for the whole engine or for a single Stage
 
     private Vector2 topLeft;
@@ -44,14 +43,6 @@ public final class Stage {
         return width;
     }
 
-    public RenderingUnitInitializer getRenderingUnitInitializer() {
-        return renderingUnitInitializer;
-    }
-
-    private void setRenderingUnitInitializer(RenderingUnitInitializer initializer) {
-        this.renderingUnitInitializer = initializer;
-    }
-
     public TextEffects getTextEffects() {
         return textEffects;
     }
@@ -70,6 +61,14 @@ public final class Stage {
 
     public void setBackgroundArea(Rectangle backgroundArea) {
         this.backgroundArea = backgroundArea;
+    }
+
+    public TextRenderer getTextRenderer() {
+        return textRenderer;
+    }
+
+    public void setTextRenderer(TextRenderer textRenderer) {
+        this.textRenderer = textRenderer;
     }
 
     @Override
@@ -97,8 +96,8 @@ public final class Stage {
             this.stage = new Stage(id, new Rectangle(bottomLeft.x, bottomLeft.y, dimensions.x, dimensions.y));
         }
 
-        public StageBuilder withRenderingUnit(RenderingUnitInitializer initializer) {
-            stage.setRenderingUnitInitializer(initializer);
+        public StageBuilder withTextRenderer(TextRenderer textRenderer) {
+            stage.setTextRenderer(textRenderer);
             return this;
         }
 

@@ -37,8 +37,8 @@ public class SceneUtils {
                 sceneTransformer.transform(statefulScene) :
                 sceneTransformer.transform(existingScene, statefulScene);
 
-        if (statefulStage.state().getRenderingUnit() != null)
-            statefulStage.state().getRenderingUnit().getChain().apply(transformedScene);
+        if (statefulStage.obj().getTextRenderer() != null)
+            statefulStage.obj().getTextRenderer().getExtenderChain().apply(transformedScene);
         //scenePair.scene().setDirty(false);
         statefulScene.state().setTransformedScene(transformedScene);
     }
