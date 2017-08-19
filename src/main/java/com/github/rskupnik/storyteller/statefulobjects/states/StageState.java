@@ -1,18 +1,17 @@
 package com.github.rskupnik.storyteller.statefulobjects.states;
 
-import com.github.rskupnik.storyteller.core.renderingunits.background.BackgroundRenderingUnit;
 import com.github.rskupnik.storyteller.core.renderingunits.text.RenderingUnit;
-import com.github.rskupnik.storyteller.structs.State;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
+import com.github.rskupnik.storyteller.structs.State;
 
-import static com.github.rskupnik.storyteller.statefulobjects.states.StageState.ID.*;
+import static com.github.rskupnik.storyteller.statefulobjects.states.StageState.ID.ATTACHED_SCENE;
+import static com.github.rskupnik.storyteller.statefulobjects.states.StageState.ID.RENDERING_UNIT;
 
 public final class StageState extends State<StageState.ID> {
 
     protected enum ID {
         ATTACHED_SCENE,
-        RENDERING_UNIT,
-        BACKGROUND_RENDERING_UNIT
+        RENDERING_UNIT
     }
 
     public void attachScene(StatefulScene scene) {
@@ -29,13 +28,5 @@ public final class StageState extends State<StageState.ID> {
 
     public RenderingUnit getRenderingUnit() {
         return (RenderingUnit) get(RENDERING_UNIT);
-    }
-
-    public void setBackgroundRenderingUnit(BackgroundRenderingUnit renderingUnit) {
-        put(BACKGROUND_RENDERING_UNIT, renderingUnit);
-    }
-
-    public BackgroundRenderingUnit getBackgroundRenderingUnit() {
-        return (BackgroundRenderingUnit) get(BACKGROUND_RENDERING_UNIT);
     }
 }

@@ -1,47 +1,41 @@
 package com.github.rskupnik.storyteller.core;
 
-import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.rskupnik.storyteller.aggregates.*;
-import com.github.rskupnik.storyteller.core.renderingunits.background.BackgroundRenderingUnit;
+import com.github.rskupnik.storyteller.aggregates.Commons;
+import com.github.rskupnik.storyteller.aggregates.SceneSwaps;
+import com.github.rskupnik.storyteller.aggregates.Stages;
+import com.github.rskupnik.storyteller.core.rendering.RenderingUnitPicker;
 import com.github.rskupnik.storyteller.core.renderingunits.text.RenderingUnit;
-import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
-import com.github.rskupnik.storyteller.structs.Fragment;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
-import com.github.rskupnik.storyteller.structs.ids.FragmentId;
-import com.github.rskupnik.storyteller.utils.SceneUtils;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
+import com.github.rskupnik.storyteller.structs.Fragment;
+import com.github.rskupnik.storyteller.structs.backgrounds.Background;
+import com.github.rskupnik.storyteller.structs.ids.FragmentId;
+import com.github.rskupnik.storyteller.utils.SceneUtils;
 import org.javatuples.Pair;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 
 @Singleton
 public final class Renderer {
 
-    @Inject InputHandler inputHandler;
-    @Inject Scenes scenes;
     @Inject Stages stages;
     @Inject Commons commons;
-    @Inject Clickables clickables;
-    @Inject TweenManager tweenManager;
     @Inject SceneUtils sceneUtils;
     @Inject SceneSwaps sceneSwaps;
     @Inject SceneHandler sceneHandler;
+    @Inject RenderingUnitPicker renderingUnitPicker;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -99,10 +93,17 @@ public final class Renderer {
         }
 
         // Draw the background image
-        BackgroundRenderingUnit backgroundRenderingUnit = statefulStage.state().getBackgroundRenderingUnit();
+        /**BackgroundRenderingUnit backgroundRenderingUnit = statefulStage.state().getBackgroundRenderingUnit();
         if (backgroundRenderingUnit != null) {
             backgroundRenderingUnit.render(delta, statefulStage);
             return;
+        }**/
+
+        Background background = statefulScene.obj().getBackground();
+        if (background != null) {
+            com.github.rskupnik.storyteller.core.rendering.RenderingUnit renderingUnit = renderingUnitPicker.pick(statefulScene, background);
+            if (renderingUnit != null)
+                renderingUnit.render(delta, statefulScene);
         }
 
         if (statefulScene.obj().isDirty()) {

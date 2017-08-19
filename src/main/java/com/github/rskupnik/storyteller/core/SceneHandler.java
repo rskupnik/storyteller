@@ -1,9 +1,9 @@
 package com.github.rskupnik.storyteller.core;
 
-import aurelienribon.tweenengine.TweenManager;
-import com.github.rskupnik.storyteller.aggregates.*;
-import com.github.rskupnik.storyteller.core.renderingunits.background.factory.IBackgroundRenderingUnitFactory;
-import com.github.rskupnik.storyteller.core.renderingunits.text.factory.IRenderingUnitFactory;
+import com.github.rskupnik.storyteller.aggregates.Clickables;
+import com.github.rskupnik.storyteller.aggregates.SceneSwaps;
+import com.github.rskupnik.storyteller.aggregates.Scenes;
+import com.github.rskupnik.storyteller.aggregates.Stages;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulScene;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;

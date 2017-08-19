@@ -17,7 +17,6 @@ import com.github.rskupnik.storyteller.core.Renderer;
 import com.github.rskupnik.storyteller.core.SceneHandler;
 import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
 import com.github.rskupnik.storyteller.core.lighting.Light;
-import com.github.rskupnik.storyteller.core.renderingunits.background.factory.IBackgroundRenderingUnitFactory;
 import com.github.rskupnik.storyteller.core.renderingunits.text.factory.IRenderingUnitFactory;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.StorytellerInjector;
@@ -45,7 +44,6 @@ public final class TextEngineImpl implements TextEngine {
     @Inject Lights lights;
     @Inject SceneHandler sceneHandler;
     @Inject IRenderingUnitFactory renderingUnitFactory;
-    @Inject IBackgroundRenderingUnitFactory backgroundRenderingUnitFactory;
 
     @Inject
     public TextEngineImpl() {
@@ -54,6 +52,7 @@ public final class TextEngineImpl implements TextEngine {
 
     void init(StorytellerInjector injector, Stage stage, BitmapFont font, Viewport viewport) {
         this.injector = injector;
+        commons.injector = injector;
         commons.font = font;
         commons.viewport = viewport;
         commons.worldDimensions = new Vector2(viewport.getWorldWidth(), viewport.getWorldHeight());
@@ -110,8 +109,6 @@ public final class TextEngineImpl implements TextEngine {
         StageState state = new StageState();
         if (stage.getRenderingUnitInitializer() != null)
             state.setRenderingUnit(renderingUnitFactory.create(injector, stage.getRenderingUnitInitializer()));
-        if (stage.getBackgroundRenderingUnitInitializer() != null)
-            state.setBackgroundRenderingUnit(backgroundRenderingUnitFactory.create(injector, stage.getBackgroundRenderingUnitInitializer()));
         stages.add(new StatefulStage(stage, state));
     }
 
