@@ -13,9 +13,9 @@ public final class Stage {
     private Rectangle rectangle;
     private Background background;
     private Rectangle backgroundArea;
-
     private TextRenderer textRenderer;
     private TextEffects textEffects = new TextEffects();    // TextEffects can be defined for the whole engine or for a single Stage
+    private boolean newBackground;
 
     private Vector2 topLeft;
     private int width;
@@ -53,6 +53,7 @@ public final class Stage {
 
     public void setBackground(Background background) {
         this.background = background;
+        setNewBackground(true);
     }
 
     public Rectangle getBackgroundArea() {
@@ -69,6 +70,14 @@ public final class Stage {
 
     public void setTextRenderer(TextRenderer textRenderer) {
         this.textRenderer = textRenderer;
+    }
+
+    public boolean isNewBackground() {
+        return newBackground;
+    }
+
+    public void setNewBackground(boolean newBackground) {
+        this.newBackground = newBackground;
     }
 
     @Override

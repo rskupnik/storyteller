@@ -1,10 +1,16 @@
 package com.github.rskupnik.storyteller.core.rendering.background;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.github.rskupnik.storyteller.accessors.ColorAccessor;
+import com.github.rskupnik.storyteller.aggregates.Backgrounds;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Lights;
 import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
@@ -25,6 +31,7 @@ public class NormalMappedBackgroundRenderingUnit extends RenderingUnit {
 
     @Inject Commons commons;
     @Inject Lights lights;
+    @Inject Backgrounds backgrounds;
 
     private Light light;
 
@@ -37,12 +44,16 @@ public class NormalMappedBackgroundRenderingUnit extends RenderingUnit {
     public void render(float delta, StatefulStage stage) {
         super.render(delta, stage);
 
-        Background background = stage.obj().getBackground();
+        final Background background = backgrounds.current(stage);
         if (background == null)
             return;
 
         if (!(background instanceof NormalMappedBackground))
             throw new IllegalStateException("Expected a NormalMappedBackground but go a different one!");
+
+        if (background.isExitSequenceStarted()) {
+            background.setExitSequenceFinished(true);
+        }
 
         NormalMappedBackground nmBackground = (NormalMappedBackground) background;
         if (!nmBackground.isInitialized()) {

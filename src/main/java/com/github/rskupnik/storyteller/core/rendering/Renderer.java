@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.rskupnik.storyteller.aggregates.Backgrounds;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.SceneSwaps;
 import com.github.rskupnik.storyteller.aggregates.Stages;
@@ -35,9 +36,9 @@ public final class Renderer {
     @Inject Commons commons;
     @Inject SceneUtils sceneUtils;
     @Inject SceneSwaps sceneSwaps;
-    @Inject
-    SceneHandler sceneHandler;
+    @Inject SceneHandler sceneHandler;
     @Inject RenderingUnitPicker renderingUnitPicker;
+    @Inject Backgrounds backgrounds;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -81,7 +82,29 @@ public final class Renderer {
 
         Background background = statefulStage.obj().getBackground();
         if (background != null) {
-            com.github.rskupnik.storyteller.core.rendering.RenderingUnit renderingUnit = renderingUnitPicker.pick(background, statefulStage);
+            if (statefulStage.obj().isNewBackground()) {
+                Background currentBackground = backgrounds.current(statefulStage);
+                if (currentBackground == null) {
+                    backgrounds.setCurrent(statefulStage, background);
+                } else {
+                    backgrounds.setAwaiting(statefulStage, background);
+                    currentBackground.setExitSequenceStarted(true);
+                }
+                statefulStage.obj().setNewBackground(false);
+            }
+
+            background = backgrounds.current(statefulStage);
+
+            if (background.isExitSequenceStarted() && background.isExitSequenceFinished()) {
+                Background newBackground = backgrounds.awaiting(statefulStage);
+                if (newBackground != null) {
+                    backgrounds.setCurrent(statefulStage, newBackground);
+                    backgrounds.setAwaiting(statefulStage, null);
+                    background = newBackground;
+                }
+            }
+
+            RenderingUnit renderingUnit = renderingUnitPicker.pick(background, statefulStage);
             if (renderingUnit != null)
                 renderingUnit.render(delta, statefulStage);
         }
@@ -131,7 +154,7 @@ public final class Renderer {
 
         TextRenderer textRenderer = statefulStage.obj().getTextRenderer();
         if (textRenderer != null) {
-            com.github.rskupnik.storyteller.core.rendering.RenderingUnit renderingUnit = renderingUnitPicker.pick(statefulStage.obj().getTextRenderer(), statefulStage);
+            RenderingUnit renderingUnit = renderingUnitPicker.pick(statefulStage.obj().getTextRenderer(), statefulStage);
             if (renderingUnit != null) {
                 renderingUnit.render(delta, statefulStage);
                 statefulScene.obj().setDirty(false);
