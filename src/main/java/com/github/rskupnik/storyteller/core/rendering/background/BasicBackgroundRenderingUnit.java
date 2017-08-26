@@ -80,11 +80,13 @@ public class BasicBackgroundRenderingUnit extends RenderingUnit {
     @Override
     public void preFirstRender(StatefulStage stage) {
         Background background = backgrounds.current(stage);
-        if (background instanceof BasicBackground) {
+        if (background != null && background instanceof BasicBackground) {
             Color c = ((BasicBackground) background).getPostPublishColor();
-            Tween.to(background.getTint(), ColorAccessor.ALPHA, 1)
-                    .target(c.a)
-                    .start(tweenManager);
+            if (background.getTint() != null && c != null) {
+                Tween.to(background.getTint(), ColorAccessor.ALPHA, 1)
+                        .target(c.a)
+                        .start(tweenManager);
+            }
         }
     }
 }
