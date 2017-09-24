@@ -3,12 +3,16 @@ package com.github.rskupnik.storyteller.statefulobjects.objects;
 import com.badlogic.gdx.graphics.Color;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class Actor {
 
     private String text;
     private Color color;
     private boolean clickable;
     private ClickEffect clickEffect;
+    private Map<String, Object> data = new HashMap<>();
 
     public Actor(String text) {
         this.text = text;
@@ -30,6 +34,10 @@ public final class Actor {
         return clickEffect;
     }
 
+    public Map<String, Object> getData() {
+        return data;
+    }
+
     private void setColor(Color color) {
         this.color = color;
     }
@@ -40,6 +48,10 @@ public final class Actor {
 
     private void setClickEffect(ClickEffect clickEffect) {
         this.clickEffect = clickEffect;
+    }
+
+    private void setData(Map<String, Object> data) {
+        this.data = data;
     }
 
     public static ActorBuilder newActor(String text) {
@@ -66,6 +78,11 @@ public final class Actor {
 
         public ActorBuilder withClickEffect(ClickEffect clickEffect) {
             actor.setClickEffect(clickEffect);
+            return this;
+        }
+
+        public ActorBuilder withData(Map<String, Object> data) {
+            actor.setData(data);
             return this;
         }
 
