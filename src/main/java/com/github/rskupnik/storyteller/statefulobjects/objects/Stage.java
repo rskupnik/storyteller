@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.structs.backgrounds.Background;
+import com.github.rskupnik.storyteller.core.effects.StageEffect;
 import com.github.rskupnik.storyteller.structs.textrenderer.TextRenderer;
 
 public final class Stage {
@@ -16,6 +17,7 @@ public final class Stage {
     private TextRenderer textRenderer;
     private TextEffects textEffects = new TextEffects();    // TextEffects can be defined for the whole engine or for a single Stage
     private boolean newBackground;
+    private StageEffect stageEffect;
 
     private Vector2 topLeft;
     private int width;
@@ -78,6 +80,14 @@ public final class Stage {
 
     public void setNewBackground(boolean newBackground) {
         this.newBackground = newBackground;
+    }
+
+    public StageEffect getStageEffect() {
+        return stageEffect;
+    }
+
+    public void setStageEffect(StageEffect stageEffect) {
+        this.stageEffect = stageEffect;
     }
 
     @Override
