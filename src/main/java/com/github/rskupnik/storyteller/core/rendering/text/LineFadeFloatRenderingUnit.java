@@ -17,6 +17,8 @@ import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Lights;
 import com.github.rskupnik.storyteller.aggregates.NamedOffsets;
+import com.github.rskupnik.storyteller.core.effects.ShakeEffectHandler;
+import com.github.rskupnik.storyteller.core.effects.StageEffect;
 import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
 import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
@@ -47,6 +49,9 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
     @Inject TweenManager tweenManager;
     @Inject Clickables clickables;
     @Inject NamedOffsets namedOffsets;
+
+    private final ShakeEffectHandler shakeEffectHandler = new ShakeEffectHandler();
+
     private SceneUtils sceneUtils = new SceneUtils();
 
     private TweenEquation equation;
@@ -64,7 +69,8 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
     private int highestLine = 0;                                // Stored to determine when the algorithm has processed all the lines
     private boolean appearingSuspended = false;                 // Denotes whether appearing part is suspended
     private boolean disappearingSuspended = false;              // Same but for disappearing
-    private Vector2 offset = new Vector2(0, 0);           // Holds the offset that all actors will move (only Y is used)
+    private Vector2 offset = new Vector2(0, 0);                 // Holds the offset that all actors will move (only Y is used)
+    private Vector2 noise = new Vector2(0, 0);                  // Holds the noise to be applied to position (for example for a shake effect)
     private int lineHeight = 0;
     private boolean exitInProgress = false;
     private long exitTimestamp = 0;
@@ -178,6 +184,13 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
 
             shader.setUniformf("LightPos", light.getPosition());
         }
+
+        //region Stage Effects
+        StageEffect stageEffect = stage.obj().getStageEffect();
+        if (stageEffect != null) {
+            applyStageEffect(stageEffect);
+        }
+        //endregion
 
         boolean isAppearingInternal = false;    // These are set if at least one fragment is processed, based on those the larger flags are set later
         boolean isDisappearingInternal = false;
@@ -344,5 +357,9 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
             shader.setUniformf("Resolution", commons.worldDimensions.x, commons.worldDimensions.y);
             shader.end();
         }
+    }
+
+    private void applyStageEffect(StageEffect stageEffect) {
+
     }
 }
