@@ -17,8 +17,9 @@ import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Lights;
 import com.github.rskupnik.storyteller.aggregates.NamedOffsets;
+import com.github.rskupnik.storyteller.core.effects.ShakeEffect;
 import com.github.rskupnik.storyteller.core.effects.ShakeEffectHandler;
-import com.github.rskupnik.storyteller.core.effects.StageEffect;
+import com.github.rskupnik.storyteller.core.effects.TemporaryEffect;
 import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
 import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
@@ -71,6 +72,7 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
     private boolean disappearingSuspended = false;              // Same but for disappearing
     private Vector2 offset = new Vector2(0, 0);                 // Holds the offset that all actors will move (only Y is used)
     private Vector2 noise = new Vector2(0, 0);                  // Holds the noise to be applied to position (for example for a shake effect)
+    private boolean shakeActive = false;                        // If true, shake effect will be activated
     private int lineHeight = 0;
     private boolean exitInProgress = false;
     private long exitTimestamp = 0;
@@ -185,10 +187,19 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
             shader.setUniformf("LightPos", light.getPosition());
         }
 
-        //region Stage Effects
-        StageEffect stageEffect = stage.obj().getStageEffect();
-        if (stageEffect != null) {
-            applyStageEffect(stageEffect);
+        //region Temporary Effects
+        TemporaryEffect temporaryEffect = stage.obj().getTemporaryEffect();
+        if (temporaryEffect != null) {
+            activateTemporaryEffect(temporaryEffect, stage);
+        }
+        //endregion
+
+        //region Shake
+        if (shakeActive) {
+            noise = shakeEffectHandler.update(delta);
+            if (noise == null) {    // If return value is null, it means the duration has ended, so we should disable the effect
+                shakeActive = false;
+            }
         }
         //endregion
 
@@ -253,8 +264,9 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
                 }
                 //endregion
 
+                Vector2 noiseAdjust = noise != null ? noise.cpy() : new Vector2(0, 0);
                 if ((line <= currentlyProcessedLine_Appear || processed) && line >= currentlyProcessedLine_Disappear)
-                    commons.font.draw(commons.batch, GL, position.x, position.y + actor.state().getYOffset() + offset.y);
+                    commons.font.draw(commons.batch, GL, position.x + noiseAdjust.x, position.y + actor.state().getYOffset() + offset.y + noiseAdjust.y);
             }
         }
 
@@ -359,7 +371,12 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
         }
     }
 
-    private void applyStageEffect(StageEffect stageEffect) {
-
+    private void activateTemporaryEffect(TemporaryEffect temporaryEffect, StatefulStage stage) {
+        if (temporaryEffect instanceof ShakeEffect) {
+            ShakeEffect shakeEffect = (ShakeEffect) temporaryEffect;
+            shakeEffectHandler.shake(shakeEffect.getIntensity(), shakeEffect.getDuration());    // Starts the calculations of noise to be applied as shake effect
+            stage.obj().toggleEffect(null);   // Once an effect is activated, the toggle needs to be taken down from the stage
+            shakeActive = true; // Makes the noise visible
+        }
     }
 }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.structs.backgrounds.Background;
-import com.github.rskupnik.storyteller.core.effects.StageEffect;
+import com.github.rskupnik.storyteller.core.effects.TemporaryEffect;
 import com.github.rskupnik.storyteller.structs.textrenderer.TextRenderer;
 
 public final class Stage {
@@ -17,7 +17,7 @@ public final class Stage {
     private TextRenderer textRenderer;
     private TextEffects textEffects = new TextEffects();    // TextEffects can be defined for the whole engine or for a single Stage
     private boolean newBackground;
-    private StageEffect stageEffect;
+    private TemporaryEffect temporaryEffect;    // Temporary effects are toggled when stage is already active and last for some time only
 
     private Vector2 topLeft;
     private int width;
@@ -82,12 +82,12 @@ public final class Stage {
         this.newBackground = newBackground;
     }
 
-    public StageEffect getStageEffect() {
-        return stageEffect;
+    public TemporaryEffect getTemporaryEffect() {
+        return temporaryEffect;
     }
 
-    public void setStageEffect(StageEffect stageEffect) {
-        this.stageEffect = stageEffect;
+    public void toggleEffect(TemporaryEffect temporaryEffect) {
+        this.temporaryEffect = temporaryEffect;
     }
 
     @Override

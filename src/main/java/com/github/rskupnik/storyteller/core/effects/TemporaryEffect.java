@@ -1,4 +1,4 @@
 package com.github.rskupnik.storyteller.core.effects;
 
-public abstract class StageEffect {
+public abstract class TemporaryEffect {
 }
