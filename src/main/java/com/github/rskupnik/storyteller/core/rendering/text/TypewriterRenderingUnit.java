@@ -12,6 +12,9 @@ import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Lights;
+import com.github.rskupnik.storyteller.core.effects.ShakeEffect;
+import com.github.rskupnik.storyteller.core.effects.ShakeEffectHandler;
+import com.github.rskupnik.storyteller.core.effects.TemporaryEffect;
 import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
 import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.core.scenetransform.TransformedScene;
@@ -39,9 +42,13 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
     @Inject TweenManager tweenManager;
     @Inject Lights lights;
 
+    private final ShakeEffectHandler shakeEffectHandler = new ShakeEffectHandler();
+
     private Typewriter typewriter;
     private Map<StatefulActor, List<Integer>> processingMap = new HashMap<>();  // Holds indexes of fragments that have been processed in the scope of an actor
     private Vector2 offset = new Vector2(0, 0);
+    private Vector2 noise = new Vector2(0, 0);                  // Holds the noise to be applied to position (for example for a shake effect)
+    private boolean shakeActive = false;                        // If true, shake effect will be activated
     private boolean exitInProgress;
     private long exitTimestamp = 0;
 
@@ -113,6 +120,22 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
             shader.setUniformf("LightPos", light.getPosition());
         }
 
+        //region Temporary Effects
+        TemporaryEffect temporaryEffect = stage.obj().getTemporaryEffect();
+        if (temporaryEffect != null) {
+            activateTemporaryEffect(temporaryEffect, stage);
+        }
+        //endregion
+
+        //region Shake
+        if (shakeActive) {
+            noise = shakeEffectHandler.update(delta);
+            if (noise == null) {    // If return value is null, it means the duration has ended, so we should disable the effect
+                shakeActive = false;
+            }
+        }
+        //endregion
+
         TransformedScene data = statefulScene.state().getTransformedScene();
         /*
             The algorithm here is as follows:
@@ -152,12 +175,14 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
                 if (str == null || position == null)
                     continue;
 
+                Vector2 noiseAdjust = noise != null ? noise.cpy() : new Vector2(0, 0);
+
                 // Draw the GL
                 Color prevColor = commons.font.getColor();
                 commons.font.setColor(color != null ? color : prevColor);
 
                 if (isProcessed(actor, j)) {    // If this fragment is already processed, draw it as is
-                    commons.font.draw(commons.batch, str, position.x, position.y + actor.state().getYOffset() + offset.y);
+                    commons.font.draw(commons.batch, str, position.x + noiseAdjust.x, position.y + actor.state().getYOffset() + offset.y + noiseAdjust.y);
                     j++;
                     continue;
                 } else {
@@ -175,7 +200,7 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
                         typewriter.update(delta);
 
                     CharSequence cs = typewriter.type(str);
-                    commons.font.draw(commons.batch, cs, position.x, position.y + actor.state().getYOffset() + offset.y);
+                    commons.font.draw(commons.batch, cs, position.x + noiseAdjust.x, position.y + actor.state().getYOffset() + offset.y + noiseAdjust.y);
 
                     if (cs.length() == str.length()) {  // Check if processing of the fragment is finished
                         List<Integer> actorsProcessedIndices = processingMap.get(actor);
@@ -261,5 +286,14 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
             processingMap.put(actor, actorsProcessedIndices);
         }
         return actorsProcessedIndices.contains(index);
+    }
+
+    private void activateTemporaryEffect(TemporaryEffect temporaryEffect, StatefulStage stage) {
+        if (temporaryEffect instanceof ShakeEffect) {
+            ShakeEffect shakeEffect = (ShakeEffect) temporaryEffect;
+            shakeEffectHandler.shake(shakeEffect.getIntensity(), shakeEffect.getDuration());    // Starts the calculations of noise to be applied as shake effect
+            stage.obj().toggleEffect(null);   // Once an effect is activated, the toggle needs to be taken down from the stage
+            shakeActive = true; // Makes the noise visible
+        }
     }
 }
