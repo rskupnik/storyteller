@@ -12,6 +12,7 @@ import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
 import com.github.rskupnik.storyteller.aggregates.Commons;
 import com.github.rskupnik.storyteller.aggregates.Lights;
+import com.github.rskupnik.storyteller.aggregates.Listeners;
 import com.github.rskupnik.storyteller.core.effects.ShakeEffect;
 import com.github.rskupnik.storyteller.core.effects.ShakeEffectHandler;
 import com.github.rskupnik.storyteller.core.effects.TemporaryEffect;
@@ -41,6 +42,7 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
     @Inject Commons commons;
     @Inject TweenManager tweenManager;
     @Inject Lights lights;
+    @Inject Listeners listeners;
 
     private final ShakeEffectHandler shakeEffectHandler = new ShakeEffectHandler();
 
@@ -239,8 +241,7 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
             commons.batch.setShader(commons.defaultShader);
 
         if (allActorsProcessed && !informedAboutTextFinishedDisplaying) {
-            // TODO: inform about text finished displaying
-            System.out.println("TEXT FINISHED DISPLAYING");
+            listeners.eventListener.onTextDisplayed();
             informedAboutTextFinishedDisplaying = true;
         }
     }
