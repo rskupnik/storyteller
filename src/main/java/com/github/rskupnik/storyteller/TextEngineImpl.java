@@ -19,7 +19,7 @@ import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.core.rendering.Renderer;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.StorytellerInjector;
-import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.github.rskupnik.storyteller.listeners.EventListener;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulStage;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
@@ -78,8 +78,8 @@ public final class TextEngineImpl implements TextEngine {
     }
 
     @Override
-    public void setClickListener(ClickListener clickListener) {
-        listeners.clickListener = clickListener;
+    public void setClickListener(EventListener eventListener) {
+        listeners.eventListener = eventListener;
     }
 
     @Override

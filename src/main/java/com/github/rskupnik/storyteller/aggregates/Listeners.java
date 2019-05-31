@@ -1,6 +1,6 @@
 package com.github.rskupnik.storyteller.aggregates;
 
-import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.github.rskupnik.storyteller.listeners.EventListener;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -10,7 +10,7 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class Listeners {
-    public ClickListener clickListener;
+    public EventListener eventListener;
 
     @Inject
     public Listeners() {

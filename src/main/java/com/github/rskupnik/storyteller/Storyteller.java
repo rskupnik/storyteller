@@ -4,9 +4,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.injection.DaggerStorytellerInjector;
-import com.github.rskupnik.storyteller.injection.EngineModule;
 import com.github.rskupnik.storyteller.injection.StorytellerInjector;
-import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.github.rskupnik.storyteller.listeners.EventListener;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
 
 public final class Storyteller {
@@ -35,8 +34,8 @@ public final class Storyteller {
         return this;
     }
 
-    public Storyteller withClickListener(ClickListener clickListener) {
-        engine.setClickListener(clickListener);
+    public Storyteller withEventListener(EventListener eventListener) {
+        engine.setClickListener(eventListener);
         return this;
     }
 

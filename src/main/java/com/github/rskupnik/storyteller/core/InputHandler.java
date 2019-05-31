@@ -9,7 +9,7 @@ import com.github.rskupnik.storyteller.aggregates.Clickables;
 import com.github.rskupnik.storyteller.aggregates.Listeners;
 import com.github.rskupnik.storyteller.aggregates.NamedOffsets;
 import com.github.rskupnik.storyteller.aggregates.TextEffects;
-import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.github.rskupnik.storyteller.listeners.EventListener;
 import com.github.rskupnik.storyteller.structs.Clickable;
 import com.github.rskupnik.storyteller.structs.State;
 import com.github.rskupnik.storyteller.statefulobjects.StatefulActor;
@@ -77,7 +77,7 @@ public final class InputHandler implements com.badlogic.gdx.InputProcessor {
                     touched.y <= rect.getY() + (offset != null ? offset.y : 0) &&
                     touched.y >= rect.getY() - rect.getHeight() + (offset != null ? offset.y : 0)) {
 
-                    ClickListener listener = listeners.clickListener;
+                    EventListener listener = listeners.eventListener;
                     if (listener != null) {
                         listener.onActorClicked(actor.obj(), new Vector2(touched.x, touched.y), button);
                     }

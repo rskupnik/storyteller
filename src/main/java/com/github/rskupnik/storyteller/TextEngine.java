@@ -5,14 +5,14 @@ import com.github.rskupnik.storyteller.core.lighting.AmbientLight;
 import com.github.rskupnik.storyteller.core.lighting.Light;
 import com.github.rskupnik.storyteller.effects.click.ClickEffect;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Scene;
-import com.github.rskupnik.storyteller.listeners.ClickListener;
+import com.github.rskupnik.storyteller.listeners.EventListener;
 import com.github.rskupnik.storyteller.statefulobjects.objects.Stage;
 
 public interface TextEngine {
     void render(float delta);
     void resize(int width, int height);
 
-    void setClickListener(ClickListener clickListener);
+    void setClickListener(EventListener eventListener);
     void setTextClickEffect(ClickEffect effect);
 
     void attachScene(String stageId, Scene scene);
