@@ -12,7 +12,7 @@ public interface TextEngine {
     void render(float delta);
     void resize(int width, int height);
 
-    void setClickListener(EventListener eventListener);
+    void setEventListener(EventListener eventListener);
     void setTextClickEffect(ClickEffect effect);
 
     void attachScene(String stageId, Scene scene);

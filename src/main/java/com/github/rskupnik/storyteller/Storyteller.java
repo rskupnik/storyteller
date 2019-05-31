@@ -35,7 +35,7 @@ public final class Storyteller {
     }
 
     public Storyteller withEventListener(EventListener eventListener) {
-        engine.setClickListener(eventListener);
+        engine.setEventListener(eventListener);
         return this;
     }
 

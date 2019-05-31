@@ -78,7 +78,7 @@ public final class TextEngineImpl implements TextEngine {
     }
 
     @Override
-    public void setClickListener(EventListener eventListener) {
+    public void setEventListener(EventListener eventListener) {
         listeners.eventListener = eventListener;
     }
 
