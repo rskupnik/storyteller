@@ -51,6 +51,7 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
     private boolean shakeActive = false;                        // If true, shake effect will be activated
     private boolean exitInProgress;
     private long exitTimestamp = 0;
+    private boolean informedAboutTextFinishedDisplaying;        // Whether the outside user was informed that text has finished displaying
 
     private boolean affectedByLight;
     private ShaderProgram shader;
@@ -83,6 +84,7 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
         offset = new Vector2(0, 0);
         exitInProgress = false;
         exitTimestamp = 0;
+        informedAboutTextFinishedDisplaying = false;
     }
 
     @Override
@@ -149,6 +151,7 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
          */
         int i = 0;  // Index of the current actor from the actor list
         int currentlyProcessedActorIndex = -1;  // Index of the actor that is currently processed
+        boolean allActorsProcessed = true;      // Will be set to false if any fragment of any actor is not processed - based on this we informed about job done or not
         for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {
             StatefulActor actor = actorToDataPair.getValue0();
             if (currentlyProcessedActorIndex == -1) {   // If no actor is being processed, set it to this one
@@ -158,6 +161,7 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
             // If actor is not yet processed and is not the one currently processed, ignore
             if (!actor.state().isProcessed() && i != currentlyProcessedActorIndex) {
                 i++;
+                allActorsProcessed = false;
                 continue;
             }
 
@@ -187,6 +191,7 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
                     continue;
                 } else {
                     allFragmentsProcessed = false;  // Fragment is not processed so falsify the flag
+                    allActorsProcessed = false;
 
                     if (currentlyProcessedFragmentIndex == -1)
                         currentlyProcessedFragmentIndex = j;
@@ -232,6 +237,12 @@ public final class TypewriterRenderingUnit extends TextRenderingUnit {
 
         if (affectedByLight && shader != null)
             commons.batch.setShader(commons.defaultShader);
+
+        if (allActorsProcessed && !informedAboutTextFinishedDisplaying) {
+            // TODO: inform about text finished displaying
+            System.out.println("TEXT FINISHED DISPLAYING");
+            informedAboutTextFinishedDisplaying = true;
+        }
     }
 
     private void initExit(StatefulScene scene) {
