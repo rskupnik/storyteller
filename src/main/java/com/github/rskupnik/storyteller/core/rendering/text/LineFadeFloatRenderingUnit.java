@@ -13,10 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.rskupnik.storyteller.accessors.ColorAccessor;
 import com.github.rskupnik.storyteller.accessors.Vector2Accessor;
-import com.github.rskupnik.storyteller.aggregates.Clickables;
-import com.github.rskupnik.storyteller.aggregates.Commons;
-import com.github.rskupnik.storyteller.aggregates.Lights;
-import com.github.rskupnik.storyteller.aggregates.NamedOffsets;
+import com.github.rskupnik.storyteller.aggregates.*;
 import com.github.rskupnik.storyteller.core.effects.ShakeEffect;
 import com.github.rskupnik.storyteller.core.effects.ShakeEffectHandler;
 import com.github.rskupnik.storyteller.core.effects.TemporaryEffect;
@@ -50,6 +47,7 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
     @Inject TweenManager tweenManager;
     @Inject Clickables clickables;
     @Inject NamedOffsets namedOffsets;
+    @Inject Listeners listeners;
 
     private final ShakeEffectHandler shakeEffectHandler = new ShakeEffectHandler();
 
@@ -76,6 +74,7 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
     private int lineHeight = 0;
     private boolean exitInProgress = false;
     private long exitTimestamp = 0;
+    private boolean informedAboutTextFinishedDisplaying;        // Whether the outside user was informed that text has finished displaying
 
     private boolean affectedByLight;
     private ShaderProgram shader;
@@ -117,6 +116,7 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
         offset = new Vector2(0, 0);
         lineHeight = 0;
         exitInProgress = false;
+        informedAboutTextFinishedDisplaying = false;
 
         disappearInterval = disappearInterval_persisted;
         disappearEnabled = disappearEnabled_persisted;
@@ -205,6 +205,7 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
 
         boolean isAppearingInternal = false;    // These are set if at least one fragment is processed, based on those the larger flags are set later
         boolean isDisappearingInternal = false;
+        boolean allActorsProcessed = true;      // Will be set to false if any fragment of any actor is not processed - based on this we informed about job done or not
         for (Pair<StatefulActor, List<Fragment>> actorToDataPair : data.getData()) {
             StatefulActor actor = actorToDataPair.getValue0();
             for (Fragment actorData : actorToDataPair.getValue1()) {
@@ -219,6 +220,10 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
 
                 if (GL == null || position == null || line == null || stateFlags == null)
                     continue;
+
+                if (!processed) {
+                    allActorsProcessed = false;
+                }
 
                 if (line > highestLine) {
                     highestLine = line;
@@ -317,6 +322,11 @@ public final class LineFadeFloatRenderingUnit extends TextRenderingUnit {
         //endregion
 
         finalizeRender();
+
+        if (allActorsProcessed && !informedAboutTextFinishedDisplaying) {
+            listeners.eventListener.onTextDisplayed();
+            informedAboutTextFinishedDisplaying = true;
+        }
     }
 
     private void finalizeRender() {
